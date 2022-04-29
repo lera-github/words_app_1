@@ -34,12 +34,12 @@ class ModuleListState extends State<ModuleList> {
               ),
             ), */
             body: SafeArea(
-                child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 600,
-              ),
-              child: Align(
-                alignment: Alignment.topCenter,
+                child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 600,
+                ),
                 child:
                     //Column(children: [
                     //ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600),
@@ -76,10 +76,16 @@ class ModuleListState extends State<ModuleList> {
                   slivers: <Widget>[
                     SliverAppBar(
                       titleTextStyle: textStyle,
-                      backgroundColor: Colors.white,
-                      expandedHeight: 50,
+                      backgroundColor:
+                          ThemeData().scaffoldBackgroundColor, //цвет фона
+                      expandedHeight: 36,
+                      //collapsedHeight: 20,
+                      toolbarHeight: 36,
+                      centerTitle: true,
                       pinned: true,
                       flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true,
+                        //titlePadding: EdgeInsets.only(top: 0),
                         title: Text(
                           'Библиотека модулей',
                           style: textStyle,

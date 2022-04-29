@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/appbarmenu.dart';
 import 'package:myapp/pages/module_list.dart';
 import 'helpers/styles.dart';
 import 'pages/modules.dart';
@@ -22,9 +23,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memory Games',
-      theme: ThemeData(
+      /* theme: ThemeData(
         primarySwatch: Colors.green,
-      ),
+      ), */
       routes: {
         '/': (BuildContext context) => const MyHomePage(title: 'Memory Games'),
         '/ProfileScreen': (BuildContext context) => const Profile(),
@@ -55,9 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
               height: 100,
               child: Container(
-                color: Color.fromARGB(255, 255, 255, 220),
+                color: upBarColor,
                 padding: const EdgeInsets.all(8),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: 20,
@@ -65,6 +67,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     Text(
                       'Memory Games',
                       style: titleStyle,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LibButton(),
+                            SizedBox(
+                              width: 20,
+                            ),
+/*                             LibMenu(),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CreateMenu(),
+                            SizedBox(
+                              width: 20,
+                            ), */
+                            MyMenu(),
+                          ]),
+                    ),
+                    SizedBox(
+                      width: 20,
                     ),
                   ],
                 ),
@@ -77,9 +104,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(0xFF, 0xFF, 0xF5, 0x9D),
-                ),
+                /* decoration: const BoxDecoration(
+                        color: Color.fromRGBO(0xFF, 0xFF, 0xF5, 0x9D),
+                    ), */
                 child: ModuleList(),
               ),
             ),
