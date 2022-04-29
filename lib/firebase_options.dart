@@ -21,23 +21,6 @@ mixin DefaultFirebaseOptions {
       return web;
     }
     // ignore: missing_enum_constant_in_switch
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-    }
 
     throw UnsupportedError(
       'DefaultFirebaseOptions are not supported for this platform.',
@@ -45,10 +28,12 @@ mixin DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-      apiKey: "AIzaSyC8K3HJw20NLwessB9UogKQxRNHPz0c_mo",
-      authDomain: "words-app-1.firebaseapp.com",
-      projectId: "words-app-1",
-      storageBucket: "words-app-1.appspot.com",
-      messagingSenderId: "158482024099",
-      appId: "1:158482024099:web:f4799a2bbcd46bb5f1a116");
+    apiKey: 'AIzaSyC8K3HJw20NLwessB9UogKQxRNHPz0c_mo',
+    appId: '1:158482024099:web:f4799a2bbcd46bb5f1a116',
+    messagingSenderId: '158482024099',
+    projectId: 'words-app-1',
+    authDomain: 'words-app-1.firebaseapp.com',
+    storageBucket: 'words-app-1.appspot.com',
+  );
+
 }

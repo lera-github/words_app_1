@@ -48,6 +48,8 @@ dependencies:
   hive: ^2.1.0
   firebase_core: ^1.15.0
   firebase: ^9.0.2
+  cloud_firestore: ^3.1.13
+  firebase_storage: ^10.2.14
   
  
  
@@ -62,7 +64,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   # flutter_lints: ^1.0.0
-  lint: ^1.8.1
+  lint: 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
