@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 
+import '../pages/module_add.dart';
+
 class LibButton extends StatefulWidget {
   LibButton({Key? key}) : super(key: key);
 
@@ -24,7 +26,14 @@ class _LibButtonState extends State<LibButton> {
         ElevatedButton(
           child: Text("Создать"),
           style: menuButtonStyle,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AnimatedListWidget(),
+              ),
+            );
+          },
         ),
       ],
     );

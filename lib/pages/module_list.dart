@@ -185,7 +185,11 @@ Widget gridcont(BuildContext context, int index, Object? _obj) {
                 Transform.scale(
                   scale: 1.6,
                   child: IconButton(
-                    icon: const Icon(Icons.delete_forever_outlined),
+                    icon: const Icon(
+                      Icons.star_border_rounded,
+                      color: Colors.grey,
+                      
+                    ),
                     onPressed: () {
                       Future.delayed(
                         Duration.zero,
@@ -205,6 +209,9 @@ Widget gridcont(BuildContext context, int index, Object? _obj) {
                       );
                     },
                   ),
+                ),
+                SizedBox(
+                  width: 50,
                 ),
               ],
             ),

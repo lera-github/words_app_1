@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             //
             SizedBox(
-              height: 100,
+              height: 56,
               child: Container(
                 color: upBarColor,
                 padding: const EdgeInsets.all(8),
