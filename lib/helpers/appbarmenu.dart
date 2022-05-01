@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 
-import '../pages/module_add.dart';
+import '../pages/module_edit.dart';
 
 class LibButton extends StatefulWidget {
   LibButton({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _LibButtonState extends State<LibButton> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AnimatedListWidget(),
+                builder: (context) => ModuleEdit(),
               ),
             );
           },

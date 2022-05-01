@@ -6,31 +6,16 @@ class ModuleAddText extends StatelessWidget {
 
   bool moduleNameOK = false;
   TextEditingController moduleNameController = TextEditingController();
+  TextEditingController moduleDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        /* const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter a search term',
-            ),
-          ),
-        ), */
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: /* TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Название',
-            ),
-          ), */
-
-              TextFormField(
+          child: TextFormField(
             textAlign: TextAlign.left,
             style: textStyle,
             keyboardType: TextInputType.text,
@@ -56,9 +41,15 @@ class ModuleAddText extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextFormField(
+            textAlign: TextAlign.left,
+            style: textStyle,
+            keyboardType: TextInputType.text,
+            controller: moduleDescriptionController,
             decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: 'Описание',
+              hintText: 'Введите описание модуля',
+              hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ),
         ),

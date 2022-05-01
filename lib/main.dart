@@ -46,7 +46,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final Orientation _orientation = MediaQuery.of(context).orientation;
+    //final Orientation _orientation = MediaQuery.of(context).orientation;
 
     return Scaffold(
       body: SafeArea(

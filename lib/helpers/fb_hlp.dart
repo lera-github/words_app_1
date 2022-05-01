@@ -3,6 +3,31 @@ import 'dart:typed_data' show Uint8List;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fbs;
 
+Future<List<Object?>> getFS({
+  required String collection,
+}) async {
+  // Get docs from collection reference
+  final QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection(collection).get();
+  // Get data from docs and convert map to List
+  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  return allData;
+}
+
+Future<void> updateFS({
+  required String collection,
+  required String id,
+  required String val,
+  required dynamic valdata,
+}) async {
+  await FirebaseFirestore.instance
+      .collection(collection)
+      .doc(id)
+      .update({val: valdata});
+  /* .then((value) => print("User Updated"))
+      .catchError((e) => print("Failed to update user: $e")); */
+}
+
 @override
 Future<void> deleteUser(Map<String, dynamic> _doc) async {
   //удаление документа var
@@ -47,15 +72,6 @@ Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> _doc) async {
   return allData;
 }
 
-Future<List<Object?>> getUsersFS() async {
-  // Get docs from collection reference
-  final QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('modules').get();
-  // Get data from docs and convert map to List
-  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-  return allData;
-}
-
 Future<void> updateUsersFS({
   required String parentdoc,
   required String doc,
@@ -71,8 +87,6 @@ Future<void> updateUsersFS({
   /* .then((value) => print("User Updated"))
       .catchError((e) => print("Failed to update user: $e")); */
 }
-
-
 
 //извлечение из БД и запись в Firebase Storage
 /* Future<void> uploads(String _fname) async {

@@ -3,12 +3,12 @@ import 'package:myapp/helpers/styles.dart';
 
 import '../helpers/module_add_text.dart';
 
-class AnimatedListWidget extends StatefulWidget {
+class ModuleEdit extends StatefulWidget {
   @override
-  _AnimatedListWidgetState createState() => _AnimatedListWidgetState();
+  _ModuleEditState createState() => _ModuleEditState();
 }
 
-class _AnimatedListWidgetState extends State<AnimatedListWidget> {
+class _ModuleEditState extends State<ModuleEdit> {
   // the GlobalKey is needed to animate the list
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
@@ -25,7 +25,7 @@ class _AnimatedListWidgetState extends State<AnimatedListWidget> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'AnimatedList Widget',
+          'заменить или удалить AppBar',
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -78,7 +78,7 @@ class _AnimatedListWidgetState extends State<AnimatedListWidget> {
           ),
           trailing: GestureDetector(
             child: Icon(
-              Icons.remove_circle,
+              Icons.delete_forever_outlined,
               color: Colors.red,
             ),
             onTap: () {
