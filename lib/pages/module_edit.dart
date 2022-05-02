@@ -19,7 +19,8 @@ class _ModuleEditState extends State<ModuleEdit> {
 
   // backing data
   // List<String> _data = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Last Item'];
-
+  List _words1 = [];
+  List _words2 = [];
   @override
   Widget build(BuildContext context) {
     List<String> _data = [
@@ -39,8 +40,8 @@ class _ModuleEditState extends State<ModuleEdit> {
     TextEditingController moduleDescriptionController = TextEditingController();
     moduleNameController.text = widget.mapdata['module'];
     moduleDescriptionController.text = widget.mapdata['description'];
-    List _words1 = widget.mapdata['words1'] as List;
-    List _words2 = widget.mapdata['words2'] as List;
+    _words1 = widget.mapdata['words1'] as List;
+    _words2 = widget.mapdata['words2'] as List;
 
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +64,7 @@ class _ModuleEditState extends State<ModuleEdit> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: TextFormField(
                     textAlign: TextAlign.left,
                     style: textStyle,
@@ -89,8 +90,8 @@ class _ModuleEditState extends State<ModuleEdit> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  padding: const EdgeInsets.only(
+                      top: 0, bottom: 0, left: 8, right: 8),
                   child: TextFormField(
                     textAlign: TextAlign.left,
                     style: text14Style,
@@ -102,6 +103,13 @@ class _ModuleEditState extends State<ModuleEdit> {
                       hintText: 'Введите описание модуля',
                       hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 16, bottom: 8, left: 8, right: 8),
+                  child: Text(
+                    'Термины в модуле (${_words1.length}):',
                   ),
                 ),
                 Expanded(
@@ -117,6 +125,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     },
                   ),
                 ),
+                
               ],
             ),
           ),
@@ -156,6 +165,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                     ),
+                    onChanged: (value) => _words1[index] = value,
                   ),
                   //Text(item1,style: TextStyle(fontSize: 14),),
                   onTap: () {},
@@ -174,6 +184,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                     ),
+                    onChanged: (value) => _words2[index] = value,
                   ),
                   //Text(item2,style: TextStyle(fontSize: 14),),
                   onTap: () {},
@@ -197,6 +208,17 @@ class _ModuleEditState extends State<ModuleEdit> {
 
   /// Method to add an item to an index in a list
   void _insertSingleItem() {
+    int insertIndex;
+    if (_words1.length > 0) {
+      insertIndex = _words1.length;
+    } else {
+      insertIndex = 0;
+    }
+    //String item = "Item insertIndex + 1";
+    _words1.insert(insertIndex, '');
+    _words2.insert(insertIndex, '');
+    _listKey.currentState!.insertItem(insertIndex);
+
 /*     int insertIndex;
     if (_data.length > 0) {
       insertIndex = _data.length;
@@ -210,6 +232,17 @@ class _ModuleEditState extends State<ModuleEdit> {
 
   /// Method to remove an item at an index from the list
   void _removeSingleItems(int removeAt) {
+    int removeIndex = removeAt;
+    String removedItem = _words1.removeAt(removeIndex);
+    _words2.removeAt(removeIndex);
+    // This builder is just so that the animation has something
+    // to work with before it disappears from view since the original
+    // has already been deleted.
+    AnimatedListRemovedItemBuilder builder = (context, animation) {
+      // A method to build the Card widget.
+      return _buildItem(removedItem, removedItem, animation, removeAt);
+    };
+    _listKey.currentState!.removeItem(removeIndex, builder);
 /*     int removeIndex = removeAt;
     String removedItem = _data.removeAt(removeIndex);
     // This builder is just so that the animation has something

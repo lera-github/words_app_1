@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-Color upBarColor = Color.fromARGB(255, 255, 255, 220);
 Color menuItemsColor = Colors.deepPurple;
 
 ButtonStyle menuButtonStyle = ButtonStyle(
@@ -25,7 +24,7 @@ TextStyle menuButtonTextStyle = TextStyle(
 TextStyle titleStyle = TextStyle(
   color: Colors.blue.shade700,
   //Color(0xff3da4ab).withOpacity(0.5),
-  fontSize: 24.0,
+  fontSize: 26.0,
   fontWeight: FontWeight.normal,
   fontStyle: FontStyle.italic,
   fontFamily: 'Georgia',

@@ -49,55 +49,42 @@ class _MyHomePageState extends State<MyHomePage> {
     //final Orientation _orientation = MediaQuery.of(context).orientation;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 255, 255, 220),
+        
+        actions: [
+          SizedBox(
+            width: 20,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              'Memory Games',
+              style: titleStyle,
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              LibButton(),
+              SizedBox(
+                width: 20,
+              ),
+              MyMenu(),
+            ]),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
             //
-            SizedBox(
-              height: 56,
-              child: Container(
-                color: upBarColor,
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      'Memory Games',
-                      style: titleStyle,
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            LibButton(),
-                            SizedBox(
-                              width: 20,
-                            ),
-/*                             LibMenu(),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            CreateMenu(),
-                            SizedBox(
-                              width: 20,
-                            ), */
-                            MyMenu(),
-                          ]),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            //
+
             SizedBox(
               height: 12,
             ),
