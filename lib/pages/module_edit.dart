@@ -21,23 +21,41 @@ class _ModuleEditState extends State<ModuleEdit> {
   // List<String> _data = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Last Item'];
   List _words1 = [];
   List _words2 = [];
+  bool moduleNameOK = false;
+  TextEditingController moduleNameController = TextEditingController();
+  TextEditingController moduleDescriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    updateFS(
+        collection: 'modules',
+        id: widget.mapdata['id'],
+        val: 'words1',
+        valdata: _words1);
+    updateFS(
+        collection: 'modules',
+        id: widget.mapdata['id'],
+        val: 'words2',
+        valdata: _words2);
+    updateFS(
+        collection: 'modules',
+        id: widget.mapdata['id'],
+        val: 'module',
+        valdata: moduleNameController.text);
+    updateFS(
+        collection: 'modules',
+        id: widget.mapdata['id'],
+        val: 'description',
+        valdata: moduleDescriptionController.text);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> _data = [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Last Item'
-    ]; // убрать
-
     final _scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
         : 600.0;
 
-    bool moduleNameOK = false;
-    TextEditingController moduleNameController = TextEditingController();
-    TextEditingController moduleDescriptionController = TextEditingController();
     moduleNameController.text = widget.mapdata['module'];
     moduleDescriptionController.text = widget.mapdata['description'];
     _words1 = widget.mapdata['words1'] as List;
@@ -125,7 +143,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                     },
                   ),
                 ),
-                
               ],
             ),
           ),
