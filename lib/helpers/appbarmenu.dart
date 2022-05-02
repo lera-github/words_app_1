@@ -27,12 +27,12 @@ class _LibButtonState extends State<LibButton> {
           child: Text("Создать"),
           style: menuButtonStyle,
           onPressed: () {
-            Navigator.push(
+            /* Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ModuleEdit(),
               ),
-            );
+            ); */
           },
         ),
       ],

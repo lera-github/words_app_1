@@ -57,3 +57,19 @@ TextStyle textStyle = TextStyle(
     ),
   ],
 );
+
+TextStyle text14Style = TextStyle(
+  color: Colors.blue.shade800,
+  //Color(0xff3da4ab).withOpacity(0.5),
+  fontSize: 14.0,
+  fontWeight: FontWeight.normal,
+  fontStyle: FontStyle.normal,
+  fontFamily: 'Georgia',
+  shadows: const <Shadow>[
+    Shadow(
+      offset: Offset(1.0, 1.0),
+      blurRadius: 1.0,
+      color: Colors.grey,
+    ),
+  ],
+);

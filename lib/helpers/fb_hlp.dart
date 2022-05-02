@@ -28,6 +28,19 @@ Future<void> updateFS({
       .catchError((e) => print("Failed to update user: $e")); */
 }
 
+Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> _doc) async {
+  final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(
+        '${_doc['myclas'] as String} ${_doc['myfio'] as String} ${_doc['mymail'] as String}',
+      )
+      .collection('vars')
+      .get();
+  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  //debugPrint(allData.toString());
+  return allData;
+}
+
 @override
 Future<void> deleteUser(Map<String, dynamic> _doc) async {
   //удаление документа var
@@ -59,18 +72,7 @@ Future<void> deleteUser(Map<String, dynamic> _doc) async {
       .delete();
 }
 
-Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> _doc) async {
-  final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(
-        '${_doc['myclas'] as String} ${_doc['myfio'] as String} ${_doc['mymail'] as String}',
-      )
-      .collection('vars')
-      .get();
-  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-  //debugPrint(allData.toString());
-  return allData;
-}
+
 
 Future<void> updateUsersFS({
   required String parentdoc,
