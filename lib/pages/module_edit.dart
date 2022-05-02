@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../helpers/fb_hlp.dart';
 import '../helpers/module_add_text.dart';
 import '../helpers/styles.dart';
+import '../main.dart';
 
 class ModuleEdit extends StatefulWidget {
   ModuleEdit({Key? key, required this.mapdata}) : super(key: key);
@@ -26,31 +27,6 @@ class _ModuleEditState extends State<ModuleEdit> {
   TextEditingController moduleDescriptionController = TextEditingController();
 
   @override
-  void dispose() {
-    updateFS(
-        collection: 'modules',
-        id: widget.mapdata['id'],
-        val: 'words1',
-        valdata: _words1);
-    updateFS(
-        collection: 'modules',
-        id: widget.mapdata['id'],
-        val: 'words2',
-        valdata: _words2);
-    updateFS(
-        collection: 'modules',
-        id: widget.mapdata['id'],
-        val: 'module',
-        valdata: moduleNameController.text);
-    updateFS(
-        collection: 'modules',
-        id: widget.mapdata['id'],
-        val: 'description',
-        valdata: moduleDescriptionController.text);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final _scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
@@ -63,14 +39,65 @@ class _ModuleEditState extends State<ModuleEdit> {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'заменить или удалить AppBar',
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+        backgroundColor: Color.fromARGB(255, 255, 255, 220),
+        actions: [
+          SizedBox(
+            width: 20,
           ),
-        ),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              'Memory Games',
+              style: titleStyle,
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              ElevatedButton(
+                child: Text("Сохранить"),
+                style: menuButtonStyle,
+                onPressed: () async {
+                  await updateFS(
+                      collection: 'modules',
+                      id: widget.mapdata['id'],
+                      val: 'words1',
+                      valdata: _words1);
+
+                  await updateFS(
+                      collection: 'modules',
+                      id: widget.mapdata['id'],
+                      val: 'words2',
+                      valdata: _words2);
+
+                  await updateFS(
+                      collection: 'modules',
+                      id: widget.mapdata['id'],
+                      val: 'module',
+                      valdata: moduleNameController.text.trim());
+
+                  await updateFS(
+                      collection: 'modules',
+                      id: widget.mapdata['id'],
+                      val: 'description',
+                      valdata: moduleDescriptionController.text.trim());
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(title: 'Memory Games'),
+                    ),
+                  );
+                },
+              ),
+            ]),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ],
       ),
       body: SafeArea(
         child: Align(
@@ -87,8 +114,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     textAlign: TextAlign.left,
                     style: textStyle,
                     keyboardType: TextInputType.text,
-                    autovalidateMode:
-                        AutovalidateMode.onUserInteraction, //always
+                    autovalidateMode: AutovalidateMode.always,
                     controller: moduleNameController,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
@@ -96,6 +122,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                       hintText: 'Введите название модуля',
                       hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
+                    //onChanged: (value) => moduleNameController.text = value,
                     validator: (moduleNameValidator) {
                       moduleNameOK = false;
                       if (moduleNameValidator!.isEmpty) {
@@ -121,6 +148,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                       hintText: 'Введите описание модуля',
                       hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
+                    //onChanged: (value) => moduleDescriptionController.text = value,
                   ),
                 ),
                 Padding(
