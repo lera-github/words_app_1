@@ -310,6 +310,7 @@ class _ModuleEditState extends State<ModuleEdit> {
             ),
             onTap: () {
               _removeSingleItems(index);
+              setState(() {});
             },
           ),
         ),
@@ -330,6 +331,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     _listKey.currentState!.insertItem(insertIndex);
 
     _scrollDown();
+    setState(() {});
 
 /*     int insertIndex;
     if (_data.length > 0) {
@@ -367,7 +369,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     Future.delayed(const Duration(milliseconds: 700)).then((value) {
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
-        duration: Duration(seconds: 1),
+        duration: Duration(milliseconds: 500),
         curve: Curves.fastOutSlowIn,
       );
     });

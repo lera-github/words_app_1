@@ -82,19 +82,23 @@ class ModuleListState extends State<ModuleList> {
                       titleTextStyle: textStyle,
                       backgroundColor:
                           ThemeData().scaffoldBackgroundColor, //цвет фона
-                      expandedHeight: 36,
-                      //collapsedHeight: 20,
+                      //expandedHeight: 36,
+                      //collapsedHeight: 36,
                       toolbarHeight: 36,
                       centerTitle: true,
                       pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
+                      title: Text(
+                        'Библиотека модулей',
+                        style: textStyle,
+                      ),
+                      /*           flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         //titlePadding: EdgeInsets.only(top: 0),
                         title: Text(
                           'Библиотека модулей',
                           style: textStyle,
                         ),
-                      ),
+                      ), */
                     ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(

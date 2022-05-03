@@ -47,7 +47,7 @@ TextStyle textStyle = TextStyle(
   fontSize: 18.0,
   fontWeight: FontWeight.normal,
   fontStyle: FontStyle.normal,
-  fontFamily: 'Georgia',
+  //fontFamily: 'Georgia',
   shadows: const <Shadow>[
     Shadow(
       offset: Offset(1.0, 1.0),
@@ -63,7 +63,7 @@ TextStyle text14Style = TextStyle(
   fontSize: 14.0,
   fontWeight: FontWeight.normal,
   fontStyle: FontStyle.normal,
-  fontFamily: 'Georgia',
+  //fontFamily: 'Georgia',
   shadows: const <Shadow>[
     Shadow(
       offset: Offset(1.0, 1.0),
