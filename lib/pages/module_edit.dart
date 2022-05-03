@@ -25,6 +25,7 @@ class _ModuleEditState extends State<ModuleEdit> {
   bool moduleNameOK = false;
   TextEditingController moduleNameController = TextEditingController();
   TextEditingController moduleDescriptionController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -60,36 +61,63 @@ class _ModuleEditState extends State<ModuleEdit> {
                 child: Text("Сохранить"),
                 style: menuButtonStyle,
                 onPressed: () async {
-                  await updateFS(
-                      collection: 'modules',
-                      id: widget.mapdata['id'],
-                      val: 'words1',
-                      valdata: _words1);
+                  bool moduleItemsOK = true;
+                  for (int i = 0; i < _words1.length; i++) {
+                    if ((_words1[i] == '') | (_words2[i] == '')) {
+                      moduleItemsOK = false;
+                    }
+                  }
+                  if (moduleNameOK & moduleItemsOK) {
+                    await updateFS(
+                        collection: 'modules',
+                        id: widget.mapdata['id'],
+                        val: 'words1',
+                        valdata: _words1);
 
-                  await updateFS(
-                      collection: 'modules',
-                      id: widget.mapdata['id'],
-                      val: 'words2',
-                      valdata: _words2);
+                    await updateFS(
+                        collection: 'modules',
+                        id: widget.mapdata['id'],
+                        val: 'words2',
+                        valdata: _words2);
 
-                  await updateFS(
-                      collection: 'modules',
-                      id: widget.mapdata['id'],
-                      val: 'module',
-                      valdata: moduleNameController.text.trim());
+                    await updateFS(
+                        collection: 'modules',
+                        id: widget.mapdata['id'],
+                        val: 'module',
+                        valdata: moduleNameController.text.trim());
 
-                  await updateFS(
-                      collection: 'modules',
-                      id: widget.mapdata['id'],
-                      val: 'description',
-                      valdata: moduleDescriptionController.text.trim());
+                    await updateFS(
+                        collection: 'modules',
+                        id: widget.mapdata['id'],
+                        val: 'description',
+                        valdata: moduleDescriptionController.text.trim());
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyHomePage(title: 'Memory Games'),
-                    ),
-                  );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyHomePage(title: 'Memory Games'),
+                      ),
+                    );
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) => Dialog(
+                              elevation: 1.2,
+                              backgroundColor: Colors.red.shade900,
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Container(
+                                margin: EdgeInsets.all(16),
+                                child: Text(
+                                  'Внесите обязательные данные!',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.yellow, fontSize: 18),
+                                ),
+                              ),
+                            ));
+                  }
                 },
               ),
             ]),
@@ -154,12 +182,33 @@ class _ModuleEditState extends State<ModuleEdit> {
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 16, bottom: 8, left: 8, right: 8),
-                  child: Text(
-                    'Термины в модуле (${_words1.length}):',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Термины в модуле (${_words1.length}):',
+                        ),
+                      ),
+                      InkWell(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: Icon(
+                          Icons.add_circle_outline,
+                          color: Colors.blue.shade700,
+                        ),
+                        onTap: () => _insertSingleItem(),
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
                   child: AnimatedList(
+                    controller: scrollController,
+
                     /// Key to call remove and insert item methods from anywhere  ///////////////////////////////
                     key: _listKey,
                     initialItemCount: _words1.length,
@@ -176,21 +225,21 @@ class _ModuleEditState extends State<ModuleEdit> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         child: Icon(Icons.playlist_add),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         onPressed: () => _insertSingleItem(),
-      ),
+      ), */
     );
   }
 
   Widget _buildItem(
       String item1, String item2, Animation animation, int index) {
     TextEditingController item1Controller = TextEditingController();
-    item1Controller.text = item1;
+    item1Controller.text = item1; //_words1[index] as String;
     TextEditingController item2Controller = TextEditingController();
-    item2Controller.text = item2;
+    item2Controller.text = item2; //_words2[index] as String;
     return SizeTransition(
       sizeFactor: animation as Animation<double>,
       child: Card(
@@ -201,12 +250,20 @@ class _ModuleEditState extends State<ModuleEdit> {
               Expanded(
                 flex: 20,
                 child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: TextFormField(
                     textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 14),
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     controller: item1Controller,
+                    autovalidateMode: AutovalidateMode.always,
+                    validator: (item1Validator) {
+                      if (item1Validator!.isEmpty) {
+                        return '* Обязательно для заполнения';
+                      }
+                      return null;
+                    },
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                     ),
@@ -220,12 +277,20 @@ class _ModuleEditState extends State<ModuleEdit> {
               Expanded(
                 flex: 20,
                 child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: TextFormField(
                     textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 14),
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     controller: item2Controller,
+                    autovalidateMode: AutovalidateMode.always,
+                    validator: (item2Validator) {
+                      if (item2Validator!.isEmpty) {
+                        return '* Обязательно для заполнения';
+                      }
+                      return null;
+                    },
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                     ),
@@ -238,8 +303,9 @@ class _ModuleEditState extends State<ModuleEdit> {
             ],
           ),
           trailing: InkWell(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
             child: Icon(
-              Icons.delete_forever_outlined,
+              Icons.remove_circle_outline,
               color: Colors.red,
             ),
             onTap: () {
@@ -259,10 +325,11 @@ class _ModuleEditState extends State<ModuleEdit> {
     } else {
       insertIndex = 0;
     }
-    //String item = "Item insertIndex + 1";
     _words1.insert(insertIndex, '');
     _words2.insert(insertIndex, '');
     _listKey.currentState!.insertItem(insertIndex);
+
+    _scrollDown();
 
 /*     int insertIndex;
     if (_data.length > 0) {
@@ -278,14 +345,10 @@ class _ModuleEditState extends State<ModuleEdit> {
   /// Method to remove an item at an index from the list
   void _removeSingleItems(int removeAt) {
     int removeIndex = removeAt;
-    String removedItem = _words1.removeAt(removeIndex);
-    _words2.removeAt(removeIndex);
-    // This builder is just so that the animation has something
-    // to work with before it disappears from view since the original
-    // has already been deleted.
+    String removedItem1 = _words1.removeAt(removeIndex);
+    String removedItem2 = _words2.removeAt(removeIndex);
     AnimatedListRemovedItemBuilder builder = (context, animation) {
-      // A method to build the Card widget.
-      return _buildItem(removedItem, removedItem, animation, removeAt);
+      return _buildItem(removedItem1, removedItem2, animation, removeAt);
     };
     _listKey.currentState!.removeItem(removeIndex, builder);
 /*     int removeIndex = removeAt;
@@ -298,5 +361,15 @@ class _ModuleEditState extends State<ModuleEdit> {
       return _buildItem(removedItem, animation, removeAt);
     };
     _listKey.currentState!.removeItem(removeIndex, builder); */
+  }
+
+  void _scrollDown() {
+    Future.delayed(const Duration(milliseconds: 700)).then((value) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: Duration(seconds: 1),
+        curve: Curves.fastOutSlowIn,
+      );
+    });
   }
 }
