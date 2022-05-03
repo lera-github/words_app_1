@@ -51,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 255, 255, 220),
-        
         actions: [
           SizedBox(
             width: 20,

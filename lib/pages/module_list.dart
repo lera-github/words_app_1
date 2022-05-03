@@ -257,7 +257,7 @@ void _gotonext(BuildContext context, Map<String, dynamic> _mapdata) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => ModuleEdit(mapdata: _mapdata),
+      builder: (context) => ModuleEdit(mapdata: _mapdata,isAdd: false,),
     ),
   );
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 
 import '../pages/module_edit.dart';
+import '../pages/module_list.dart';
 
 class LibButton extends StatefulWidget {
   LibButton({Key? key}) : super(key: key);
@@ -24,15 +25,27 @@ class _LibButtonState extends State<LibButton> {
           width: 20,
         ),
         ElevatedButton(
-          child: Text("Создать"),
+          child: Text("Создать модуль"),
           style: menuButtonStyle,
           onPressed: () {
-            /* Navigator.push(
+            final cleanModule = {
+              'id': '',
+              'module': '',
+              'description': '',
+              'favourite': false,
+              'words1': [''],
+              'words2': [''],
+            };
+
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ModuleEdit(),
+                builder: (context) => ModuleEdit(
+                  mapdata: cleanModule,
+                  isAdd: true,
+                ),
               ),
-            ); */
+            );
           },
         ),
       ],

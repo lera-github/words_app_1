@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import '../helpers/fb_hlp.dart';
-import '../helpers/module_add_text.dart';
 import '../helpers/styles.dart';
 import '../main.dart';
 
 class ModuleEdit extends StatefulWidget {
-  ModuleEdit({Key? key, required this.mapdata}) : super(key: key);
+  ModuleEdit({Key? key, required this.mapdata, required this.isAdd})
+      : super(key: key);
   final Map<String, dynamic> mapdata;
+  final bool isAdd;
   @override
   _ModuleEditState createState() => _ModuleEditState();
 }
@@ -32,9 +31,10 @@ class _ModuleEditState extends State<ModuleEdit> {
     final _scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
         : 600.0;
-
-    moduleNameController.text = widget.mapdata['module'];
-    moduleDescriptionController.text = widget.mapdata['description'];
+    if (!widget.isAdd) {
+      moduleNameController.text = widget.mapdata['module'];
+      moduleDescriptionController.text = widget.mapdata['description'];
+    }
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
 
@@ -68,29 +68,29 @@ class _ModuleEditState extends State<ModuleEdit> {
                     }
                   }
                   if (moduleNameOK & moduleItemsOK) {
-                    await updateFS(
-                        collection: 'modules',
-                        id: widget.mapdata['id'],
-                        val: 'words1',
-                        valdata: _words1);
+                    var _id = widget.mapdata['id'];
+                    //добавление модуля?
+                    if (widget.isAdd) {
+                      await FirebaseFirestore.instance
+                          .collection('modules')
+                          .add({'favourite': false}).then((value) {
+                        _id = value.id;
+                      });
+                      await FirebaseFirestore.instance
+                          .collection('modules')
+                          .doc(_id)
+                          .update({'id': _id});
+                    }
 
-                    await updateFS(
-                        collection: 'modules',
-                        id: widget.mapdata['id'],
-                        val: 'words2',
-                        valdata: _words2);
-
-                    await updateFS(
-                        collection: 'modules',
-                        id: widget.mapdata['id'],
-                        val: 'module',
-                        valdata: moduleNameController.text.trim());
-
-                    await updateFS(
-                        collection: 'modules',
-                        id: widget.mapdata['id'],
-                        val: 'description',
-                        valdata: moduleDescriptionController.text.trim());
+                    await FirebaseFirestore.instance
+                        .collection('modules')
+                        .doc(_id)
+                        .update({
+                      'words1': _words1,
+                      'words2': _words2,
+                      'module': moduleNameController.text.trim(),
+                      'description': moduleDescriptionController.text.trim()
+                    });
 
                     Navigator.pushReplacement(
                       context,
