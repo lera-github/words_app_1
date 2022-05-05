@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../helpers/fb_hlp.dart';
-import '../helpers/styles.dart';
-import '../main.dart';
+import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/main.dart';
 
 class ModuleEdit extends StatefulWidget {
-  ModuleEdit({Key? key, required this.mapdata, required this.isAdd})
+  const ModuleEdit({Key? key, required this.mapdata, required this.isAdd})
       : super(key: key);
   final Map<String, dynamic> mapdata;
   final bool isAdd;
@@ -32,8 +31,9 @@ class _ModuleEditState extends State<ModuleEdit> {
         ? MediaQuery.of(context).size.width
         : 600.0;
     if (!widget.isAdd) {
-      moduleNameController.text = widget.mapdata['module'];
-      moduleDescriptionController.text = widget.mapdata['description'];
+      moduleNameController.text = widget.mapdata['module'] as String;
+      moduleDescriptionController.text =
+          widget.mapdata['description'] as String;
     }
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
@@ -90,13 +90,13 @@ class _ModuleEditState extends State<ModuleEdit> {
                       });
                       await FirebaseFirestore.instance
                           .collection('modules')
-                          .doc(_id)
+                          .doc(_id as String)
                           .update({'id': _id});
                     }
 
                     await FirebaseFirestore.instance
                         .collection('modules')
-                        .doc(_id)
+                        .doc(_id as String)
                         .update({
                       'words1': _words1,
                       'words2': _words2,
@@ -366,8 +366,8 @@ class _ModuleEditState extends State<ModuleEdit> {
   /// Method to remove an item at an index from the list
   void _removeSingleItems(int removeAt) {
     int removeIndex = removeAt;
-    String removedItem1 = _words1.removeAt(removeIndex);
-    String removedItem2 = _words2.removeAt(removeIndex);
+    String removedItem1 = _words1.removeAt(removeIndex) as String;
+    String removedItem2 = _words2.removeAt(removeIndex) as String;
     AnimatedListRemovedItemBuilder builder = (context, animation) {
       return _buildItem(removedItem1, removedItem2, animation, removeAt);
     };

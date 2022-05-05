@@ -149,34 +149,35 @@ class ProfileState extends State<Profile> {
                           return '* E-mail введен не корректно';
                         },
                       ),
-                     const SizedBox(height: 10),
-                     Text(
+                      const SizedBox(height: 10),
+                      Text(
                         'Пароль:',
                         style: titleStyle,
                       ),
                       TextFormField(
-                          textAlign: TextAlign.center,
-                          style: txtStyle,
-                          keyboardType: TextInputType.visiblePassword,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: passwordController,
-                          decoration: const InputDecoration(
-                            hintText: 'Введите пароль',
-                            hintStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          validator: (password) {
-                            passwordOK = false;
-                            if (password!.isEmpty) {
-                              return '* Обязательно для заполнения';
+                        textAlign: TextAlign.center,
+                        style: txtStyle,
+                        keyboardType: TextInputType.visiblePassword,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: passwordController,
+                        decoration: const InputDecoration(
+                          hintText: 'Введите пароль',
+                          hintStyle:
+                              TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                        validator: (password) {
+                          passwordOK = false;
+                          if (password!.isEmpty) {
+                            return '* Обязательно для заполнения';
+                          } else {
+                            if (password.length < 3) {
+                              return '* Не может быть менее трех символов';
                             } else {
-                              if (password.length < 3) {
-                                return '* Не может быть менее трех символов';
-                              } else {
-                                  passwordOK = true; 
-                              }
+                              passwordOK = true;
                             }
-                          }),
+                          }
+                        },
+                      ),
                       SizedBox(height: MediaQuery.of(context).size.height / 2),
                     ],
                   ),
@@ -284,4 +285,3 @@ class ProfileState extends State<Profile> {
     );
   }
 }
-
