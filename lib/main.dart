@@ -23,22 +23,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memory Games',
+      home: MyHomePage(),
       /* theme: ThemeData(
         primarySwatch: Colors.green,
       ), */
-      routes: {
-        '/': (BuildContext context) => const MyHomePage(title: 'Memory Games'),
+      /* routes: {
+        '/': (BuildContext context) => const MyHomePage(),
         '/ProfileScreen': (BuildContext context) => const Profile(),
         '/ModulesScreen': (BuildContext context) => const Modules(),
         // '/GamesScreen': (BuildContext context) => const Games(),
-      },
+      }, */
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
+ 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }

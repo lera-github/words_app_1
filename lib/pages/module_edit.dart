@@ -55,8 +55,11 @@ class _ModuleEditState extends State<ModuleEdit> {
                 style: titleStyle,
               ),
               onTap: () {
-                Navigator.pop(
+                Navigator.pushReplacement(
                   context,
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePage(),
+                  ),
                 );
               },
             ),
@@ -104,7 +107,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MyHomePage(title: 'Memory Games'),
+                        builder: (context) => MyHomePage(),
                       ),
                     );
                   } else {
