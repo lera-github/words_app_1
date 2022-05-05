@@ -1,10 +1,10 @@
 import '../helpers/styles.dart';
 import '/helpers/fb_hlp.dart';
+import 'module_edit.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fbs;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'module_edit.dart';
 
 class ModuleList extends StatefulWidget {
   const ModuleList({Key? key}) : super(key: key);
@@ -105,12 +105,12 @@ class ModuleListState extends State<ModuleList> {
                         (context, index) {
                           return Padding(
                             padding: const EdgeInsets.only(
-                              top: 10,
+                              top: 16,
                               left: 14,
                               right: 14,
                             ),
                             child: SizedBox(
-                              height: 58,
+                              height: 48,
                               child: gridcont(
                                 context,
                                 index,
@@ -169,33 +169,18 @@ class ModuleListState extends State<ModuleList> {
               )
             ],
           ),
+          //содержимое каждой плашки
           child: Row(
             children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () => _gotonext(
-                    context,
-                    _aaa,
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Center(
-                      child: Text(
-                        _txt,
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
+              SizedBox(
+                width: 6,
               ),
-              const SizedBox(width: 10),
+              //звезды
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Transform.scale(
-                    scale: 1.6,
+                    scale: 1.4,
                     child: IconButton(
                       icon: Icon(
                         _favourite
@@ -239,11 +224,33 @@ class ModuleListState extends State<ModuleList> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    width: 50,
-                  ),
                 ],
               ),
+              //текст
+              Expanded(
+                child: InkWell(
+                  onTap: () => _gotonext(
+                    context,
+                    _aaa,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Center(
+                      child: AutoSizeText(
+                        _txt,
+                        style: const TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                        minFontSize: 12,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              //удалить
+
+              const SizedBox(width: 6),
             ],
           ),
         ),
@@ -257,7 +264,10 @@ void _gotonext(BuildContext context, Map<String, dynamic> _mapdata) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => ModuleEdit(mapdata: _mapdata,isAdd: false,),
+      builder: (context) => ModuleEdit(
+        mapdata: _mapdata,
+        isAdd: false,
+      ),
     ),
   );
 }

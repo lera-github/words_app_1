@@ -40,6 +40,7 @@ class _ModuleEditState extends State<ModuleEdit> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Color.fromARGB(255, 255, 255, 220),
         actions: [
           SizedBox(
@@ -47,9 +48,17 @@ class _ModuleEditState extends State<ModuleEdit> {
           ),
           Align(
             alignment: Alignment.center,
-            child: Text(
-              'Memory Games',
-              style: titleStyle,
+            child: InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              child: Text(
+                'Memory Games',
+                style: titleStyle,
+              ),
+              onTap: () {
+                Navigator.pop(
+                  context,
+                );
+              },
             ),
           ),
           SizedBox(
@@ -107,14 +116,21 @@ class _ModuleEditState extends State<ModuleEdit> {
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.black),
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Container(
-                                margin: EdgeInsets.all(16),
-                                child: Text(
-                                  'Внесите обязательные данные!',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.yellow, fontSize: 18),
+                              child: InkWell(
+                                child: Container(
+                                  margin: EdgeInsets.all(16),
+                                  child: Text(
+                                    'Внесите обязательные данные!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.yellow, fontSize: 18),
+                                  ),
                                 ),
+                                onTap: () {
+                                  Navigator.pop(
+                                    context,
+                                  );
+                                },
                               ),
                             ));
                   }
