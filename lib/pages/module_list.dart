@@ -1,10 +1,10 @@
-import '../helpers/styles.dart';
-import '/helpers/fb_hlp.dart';
-import 'module_edit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fbs;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
+import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/pages/module_edit.dart';
 
 class ModuleList extends StatefulWidget {
   const ModuleList({Key? key}) : super(key: key);
@@ -39,22 +39,22 @@ class ModuleListState extends State<ModuleList> {
               ),
             ), */
             body: SafeArea(
-                child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: BoxConstraints.expand(width: _scrwidth),
-                child:
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints.expand(width: _scrwidth),
+                  child:
 
-                    //Column(children: [
-                    //ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600),
+                      //Column(children: [
+                      //ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600),
 
-                    //s child:
+                      //s child:
 
-                    /* SizedBox(
+                      /* SizedBox(
                       width: 32,
                     ), */
 
-                    // ),
+                      // ),
 /*                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child: Text(
@@ -62,10 +62,10 @@ class ModuleListState extends State<ModuleList> {
                         style: textStyle,
                       ),
                     ), */
-                    /* ConstrainedBox(
+                      /* ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child:  */
-                    /*                 Column(children: [
+                      /*                 Column(children: [
                     Text(
                       'Библиотека модулей',
                       style: textStyle,
@@ -75,23 +75,23 @@ class ModuleListState extends State<ModuleList> {
                     ),
                     Expanded(
                       child:  */
-                    CustomScrollView(
-                  primary: false,
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      titleTextStyle: textStyle,
-                      backgroundColor:
-                          ThemeData().scaffoldBackgroundColor, //цвет фона
-                      //expandedHeight: 36,
-                      //collapsedHeight: 36,
-                      toolbarHeight: 36,
-                      centerTitle: true,
-                      pinned: true,
-                      title: Text(
-                        'Библиотека модулей',
-                        style: textStyle,
-                      ),
-                      /*           flexibleSpace: FlexibleSpaceBar(
+                      CustomScrollView(
+                    primary: false,
+                    slivers: <Widget>[
+                      SliverAppBar(
+                        titleTextStyle: textStyle,
+                        backgroundColor:
+                            ThemeData().scaffoldBackgroundColor, //цвет фона
+                        //expandedHeight: 36,
+                        //collapsedHeight: 36,
+                        toolbarHeight: 36,
+                        centerTitle: true,
+                        pinned: true,
+                        title: Text(
+                          'Библиотека модулей',
+                          style: textStyle,
+                        ),
+                        /*           flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         //titlePadding: EdgeInsets.only(top: 0),
                         title: Text(
@@ -99,35 +99,36 @@ class ModuleListState extends State<ModuleList> {
                           style: textStyle,
                         ),
                       ), */
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              top: 16,
-                              left: 14,
-                              right: 14,
-                            ),
-                            child: SizedBox(
-                              height: 48,
-                              child: gridcont(
-                                context,
-                                index,
-                                snapshot.data![index],
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: snapshot.data!.length,
                       ),
-                    ),
-                  ],
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                top: 16,
+                                left: 14,
+                                right: 14,
+                              ),
+                              child: SizedBox(
+                                height: 52,
+                                child: gridcont(
+                                  context,
+                                  index,
+                                  snapshot.data![index],
+                                ),
+                              ),
+                            );
+                          },
+                          childCount: snapshot.data!.length,
+                        ),
+                      ),
+                    ],
+                  ),
+                  //   ),
+                  //  ])
                 ),
-                //   ),
-                //  ])
               ),
-            )),
+            ),
           );
         }
 
@@ -143,6 +144,7 @@ class ModuleListState extends State<ModuleList> {
   Widget gridcont(BuildContext context, int index, Object? _obj) {
     final _aaa = _obj! as Map<String, dynamic>;
     final _txt = '${_aaa['module']}';
+    final _txt1 = '${_aaa['description']}';
     var _favourite = false;
     if (_aaa['favourite'] != null) {
       _favourite = _aaa['favourite'] as bool;
@@ -172,37 +174,37 @@ class ModuleListState extends State<ModuleList> {
           //содержимое каждой плашки
           child: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 6,
               ),
-              //звезды
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Transform.scale(
-                    scale: 1.4,
-                    child: IconButton(
-                      icon: Icon(
-                        _favourite
-                            ? Icons.star_rate_rounded
-                            : Icons.star_border_rounded,
-                        color: _favourite
-                            ? Colors.yellow.shade600
-                            : Colors.grey.shade400,
-                      ),
-                      // избранное
-                      onPressed: () {
-                        Future.delayed(Duration.zero, () async {
-                          _favourite = !_favourite;
-                          await updateFS(
-                            collection: 'modules',
-                            id: '${_aaa['id']}',
-                            val: 'favourite',
-                            valdata: _favourite,
-                          ).then((value) => setState(() {}));
-                        });
+              //избранное (звезды)
+              IconButton(
+                icon: Transform.scale(
+                  scale: 1.4,
+                  child: Icon(
+                    _favourite
+                        ? Icons.star_rate_rounded
+                        : Icons.star_border_rounded,
+                    color: _favourite
+                        ? Colors.yellow.shade600
+                        : Colors.grey.shade400,
+                  ),
+                ),
+                // избранное
+                onPressed: () {
+                  Future.delayed(Duration.zero, () async {
+                    _favourite = !_favourite;
+                    await updateFS(
+                      collection: 'modules',
+                      id: '${_aaa['id']}',
+                      val: 'favourite',
+                      valdata: _favourite,
+                    ).then((value) => setState(() {}));
+                  });
+                },
+              ),
 
-                        /* Future.delayed(
+              /* Future.delayed(
                         Duration.zero,
                         () async {
                           //диалог подтверждения удаления
@@ -221,34 +223,112 @@ class ModuleListState extends State<ModuleList> {
                           });
                         },
                       ); */
-                      },
-                    ),
-                  ),
-                ],
-              ),
+
               //текст
               Expanded(
                 child: InkWell(
-                  onTap: () => _gotonext(
-                    context,
-                    _aaa,
-                  ),
+                  onTap: () {},
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    child: Center(
-                      child: AutoSizeText(
-                        _txt,
-                        style: const TextStyle(fontSize: 16),
-                        overflow: TextOverflow.ellipsis,
-                        minFontSize: 12,
-                        textAlign: TextAlign.center,
-                      ),
+                    //  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AutoSizeText(
+                          _txt,
+                          style: const TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                          //minFontSize: 12,
+                          //textAlign: TextAlign.center,
+                        ),
+                        AutoSizeText(
+                          _txt1,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          minFontSize: 10,
+                          //textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
+                    //),
                   ),
                 ),
               ),
-              //удалить
+              //редактирование
+              IconButton(
+                icon: Transform.scale(
+                  scale: 1.4,
+                  child: Icon(
+                    Icons.edit_note_rounded,
+                    color: Colors.blue.shade800,
+                  ),
+                ),
+                onPressed: () => _gotonext(
+                  context,
+                  _aaa,
+                ),
+              ),
+              //удаление
+
+              IconButton(
+                icon: Transform.scale(
+                  scale: 1.4,
+                  child: Icon(
+                    Icons.clear_rounded,
+                    color: Colors.red.shade900,
+                  ),
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        elevation: 24,
+                        title: const Text('Подтверждаете удаление модуля?'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text(
+                                _txt,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text(
+                              'Да',
+                              style: TextStyle(fontSize: 18, color: Colors.red),
+                            ),
+                            onPressed: () {
+/////////////////////////////////////////////////
+                              ///удаление сделать
+                            },
+                          ),
+                          TextButton(
+                            child: const Text(
+                              'Нет',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
 
               const SizedBox(width: 6),
             ],
@@ -272,12 +352,12 @@ void _gotonext(BuildContext context, Map<String, dynamic> _mapdata) {
   );
 }
 
-//удаление модуля
+/* //удаление модуля
 Future<bool> delModuleDialog(
   BuildContext context,
 ) async {
   bool excode = false;
-  await CupertinoContextMenu(
+  CupertinoContextMenu(
     actions: <Widget>[
       CupertinoContextMenuAction(
         child: const Text('Action one'),
@@ -295,9 +375,9 @@ Future<bool> delModuleDialog(
     child: Container(
       color: Colors.red,
     ),
-  );
+  ); */
 
-  /* showCupertinoModalPopup(
+/* showCupertinoModalPopup(
     context: context,
     builder: (context) => CupertinoActionSheet(
       title: Text(
@@ -349,8 +429,8 @@ Future<bool> delModuleDialog(
       }
     },
   ); */
-  return excode;
-}
+/*   return excode;
+} */
 
 Future<void> delModule(
   Map<String, dynamic> _aaa,

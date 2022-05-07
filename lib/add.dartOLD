@@ -22,19 +22,19 @@ class ModulesState extends State<Modules> {
       ),
     ],
     fontWeight: FontWeight.normal,
-    fontFamily: 'Roboto',
+    
   );
   final TextStyle descriptionStyle = TextStyle(
     color: Colors.brown[800],
     fontSize: 20,
     fontStyle: FontStyle.normal,
-    fontFamily: 'Raleway',
+    
   );
   final TextStyle txtStyle = TextStyle(
     color: Colors.brown[800],
     fontSize: 18,
     fontStyle: FontStyle.normal,
-    fontFamily: 'Raleway',
+    
   );
   String word = '';
   String meaning = '';
@@ -98,7 +98,8 @@ class ModulesState extends State<Modules> {
                             } else {
                               wordOK = true;
                             }
-                          }),
+                            return null;
+                          },),
                       const SizedBox(height: 20.0),
                       TextFormField(
                           textAlign: TextAlign.center,
@@ -118,7 +119,8 @@ class ModulesState extends State<Modules> {
                             } else {
                               wordOK = true;
                             }
-                          }),
+                            return null;
+                          },),
                       SizedBox(height: MediaQuery.of(context).size.height / 2),
                     ],
                   ),

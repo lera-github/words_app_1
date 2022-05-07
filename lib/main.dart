@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:myapp/helpers/appbarmenu.dart';
-import 'package:myapp/pages/module_list.dart';
-import 'helpers/styles.dart';
-import 'pages/modules.dart';
-import 'pages/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:flutter/material.dart';
+import 'package:myapp/firebase_options.dart';
+import 'package:myapp/helpers/appbarmenu.dart';
+import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/pages/module_list.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -20,7 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memory Games',
       home: MyHomePage(),
@@ -51,31 +49,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 255, 220),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 220),
         actions: [
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
           Align(
-            alignment: Alignment.center,
             child: Text(
               'Memory Games',
               style: titleStyle,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
           Expanded(
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
               LibButton(),
               SizedBox(
                 width: 20,
               ),
               MyMenu(),
-            ]),
+            ],),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
         ],
@@ -85,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             //
 
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Expanded(
@@ -94,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 /* decoration: const BoxDecoration(
                         color: Color.fromRGBO(0xFF, 0xFF, 0xF5, 0x9D),
                     ), */
-                child: ModuleList(),
+                child: const ModuleList(),
               ),
             ),
           ],

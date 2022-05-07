@@ -41,13 +41,12 @@ class _ModuleEditState extends State<ModuleEdit> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Color.fromARGB(255, 255, 255, 220),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 220),
         actions: [
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
           Align(
-            alignment: Alignment.center,
             child: InkWell(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: Text(
@@ -58,19 +57,18 @@ class _ModuleEditState extends State<ModuleEdit> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
+                    builder: (context) => const MyHomePage(),
                   ),
                 );
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
           Expanded(
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                child: Text("Сохранить"),
                 style: menuButtonStyle,
                 onPressed: () async {
                   bool moduleItemsOK = true;
@@ -107,7 +105,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MyHomePage(),
+                        builder: (context) => const MyHomePage(),
                       ),
                     );
                   } else {
@@ -117,16 +115,16 @@ class _ModuleEditState extends State<ModuleEdit> {
                               elevation: 1.2,
                               backgroundColor: Colors.red.shade900,
                               shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(10)),
+                                  side: const BorderSide(),
+                                  borderRadius: BorderRadius.circular(10),),
                               child: InkWell(
                                 child: Container(
-                                  margin: EdgeInsets.all(16),
-                                  child: Text(
+                                  margin: const EdgeInsets.all(16),
+                                  child: const Text(
                                     'Внесите обязательные данные!',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.yellow, fontSize: 18),
+                                        color: Colors.yellow, fontSize: 18,),
                                   ),
                                 ),
                                 onTap: () {
@@ -135,13 +133,14 @@ class _ModuleEditState extends State<ModuleEdit> {
                                   );
                                 },
                               ),
-                            ));
+                            ),);
                   }
                 },
+                child: const Text("Сохранить"),
               ),
-            ]),
+            ],),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
         ],
@@ -183,7 +182,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 0, bottom: 0, left: 8, right: 8),
+                      left: 8, right: 8,),
                   child: TextFormField(
                     textAlign: TextAlign.left,
                     style: text14Style,
@@ -200,7 +199,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 16, bottom: 8, left: 8, right: 8),
+                      top: 16, bottom: 8, left: 8, right: 8,),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -218,7 +217,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                         ),
                         onTap: () => _insertSingleItem(),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                     ],
@@ -234,7 +233,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     //_data.length,
                     itemBuilder: (context, index, animation) {
                       return _buildItem(_words1[index] as String,
-                          _words2[index] as String, animation, index);
+                          _words2[index] as String, animation, index,);
                       //_buildItem(_data[index], animation, index);
                     },
                   ),
@@ -254,10 +253,10 @@ class _ModuleEditState extends State<ModuleEdit> {
   }
 
   Widget _buildItem(
-      String item1, String item2, Animation animation, int index) {
-    TextEditingController item1Controller = TextEditingController();
+      String item1, String item2, Animation animation, int index,) {
+    final TextEditingController item1Controller = TextEditingController();
     item1Controller.text = item1; //_words1[index] as String;
-    TextEditingController item2Controller = TextEditingController();
+    final TextEditingController item2Controller = TextEditingController();
     item2Controller.text = item2; //_words2[index] as String;
     return SizeTransition(
       sizeFactor: animation as Animation<double>,
@@ -272,7 +271,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: TextFormField(
                     textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     controller: item1Controller,
@@ -292,14 +291,14 @@ class _ModuleEditState extends State<ModuleEdit> {
                   onTap: () {},
                 ),
               ),
-              Spacer(flex: 1),
+              const Spacer(),
               Expanded(
                 flex: 20,
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: TextFormField(
                     textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     controller: item2Controller,
@@ -323,7 +322,7 @@ class _ModuleEditState extends State<ModuleEdit> {
           ),
           trailing: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(20)),
-            child: Icon(
+            child: const Icon(
               Icons.remove_circle_outline,
               color: Colors.red,
             ),
@@ -340,7 +339,7 @@ class _ModuleEditState extends State<ModuleEdit> {
   /// Method to add an item to an index in a list
   void _insertSingleItem() {
     int insertIndex;
-    if (_words1.length > 0) {
+    if (_words1.isNotEmpty) {
       insertIndex = _words1.length;
     } else {
       insertIndex = 0;
@@ -365,10 +364,10 @@ class _ModuleEditState extends State<ModuleEdit> {
 
   /// Method to remove an item at an index from the list
   void _removeSingleItems(int removeAt) {
-    int removeIndex = removeAt;
-    String removedItem1 = _words1.removeAt(removeIndex) as String;
-    String removedItem2 = _words2.removeAt(removeIndex) as String;
-    AnimatedListRemovedItemBuilder builder = (context, animation) {
+    final int removeIndex = removeAt;
+    final String removedItem1 = _words1.removeAt(removeIndex) as String;
+    final String removedItem2 = _words2.removeAt(removeIndex) as String;
+    final AnimatedListRemovedItemBuilder builder = (context, animation) {
       return _buildItem(removedItem1, removedItem2, animation, removeAt);
     };
     _listKey.currentState!.removeItem(removeIndex, builder);
@@ -388,7 +387,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     Future.delayed(const Duration(milliseconds: 700)).then((value) {
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.fastOutSlowIn,
       );
     });

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
-
-import '../pages/module_edit.dart';
-import '../pages/module_list.dart';
+import 'package:myapp/pages/module_edit.dart';
 
 class LibButton extends StatefulWidget {
-  LibButton({Key? key}) : super(key: key);
+  const LibButton({Key? key}) : super(key: key);
 
   @override
   State<LibButton> createState() => _LibButtonState();
@@ -16,16 +14,15 @@ class _LibButtonState extends State<LibButton> {
   Widget build(BuildContext context) {
     return ButtonBar(
       children: [
-        ElevatedButton(
-          child: Text("Библиотека модулей"),
+        /* ElevatedButton(
           style: menuButtonStyle,
           onPressed: () {},
-        ),
-        SizedBox(
+          child: const Text("Библиотека модулей"),
+        ),*/
+        const SizedBox(
           width: 20,
         ),
         ElevatedButton(
-          child: Text("Создать модуль"),
           style: menuButtonStyle,
           onPressed: () {
             final cleanModule = {
@@ -47,6 +44,7 @@ class _LibButtonState extends State<LibButton> {
               ),
             );
           },
+          child: const Text("Создать модуль"),
         ),
       ],
     );
@@ -65,7 +63,7 @@ class _LibButtonState extends State<LibButton> {
 }
 
 class MyMenu extends StatefulWidget {
-  MyMenu({Key? key}) : super(key: key);
+  const MyMenu({Key? key}) : super(key: key);
 
   @override
   State<MyMenu> createState() => _MyMenuState();
@@ -79,7 +77,7 @@ class _MyMenuState extends State<MyMenu> {
     return PopupMenuButton<WhyFarther>(
       onSelected: (WhyFarther result) {
         setState(() {
-          var _selection = result;
+          final _selection = result;
         });
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[

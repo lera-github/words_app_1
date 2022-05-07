@@ -115,9 +115,10 @@ class ProfileState extends State<Profile> {
                                 myfioOK = true;
                               }
                             }
+                            return null;
                           }
                           //},
-                          ),
+                          ,),
                       const SizedBox(height: 20.0),
                       Text(
                         'E-mail:',
@@ -176,6 +177,7 @@ class ProfileState extends State<Profile> {
                               passwordOK = true;
                             }
                           }
+                          return null;
                         },
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height / 2),
