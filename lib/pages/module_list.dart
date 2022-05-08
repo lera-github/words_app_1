@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/main.dart';
 import 'package:myapp/pages/module_edit.dart';
 
 class ModuleList extends StatefulWidget {
@@ -20,7 +21,7 @@ class ModuleListState extends State<ModuleList> {
         ? MediaQuery.of(context).size.width
         : 600.0;
     return FutureBuilder(
-      future: getFS(collection: 'modules'),
+      future: getFS(collection: 'modules', order: 'module'),
       builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -142,12 +143,12 @@ class ModuleListState extends State<ModuleList> {
   }
 
   Widget gridcont(BuildContext context, int index, Object? _obj) {
-    final _aaa = _obj! as Map<String, dynamic>;
-    final _txt = '${_aaa['module']}';
-    final _txt1 = '${_aaa['description']}';
+    final _moduleCollection = _obj! as Map<String, dynamic>;
+    final _moduleName = '${_moduleCollection['module']}';
+    final _moduleDescription = '${_moduleCollection['description']}';
     var _favourite = false;
-    if (_aaa['favourite'] != null) {
-      _favourite = _aaa['favourite'] as bool;
+    if (_moduleCollection['favourite'] != null) {
+      _favourite = _moduleCollection['favourite'] as bool;
     }
 
     return Align(
@@ -196,7 +197,7 @@ class ModuleListState extends State<ModuleList> {
                     _favourite = !_favourite;
                     await updateFS(
                       collection: 'modules',
-                      id: '${_aaa['id']}',
+                      id: '${_moduleCollection['id']}',
                       val: 'favourite',
                       valdata: _favourite,
                     ).then((value) => setState(() {}));
@@ -211,7 +212,7 @@ class ModuleListState extends State<ModuleList> {
                           await delModuleDialog(context).then((value) async {
                             if (value) {
                               //удаление и обновление страницы
-                              await delModule(_aaa).then(
+                              await delModule(_moduleCollection).then(
                                 (value) => Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -236,14 +237,14 @@ class ModuleListState extends State<ModuleList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText(
-                          _txt,
+                          _moduleName,
                           style: const TextStyle(fontSize: 16),
                           overflow: TextOverflow.ellipsis,
                           //minFontSize: 12,
                           //textAlign: TextAlign.center,
                         ),
                         AutoSizeText(
-                          _txt1,
+                          _moduleDescription,
                           style: const TextStyle(
                             fontSize: 12,
                             fontStyle: FontStyle.italic,
@@ -267,9 +268,9 @@ class ModuleListState extends State<ModuleList> {
                     color: Colors.blue.shade800,
                   ),
                 ),
-                onPressed: () => _gotonext(
+                onPressed: () => _gotoedit(
                   context,
-                  _aaa,
+                  _moduleCollection,
                 ),
               ),
               //удаление
@@ -293,7 +294,7 @@ class ModuleListState extends State<ModuleList> {
                           child: ListBody(
                             children: <Widget>[
                               Text(
-                                _txt,
+                                _moduleName,
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
@@ -310,8 +311,23 @@ class ModuleListState extends State<ModuleList> {
                               style: TextStyle(fontSize: 18, color: Colors.red),
                             ),
                             onPressed: () {
-/////////////////////////////////////////////////
-                              ///удаление сделать
+                              //удаление
+                              Future.delayed(
+                                Duration.zero,
+                                () async {
+                                  await deleteFS(
+                                    collection: 'modules',
+                                    id: '${_moduleCollection['id']}',
+                                  );
+                                },
+                              );
+                              Navigator.of(context).pop();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MyHomePage(),
+                                ),
+                              );
                             },
                           ),
                           TextButton(
@@ -340,7 +356,7 @@ class ModuleListState extends State<ModuleList> {
 }
 
 //переход на редактирование модуля
-void _gotonext(BuildContext context, Map<String, dynamic> _mapdata) {
+void _gotoedit(BuildContext context, Map<String, dynamic> _mapdata) {
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -351,6 +367,46 @@ void _gotonext(BuildContext context, Map<String, dynamic> _mapdata) {
     ),
   );
 }
+
+/* Future<void> delModule(
+  Map<String, dynamic> _moduleCollection,
+) async {
+  final List<Object?> _obj = await getUsersVarsFS(_moduleCollection);
+  final fbs.ListResult result =
+      await fbs.FirebaseStorage.instance.ref().listAll();
+  for (int i = 0; i < _obj.length; i++) {
+    final _datalist = _obj[i]! as Map<String, dynamic>;
+    //debugPrint(_data['var'].toString());
+    //debugPrint(_obj.length.toString());
+    final List<String> _datakey = _datalist.keys.toList();
+    for (int j = 0; j < _datakey.length; j++) {
+      if ((_datakey[j].contains('audio')) & (_datalist[_datakey[j]] != '')) {
+        //debugPrint(_datalist[_datakey[j]].toString());
+        for (final ref in result.items) {
+          if (ref.name == _datalist[_datakey[j]] as String) {
+            //debugPrint(ref.name);
+            //удаление файлов
+            await ref.delete();
+          }
+        }
+      }
+    }
+    //здесь удалить doc в коллекции users
+    await deleteUser(_moduleCollection);
+  }
+  /* final fbs.ListResult result = await fbs.FirebaseStorage.instance.ref().listAll();
+  //await fbs.FirebaseStorage.instance.ref().list(const fbs.ListOptions(maxResults: 10, ));
+  for (final ref in result.items) {
+    //debugPrint('Found file: ${ref.name}');
+    //ref.delete(); ///////////////////////////////////////////////////////////////////////////////////////
+  } */
+  /* result = await fbs.FirebaseStorage.instance.ref().listAll();
+  for (final ref in result.prefixes) {
+    debugPrint('Found directory: ${ref.name}');
+    debugPrint(result.prefixes.length.toString());
+  } */
+} */
+
 
 /* //удаление модуля
 Future<bool> delModuleDialog(
@@ -431,42 +487,3 @@ Future<bool> delModuleDialog(
   ); */
 /*   return excode;
 } */
-
-Future<void> delModule(
-  Map<String, dynamic> _aaa,
-) async {
-  final List<Object?> _obj = await getUsersVarsFS(_aaa);
-  final fbs.ListResult result =
-      await fbs.FirebaseStorage.instance.ref().listAll();
-  for (int i = 0; i < _obj.length; i++) {
-    final _datalist = _obj[i]! as Map<String, dynamic>;
-    //debugPrint(_data['var'].toString());
-    //debugPrint(_obj.length.toString());
-    final List<String> _datakey = _datalist.keys.toList();
-    for (int j = 0; j < _datakey.length; j++) {
-      if ((_datakey[j].contains('audio')) & (_datalist[_datakey[j]] != '')) {
-        //debugPrint(_datalist[_datakey[j]].toString());
-        for (final ref in result.items) {
-          if (ref.name == _datalist[_datakey[j]] as String) {
-            //debugPrint(ref.name);
-            //удаление файлов
-            await ref.delete();
-          }
-        }
-      }
-    }
-    //здесь удалить doc в коллекции users
-    await deleteUser(_aaa);
-  }
-  /* final fbs.ListResult result = await fbs.FirebaseStorage.instance.ref().listAll();
-  //await fbs.FirebaseStorage.instance.ref().list(const fbs.ListOptions(maxResults: 10, ));
-  for (final ref in result.items) {
-    //debugPrint('Found file: ${ref.name}');
-    //ref.delete(); ///////////////////////////////////////////////////////////////////////////////////////
-  } */
-  /* result = await fbs.FirebaseStorage.instance.ref().listAll();
-  for (final ref in result.prefixes) {
-    debugPrint('Found directory: ${ref.name}');
-    debugPrint(result.prefixes.length.toString());
-  } */
-}

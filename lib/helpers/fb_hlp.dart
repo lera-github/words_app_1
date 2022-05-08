@@ -5,10 +5,13 @@ import 'package:firebase_storage/firebase_storage.dart' as fbs;
 
 Future<List<Object?>> getFS({
   required String collection,
+  required String order,
 }) async {
   // Get docs from collection reference
-  final QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection(collection).get();
+  final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection(collection)
+      .orderBy(order)
+      .get();
   // Get data from docs and convert map to List
   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
   return allData;
@@ -28,6 +31,16 @@ Future<void> updateFS({
       .catchError((e) => print("Failed to update user: $e")); */
 }
 
+Future<void> deleteFS({
+  required String collection,
+  required String id,
+}) async {
+  await FirebaseFirestore.instance.collection(collection).doc(id).delete();
+}
+
+
+
+//-------------- ниже неактуально
 Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> _doc) async {
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
       .collection('users')
@@ -71,8 +84,6 @@ Future<void> deleteUser(Map<String, dynamic> _doc) async {
       )
       .delete();
 }
-
-
 
 Future<void> updateUsersFS({
   required String parentdoc,

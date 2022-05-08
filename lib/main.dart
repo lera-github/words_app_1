@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
- 
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -64,13 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
             width: 20,
           ),
           Expanded(
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-              LibButton(),
-              SizedBox(
-                width: 20,
-              ),
-              MyMenu(),
-            ],),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                LibButton(),
+                SizedBox(
+                  width: 20,
+                ),
+                //MyMenu(),
+              ],
+            ),
           ),
           const SizedBox(
             width: 20,
