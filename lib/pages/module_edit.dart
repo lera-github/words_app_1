@@ -67,78 +67,85 @@ class _ModuleEditState extends State<ModuleEdit> {
             width: 20,
           ),
           Expanded(
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ElevatedButton(
-                style: menuButtonStyle,
-                onPressed: () async {
-                  bool moduleItemsOK = true;
-                  for (int i = 0; i < _words1.length; i++) {
-                    if ((_words1[i] == '') | (_words2[i] == '')) {
-                      moduleItemsOK = false;
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: menuButtonStyle,
+                  onPressed: () async {
+                    bool moduleItemsOK = true;
+                    for (int i = 0; i < _words1.length; i++) {
+                      if ((_words1[i] == '') | (_words2[i] == '')) {
+                        moduleItemsOK = false;
+                      }
                     }
-                  }
-                  if (moduleNameOK & moduleItemsOK) {
-                    var _id = widget.mapdata['id'];
-                    //добавление модуля?
-                    if (widget.isAdd) {
-                      await FirebaseFirestore.instance
-                          .collection('modules')
-                          .add({'favourite': false}).then((value) {
-                        _id = value.id;
-                      });
+                    if (moduleNameOK & moduleItemsOK) {
+                      var _id = widget.mapdata['id'];
+                      //добавление модуля?
+                      if (widget.isAdd) {
+                        await FirebaseFirestore.instance
+                            .collection('modules')
+                            .add({'favourite': false}).then((value) {
+                          _id = value.id;
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('modules')
+                            .doc(_id as String)
+                            .update({'id': _id});
+                      }
+
                       await FirebaseFirestore.instance
                           .collection('modules')
                           .doc(_id as String)
-                          .update({'id': _id});
-                    }
-
-                    await FirebaseFirestore.instance
-                        .collection('modules')
-                        .doc(_id as String)
-                        .update({
-                      'words1': _words1,
-                      'words2': _words2,
-                      'module': moduleNameController.text.trim(),
-                      'description': moduleDescriptionController.text.trim()
-                    });
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyHomePage(),
-                      ),
-                    );
-                  } else {
-                    showDialog(
+                          .update({
+                        'words1': _words1,
+                        'words2': _words2,
+                        'module': moduleNameController.text.trim(),
+                        'description': moduleDescriptionController.text.trim()
+                      });
+                      if (!mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyHomePage(),
+                        ),
+                      );
+                    } else {
+                      showDialog(
                         context: context,
                         builder: (context) => Dialog(
-                              elevation: 1.2,
-                              backgroundColor: Colors.red.shade900,
-                              shape: RoundedRectangleBorder(
-                                  side: const BorderSide(),
-                                  borderRadius: BorderRadius.circular(10),),
-                              child: InkWell(
-                                child: Container(
-                                  margin: const EdgeInsets.all(16),
-                                  child: const Text(
-                                    'Внесите обязательные данные!',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.yellow, fontSize: 18,),
-                                  ),
+                          elevation: 1.2,
+                          backgroundColor: Colors.red.shade900,
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: InkWell(
+                            child: Container(
+                              margin: const EdgeInsets.all(16),
+                              child: const Text(
+                                'Внесите обязательные данные!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.yellow,
+                                  fontSize: 18,
                                 ),
-                                onTap: () {
-                                  Navigator.pop(
-                                    context,
-                                  );
-                                },
                               ),
-                            ),);
-                  }
-                },
-                child: const Text("Сохранить"),
-              ),
-            ],),
+                            ),
+                            onTap: () {
+                              Navigator.pop(
+                                context,
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Сохранить"),
+                ),
+              ],
+            ),
           ),
           const SizedBox(
             width: 20,
@@ -182,7 +189,9 @@ class _ModuleEditState extends State<ModuleEdit> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      left: 8, right: 8,),
+                    left: 8,
+                    right: 8,
+                  ),
                   child: TextFormField(
                     textAlign: TextAlign.left,
                     style: text14Style,
@@ -199,7 +208,11 @@ class _ModuleEditState extends State<ModuleEdit> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 16, bottom: 8, left: 8, right: 8,),
+                    top: 16,
+                    bottom: 8,
+                    left: 8,
+                    right: 8,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -232,8 +245,12 @@ class _ModuleEditState extends State<ModuleEdit> {
                     initialItemCount: _words1.length,
                     //_data.length,
                     itemBuilder: (context, index, animation) {
-                      return _buildItem(_words1[index] as String,
-                          _words2[index] as String, animation, index,);
+                      return _buildItem(
+                        _words1[index] as String,
+                        _words2[index] as String,
+                        animation,
+                        index,
+                      );
                       //_buildItem(_data[index], animation, index);
                     },
                   ),
@@ -253,7 +270,11 @@ class _ModuleEditState extends State<ModuleEdit> {
   }
 
   Widget _buildItem(
-      String item1, String item2, Animation animation, int index,) {
+    String item1,
+    String item2,
+    Animation animation,
+    int index,
+  ) {
     final TextEditingController item1Controller = TextEditingController();
     item1Controller.text = item1; //_words1[index] as String;
     final TextEditingController item2Controller = TextEditingController();
@@ -288,7 +309,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     onChanged: (value) => _words1[index] = value,
                   ),
                   //Text(item1,style: TextStyle(fontSize: 14),),
-                  onTap: () {},
+                 
                 ),
               ),
               const Spacer(),
@@ -315,7 +336,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     onChanged: (value) => _words2[index] = value,
                   ),
                   //Text(item2,style: TextStyle(fontSize: 14),),
-                  onTap: () {},
+                 
                 ),
               ),
             ],

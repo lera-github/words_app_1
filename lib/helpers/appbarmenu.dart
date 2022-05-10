@@ -9,6 +9,42 @@ class LibButton extends StatefulWidget {
   State<LibButton> createState() => _LibButtonState();
 }
 
+Widget _offsetPopup() => PopupMenuButton<int>(
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: 1,
+          child: Text(
+            "Flutter Open",
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        const PopupMenuItem(
+          value: 2,
+          child: Text(
+            "Flutter Tutorial",
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+      icon: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: const ShapeDecoration(
+          color: Colors.blue,
+          shape: StadiumBorder(
+            side: BorderSide(color: Colors.white, width: 2),
+          ),
+        ),
+        //child: Icon(Icons.menu, color: Colors.white), <-- You can give your icon here
+      ),
+    );
+
 class _LibButtonState extends State<LibButton> {
   @override
   Widget build(BuildContext context) {
@@ -25,7 +61,9 @@ class _LibButtonState extends State<LibButton> {
         ElevatedButton(
           style: menuButtonStyle,
           onPressed: () {
-            final cleanModule = {
+            _offsetPopup();
+
+            /* final cleanModule = {
               'id': '',
               'module': '',
               'description': '',
@@ -42,7 +80,7 @@ class _LibButtonState extends State<LibButton> {
                   isAdd: true,
                 ),
               ),
-            );
+            ); */
           },
           child: const Text("Создать модуль"),
         ),
