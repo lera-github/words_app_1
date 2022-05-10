@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 12,
             ),
             Expanded(
+              flex: 2,
               child: Container(
                 padding: const EdgeInsets.all(8),
                 /* decoration: const BoxDecoration(
