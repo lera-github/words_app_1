@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Align(
             child: Text(
-              'Memory Games',
+              'Memory Games!!!',
               style: titleStyle,
             ),
           ),
