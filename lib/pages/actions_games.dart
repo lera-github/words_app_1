@@ -3,21 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 
-class ModuleEdit extends StatefulWidget {
-  const ModuleEdit({Key? key, required this.mapdata, required this.isAdd})
-      : super(key: key);
+class ActionsAndGames extends StatefulWidget {
+  const ActionsAndGames({Key? key, required this.mapdata}) : super(key: key);
   final Map<String, dynamic> mapdata;
-  final bool isAdd;
+
   @override
-  _ModuleEditState createState() => _ModuleEditState();
+  _ActionsAndGamesState createState() => _ActionsAndGamesState();
 }
 
-class _ModuleEditState extends State<ModuleEdit> {
+class _ActionsAndGamesState extends State<ActionsAndGames> {
   // the GlobalKey is needed to animate the list
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  // backing data
-  // List<String> _data = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Last Item'];
   List _words1 = [];
   List _words2 = [];
   bool moduleNameOK = false;
@@ -30,11 +27,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     final _scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
         : 600.0;
-    if (!widget.isAdd) {
-      moduleNameController.text = widget.mapdata['module'] as String;
-      moduleDescriptionController.text =
-          widget.mapdata['description'] as String;
-    }
+
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
 
@@ -81,18 +74,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                     }
                     if (moduleNameOK & moduleItemsOK) {
                       var _id = widget.mapdata['id'];
-                      //добавление модуля?
-                      if (widget.isAdd) {
-                        await FirebaseFirestore.instance
-                            .collection('modules')
-                            .add({'favourite': false}).then((value) {
-                          _id = value.id;
-                        });
-                        await FirebaseFirestore.instance
-                            .collection('modules')
-                            .doc(_id as String)
-                            .update({'id': _id});
-                      }
 
                       await FirebaseFirestore.instance
                           .collection('modules')
