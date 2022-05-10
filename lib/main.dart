@@ -83,13 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
         child: Column(
           children: [
-            //
-
             const SizedBox(
               height: 12,
             ),
             Expanded(
-              flex: 20,
+              flex: 20, /////
               child: Container(
                 padding: const EdgeInsets.all(8),
                 /* decoration: const BoxDecoration(
