@@ -137,13 +137,11 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         ),
                       ),
                     ),
-                    const Expanded(
+                    Expanded(
                       child:
-
-///////////////////////////////////////////////   сюда идет поле игры
+/////////////////////////////////////////////////////////////////////   сюда идет поле игры
                           /// Icon   - это для примера
-                          GameFlashCard(),
-                      
+                          GameFlashCard(mapdata: widget.mapdata),
                     ),
                   ],
                 ),
