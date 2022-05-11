@@ -1,7 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
+import 'package:myapp/pages/game_flash_card.dart';
 
 class ActionsAndGames extends StatefulWidget {
   const ActionsAndGames({Key? key, required this.mapdata}) : super(key: key);
@@ -62,70 +64,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: menuButtonStyle,
-                  onPressed: () async {
-                    bool moduleItemsOK = true;
-                    for (int i = 0; i < _words1.length; i++) {
-                      if ((_words1[i] == '') | (_words2[i] == '')) {
-                        moduleItemsOK = false;
-                      }
-                    }
-                    if (moduleNameOK & moduleItemsOK) {
-                      var _id = widget.mapdata['id'];
-
-                      await FirebaseFirestore.instance
-                          .collection('modules')
-                          .doc(_id as String)
-                          .update({
-                        'words1': _words1,
-                        'words2': _words2,
-                        'module': moduleNameController.text.trim(),
-                        'description': moduleDescriptionController.text.trim()
-                      });
-                      if (!mounted) return;
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyHomePage(),
-                        ),
-                      );
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => Dialog(
-                          elevation: 1.2,
-                          backgroundColor: Colors.red.shade900,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: InkWell(
-                            child: Container(
-                              margin: const EdgeInsets.all(16),
-                              child: const Text(
-                                'Внесите обязательные данные!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.yellow,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.pop(
-                                context,
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text("Сохранить"),
-                ),
-              ],
+              //здесь можно кнопки положить (см. как в module_list например)
             ),
           ),
           const SizedBox(
@@ -136,108 +75,80 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
       body: SafeArea(
         child: Align(
           alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: BoxConstraints.expand(width: _scrwidth),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: TextFormField(
-                    textAlign: TextAlign.left,
-                    style: textStyle,
-                    keyboardType: TextInputType.text,
-                    autovalidateMode: AutovalidateMode.always,
-                    controller: moduleNameController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'Название',
-                      hintText: 'Введите название модуля',
-                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints.expand(width: 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 80,
                     ),
-                    //onChanged: (value) => moduleNameController.text = value,
-                    validator: (moduleNameValidator) {
-                      moduleNameOK = false;
-                      if (moduleNameValidator!.isEmpty) {
-                        return '* Обязательно для заполнения';
-                      } else {
-                        moduleNameOK = true;
-                      }
-                      return null;
-                    },
-                  ),
+                    TextButton(onPressed: () {}, child: Text('Карточки')),
+                    TextButton(onPressed: () {}, child: Text('Подбор'))
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                  ),
-                  child: TextFormField(
-                    textAlign: TextAlign.left,
-                    style: text14Style,
-                    keyboardType: TextInputType.text,
-                    controller: moduleDescriptionController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'Описание',
-                      hintText: 'Введите описание модуля',
-                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints.expand(width: _scrwidth),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(
+                            widget.mapdata['favourite'] as bool
+                                ? Icons.star_rate_rounded
+                                : Icons.star_border_rounded,
+                            color: widget.mapdata['favourite'] as bool
+                                ? Colors.yellow.shade600
+                                : Colors.grey.shade400,
+                          ),
+                          Expanded(
+                            child: AutoSizeText(
+                              widget.mapdata['module'] as String,
+                              style: const TextStyle(fontSize: 16),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    //onChanged: (value) => moduleDescriptionController.text = value,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                    left: 8,
-                    right: 8,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Термины в модуле (${_words1.length}):',
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        right: 8,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: AutoSizeText(
+                          widget.mapdata['description'] as String,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          minFontSize: 10,
                         ),
                       ),
-                      InkWell(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                        child: Icon(
-                          Icons.add_circle_outline,
-                          color: Colors.blue.shade700,
-                        ),
-                        onTap: () => _insertSingleItem(),
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: AnimatedList(
-                    controller: scrollController,
+                    ),
+                    const Expanded(
+                      child:
 
-                    /// Key to call remove and insert item methods from anywhere  ///////////////////////////////
-                    key: _listKey,
-                    initialItemCount: _words1.length,
-                    //_data.length,
-                    itemBuilder: (context, index, animation) {
-                      return _buildItem(
-                        _words1[index] as String,
-                        _words2[index] as String,
-                        animation,
-                        index,
-                      );
-                      //_buildItem(_data[index], animation, index);
-                    },
-                  ),
+///////////////////////////////////////////////   сюда идет поле игры
+                          /// Icon   - это для примера
+                          GameFlashCard(),
+                      
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
