@@ -309,7 +309,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                     onChanged: (value) => _words1[index] = value,
                   ),
                   //Text(item1,style: TextStyle(fontSize: 14),),
-                 
                 ),
               ),
               const Spacer(),
@@ -336,7 +335,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                     onChanged: (value) => _words2[index] = value,
                   ),
                   //Text(item2,style: TextStyle(fontSize: 14),),
-                 
                 ),
               ),
             ],

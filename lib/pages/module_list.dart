@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
+import 'package:myapp/pages/actions_games.dart';
 import 'package:myapp/pages/module_edit.dart';
 
 class ModuleList extends StatefulWidget {
@@ -227,7 +228,15 @@ class ModuleListState extends State<ModuleList> {
               //текст
               Expanded(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ActionsAndGames(mapdata: _moduleCollection),
+                      ),
+                    );
+                  },
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   child: Container(
                     padding: const EdgeInsets.all(8),

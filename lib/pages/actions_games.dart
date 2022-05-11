@@ -143,6 +143,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
 ///////////////////////////////////////////////   сюда идет поле игры
                           /// Icon   - это для примера
                           GameFlashCard(),
+
                     ),
                   ],
                 ),
