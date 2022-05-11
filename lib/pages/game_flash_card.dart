@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class GameFlashCard extends StatefulWidget {
-  const GameFlashCard({Key? key}) : super(key: key);
+  const GameFlashCard({Key? key, required this.mapdata}) : super(key: key);
+  final Map<String, dynamic> mapdata;
 
   @override
   State<GameFlashCard> createState() => _GameFlashCardState();
