@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/game_flash_card.dart';
+import 'package:myapp/pages/game_match.dart';
+
+String actionSelect = '';
 
 class ActionsAndGames extends StatefulWidget {
   const ActionsAndGames({Key? key, required this.mapdata}) : super(key: key);
@@ -75,7 +78,10 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                       height: 80,
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        actionSelect = 'GameFlashCard';
+                        setState(() {});
+                      },
                       child: Text(
                         'Карточки',
                         style: titleStyle,
@@ -83,7 +89,10 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        actionSelect = 'GameMatch';
+                        setState(() {});
+                      },
                       child: Text(
                         'Подбор',
                         style: titleStyle,
@@ -145,7 +154,8 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                       child:
 /////////////////////////////////////////////////////////////////////   сюда идет поле игры
                           /// Icon   - это для примера
-                          GameFlashCard(mapdata: widget.mapdata),
+                          ///
+                          actionSelector(),
                     ),
                   ],
                 ),
@@ -161,5 +171,19 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
         onPressed: () => _insertSingleItem(),
       ), */
     );
+  }
+
+  Widget actionSelector() {
+    switch (actionSelect) {
+      case 'GameFlashCard':
+        return GameFlashCard(mapdata: widget.mapdata);
+        break;
+      case 'GameMatch':
+        return GameMatch(mapdata: widget.mapdata);
+        break;
+      default:
+        GameFlashCard(mapdata: widget.mapdata);
+    }
+    return GameFlashCard(mapdata: widget.mapdata);
   }
 }
