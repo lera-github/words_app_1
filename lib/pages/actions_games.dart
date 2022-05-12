@@ -154,17 +154,8 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                       child:
 /////////////////////////////////////////////////////////////////////   сюда идет поле игры
                           /// Icon   - это для примера
-<<<<<<< HEAD
-
-                     
-
-
-                          GameFlashCard(mapdata: widget.mapdata),
-
-=======
                           ///
                           actionSelector(),
->>>>>>> 50865a6955df52135bd01489c7ea68aae5338122
                     ),
                   ],
                 ),
