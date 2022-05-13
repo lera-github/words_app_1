@@ -20,9 +20,9 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
 
   @override
   Widget build(BuildContext context) {
-    final _scrwidth = MediaQuery.of(context).size.width < 600.0
+    final _scrwidth = MediaQuery.of(context).size.width < 800.0
         ? MediaQuery.of(context).size.width
-        : 600.0;
+        : 800.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,10 +77,12 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                     const SizedBox(
                       height: 80,
                     ),
+                    // Карточки
                     TextButton(
                       onPressed: () {
-                        actionSelect = 'GameFlashCard';
-                        setState(() {});
+                        setState(() {
+                          actionSelect = 'GameFlashCard';
+                        });
                       },
                       child: Text(
                         'Карточки',
@@ -88,10 +90,12 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         textScaleFactor: 0.7,
                       ),
                     ),
+                    // Подбор
                     TextButton(
                       onPressed: () {
-                        actionSelect = 'GameMatch';
-                        setState(() {});
+                        setState(() {
+                          actionSelect = 'GameMatch';
+                        });
                       },
                       child: Text(
                         'Подбор',
@@ -151,11 +155,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                       ),
                     ),
                     Expanded(
-                      child:
-/////////////////////////////////////////////////////////////////////   сюда идет поле игры
-                          /// Icon   - это для примера
-                          ///
-                          actionSelector(),
+                      child: actionSelector(), // виджет игр
                     ),
                   ],
                 ),
@@ -177,10 +177,10 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
     switch (actionSelect) {
       case 'GameFlashCard':
         return GameFlashCard(mapdata: widget.mapdata);
-        break;
+      //break;
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
-        break;
+      //break;
       default:
         GameFlashCard(mapdata: widget.mapdata);
     }
