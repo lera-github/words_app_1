@@ -115,20 +115,35 @@ class _GameMatchState extends State<GameMatch> {
     //центр
     final Size _areaCenter = Size(areaWidth / 2, areaHeight / 2);
     final _disp = 50; // смещение
-    final _numbCards =
-        areaWidth * areaHeight / (_words1.length + _words2.length);
-    //
-    // размеры карточки
     double _dx = 0;
     double _dy = 0;
     for (var i = 0; i < _words1.length; i++) {
+      switch (i % 4) {
+        case 0:
+          _dx += _disp;
+          _dy -= _disp;
+          break;
+        case 1:
+          _dx -= _disp;
+          _dy -= _disp;
+          break;
+        case 2:
+          _dx -= _disp;
+          _dy += _disp;
+          break;
+        case 3:
+          _dx += _disp;
+          _dy += _disp;
+          break;
+        default:
+      }
       myCards.add(
         MyCard(
-          posX: _dx,
+          posX: _areaCenter.width + _dx,
           //areaWidth / (_indexList.length * (_indexList[i] % 4) / 7),
           //(_positionsMultiplier[i][0] * areaWidth).toDouble(),
           //(_positionsMultiplier[i][0] * _areaSize!.width).toInt(),
-          posY: _dy,
+          posY: _areaCenter.height + _dy,
           //areaHeight / (_indexList.length * (_indexList[i] % 3) / 7),
           //(_positionsMultiplier[i][1] * areaHeight).toDouble(),
           //(_positionsMultiplier[i][1] * _areaSize!.height).toInt(),
@@ -137,27 +152,16 @@ class _GameMatchState extends State<GameMatch> {
           text: _words1[_indexListI[i]] as String,
         ),
       );
-      _dx = _dx + 120;
-      if (_dx > areaWidth) {
-        _dx = 0;
-        _dy += 100;
-      }
-
       myCards.add(
         MyCard(
-          posX: _dx,
-          posY: _dy,
+          posX: _areaCenter.width + _dx,
+          posY: _areaCenter.height + _dy,
           size: 80,
           color: Colors.red,
           text: _words2[_indexListJ[i]] as String,
         ),
       );
-      _dx = _dx + 120;
-      if (_dx > areaWidth) {
-        _dx = 0;
-        _dy += 100;
-      }
-      /*       debugPrint(
+/*       debugPrint(
           (areaWidth / _indexList.length / 7 * 4 * _indexList[i] % 4).toString);
       debugPrint((areaHeight / _indexList.length / 7 * 3 * _indexList[i] % 3)
           .toString); */

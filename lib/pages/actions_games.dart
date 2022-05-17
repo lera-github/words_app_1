@@ -182,8 +182,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
         return GameMatch(mapdata: widget.mapdata);
       //break;
       default:
-        GameFlashCard(mapdata: widget.mapdata);
+        return GameFlashCard(mapdata: widget.mapdata);
     }
-    return GameFlashCard(mapdata: widget.mapdata);
   }
 }
