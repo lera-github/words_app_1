@@ -1,10 +1,9 @@
-import 'dart:developer';
 import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:widget_finder/widget_finder.dart';
 import 'package:controllable_widgets/controllable_widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:widget_finder/widget_finder.dart';
 
 List _words1 = []; //массивы слов
 List _words2 = [];
@@ -27,7 +26,7 @@ class _GameMatchState extends State<GameMatch> {
   bool _offstage = true;
 
   // обновление родительского виджета
-  _refresh() {
+  void _refresh() {
     setState(() {});
   }
 
@@ -37,7 +36,7 @@ class _GameMatchState extends State<GameMatch> {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
 
-    /* WidgetsBinding.instance?.addPersistentFrameCallback((_) {
+    /* WidgetsBinding.instance.addPersistentFrameCallback((_) {
       // do something
       debugPrint("Build Completed");
     }); */
@@ -58,12 +57,12 @@ class _GameMatchState extends State<GameMatch> {
   } */
 
   List<MyCard> getMyCards() {
-    double _cardSizeX = 90;
-    double _cardSizeY = 60;
-    List<Offset> _points = []; // массив позиций карточек
+    const double _cardSizeX = 90;
+    const double _cardSizeY = 60;
+    final List<Offset> _points = []; // массив позиций карточек
     List<int> _indexListI = []; //массивы перемешанных индексов
     List<int> _indexListJ = [];
-    List<List<double>> _posList = []; //массив координат
+    //final List<List<double>> _posList = []; //массив координат
 
     // если карточки сформированы - выход для обхода перегенерации
     if (myCards.length == _words1.length * 2) {
@@ -269,7 +268,7 @@ result =
               setState(() {});
             }
           } */
-          widget.refresh();
+          widget.refresh;
         }
       },
       onPanUpdate: (details) {
