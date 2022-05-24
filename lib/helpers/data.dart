@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-/* class Data with ChangeNotifier {
+class Data with ChangeNotifier {
   String _data = 'Change Notifier Provider';
   String get getData => _data;
 
@@ -9,4 +9,4 @@ import 'package:provider/provider.dart';
     _data = newdata;
     notifyListeners();
   } 
-}*/
+}

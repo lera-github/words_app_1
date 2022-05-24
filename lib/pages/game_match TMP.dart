@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:controllable_widgets/controllable_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:widget_finder/widget_finder.dart';
 
 List _words1 = []; //массивы слов
@@ -18,52 +19,95 @@ class GameMatch extends StatefulWidget {
 }
 
 class _GameMatchState extends State<GameMatch> {
-// Key and Size of the widget
-  final _key = GlobalKey();
+
   final _random = Random();
   var _area = Size.zero; // размер области размещения карточек
-
   bool _offstage = true;
-
-  // обновление родительского виджета
-  void _refresh() {
-    setState(() {});
-  }
+      _words1 = widget.mapdata['words1'] as List;
+    _words2 = widget.mapdata['words2'] as List;
+    
+    
 
   @override
-  void initState() {
-    super.initState();
-    _words1 = widget.mapdata['words1'] as List;
-    _words2 = widget.mapdata['words2'] as List;
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => MyCardModel(),
+      child: const MyCards(),
 
-    /* WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      // do something
-      debugPrint("Build Completed");
-    }); */
+      /* Scaffold(
+        body: Offstage(
+          offstage: _offstage,
+          child: WidgetFinder.sizeNotifer(
+            onSizeChanged: (size) {
+              setState(() {
+                _area = size as Size;
+                if (_area != Size.zero) {
+                  _offstage = false;
+                }
+              });
+            },
+            child: Stack(
+              children: 
+
+              //getControls(),
+            ),
+          ),
+        ),
+      ), */
+    );
+  }
+}
+
+// данные
+class MyCardModel extends ChangeNotifier {
+
+
+
+  String _data = '';
+  String get getData => _data;
+
+  void changeData(String newdata) {
+    _data = newdata;
+    notifyListeners();
   }
 
-/*   @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  } */
+  int iii = 0;
+  void inc() {
+    iii++;
+    notifyListeners();
+  }
+}
 
-/*   @override
-  void dispose() {
-    _words1.clear();
-    _words2.clear();
-    myCards.clear();
-    super.dispose();
-  } */
+// моделька
+/* class MyCardModel extends StatelessWidget {
+  const MyCardModel({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: const [
+          Positioned(
+            left: 60,
+            top: 60,
+            child: Icon(Icons.abc_outlined, size: 50),
+          ),
+          Positioned(
+            left: 90,
+            top: 100,
+            child: Icon(Icons.play_arrow, size: 60),
+          ),
+        ],
+      ),
+    );
+  }
+} */
 
-/*   Size _getSize() {
-    final RenderBox render =
-        _key.currentContext!.findRenderObject()! as RenderBox;
-    return render.size;
-  } */
+//  вьюшка
+class MyCards extends StatelessWidget {
+  const MyCards({Key? key}) : super(key: key);
 
-  List<MyCard> getMyCards() {
+
+List<MyCard> getMyCards() {
     const double _cardSizeX = 90;
     const double _cardSizeY = 60;
     final List<Offset> _points = []; // массив позиций карточек
@@ -161,67 +205,48 @@ class _GameMatchState extends State<GameMatch> {
     return myCards;
   }
 
-  //получение случайных координат в области
-  Offset cardNewPos(double _sx, double _sy) {
-    return Offset(
-      _random.nextDouble() * (_area.width - _sx),
-      _random.nextDouble() * (_area.height - _sy),
-    );
-  }
 
-//////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    final model = context.read<MyCardModel>();
     return Scaffold(
-      body: Offstage(
-        offstage: _offstage,
-        child: WidgetFinder.sizeNotifer(
-          onSizeChanged: (size) {
-            setState(() {
-              _area = size as Size;
-              if (_area != Size.zero) {
-                _offstage = false;
-              }
-            });
-          },
-          child: Stack(
-            children: _area == Size.zero ? <Widget>[] : getMyCards(),
-
-            //getControls(),
+      body: Stack(
+        children: 
+          getMyCards(),
+         /*  Positioned(
+            left: 60,
+            top: 60,
+            child: Icon(Icons.abc_outlined, size: 50),
           ),
-        ),
+          Positioned(
+            left: 90,
+            top: 100,
+            child: Icon(Icons.play_arrow, size: 60),
+          ), */
+        
       ),
     );
-  }
-}
-/////////////////////////////////////////////////////
-/* 1.On Child Widget : add parameter Function paramter
-class ChildWidget extends StatefulWidget {
-  final Function() notifyParent;
-  ChildWidget({Key key, @required this.notifyParent}) : super(key: key);
-}
-2.On Parent Widget : create a Function for the child to callback
-refresh() {
-  setState(() {});
-}
-3.On Parent Widget : pass parentFunction to Child Widget
-new ChildWidget( notifyParent: refresh );
-4.On Child Widget : call the Parent Function
-  widget.notifyParent(); */
 
-/* class MyNotify extends StatelessWidget {
-  const MyNotify({Key? key, required this.notify, required this.child})
-      : super(key: key);
-  final Function notify;
-  final Widget child;
-  @override
-  Widget build(BuildContext context) {
-    return child;
+    /* Scaffold(
+        body: Text(
+      model._data,
+    ) ////////////////////////////////
+        ); */
   }
-} */
+}
+//////////////////////////////////////////////////////////////////////////
+///
+///
+///
+///
+///
+/////////////////////////////////////////////////////
+
+
 
 /////////////////////////////////////////////////////
 // виджет карточки
+
 class MyCard extends StatefulWidget {
   const MyCard({
     Key? key,
@@ -231,7 +256,6 @@ class MyCard extends StatefulWidget {
     required this.sizeY,
     required this.color,
     required this.text,
-    //required this.refresh,
   }) : super(key: key);
   final int ind;
   final Offset pos;
@@ -239,7 +263,6 @@ class MyCard extends StatefulWidget {
   final double sizeY;
   final Color color;
   final String text;
-  //final Function refresh;
 
   @override
   State<MyCard> createState() => _MyCardState();
@@ -254,32 +277,14 @@ class _MyCardState extends State<MyCard> {
       padding: const EdgeInsets.all(4),
       canGoOffParentBounds: false,
     );
-    return /* Positioned(
-      top: widget.pos.dy,
-      left: widget.pos.dx, */
-        GestureDetector(
+    return GestureDetector(
       onPanDown: (details) {
-/*         final numbers = <int>[1, 2, 3, 5, 6, 7];
-var result = numbers.firstWhere((element) => element < 5); // 1
-result = numbers.firstWhere((element) => element > 5); // 6
-result =
-    numbers.firstWhere((element) => element > 10, orElse: () => -1); // -1
-//If no element satisfies [test], the result of invoking the */
-// [orElse] function is returned. If [orElse] is omitted, it defaults to throwing a [StateError].
-
         if (_words1.length * 2 == myCards.length) {
           final _lastCard = myCards[myCards.length - 1];
           myCards[myCards.length - 1] = myCards[widget.ind];
           myCards[widget.ind] = _lastCard;
-
-          /* for (int i = 0; i < myCards.length; i++) {
-            if (_currentCard == myCards[i]) {
-              myCards[i] = _lastCard;
-              setState(() {});
-            }
-          } */
-          //widget.refresh;
         }
+        //context.watch<MyCardData>().getData;
       },
       onPanUpdate: (details) {
         final currentBuilder = _controller.offsetBuilder;
