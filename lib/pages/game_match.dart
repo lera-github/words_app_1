@@ -43,6 +43,13 @@ class _GameMatchState extends State<GameMatch> {
   }
 
 /*   @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  } */
+
+/*   @override
   void dispose() {
     _words1.clear();
     _words2.clear();
@@ -66,6 +73,7 @@ class _GameMatchState extends State<GameMatch> {
 
     // если карточки сформированы - выход для обхода перегенерации
     if (myCards.length == _words1.length * 2) {
+      //setState(() {});
       return myCards;
     }
     myCards.clear();
@@ -143,13 +151,13 @@ class _GameMatchState extends State<GameMatch> {
           sizeY: _cardSizeY,
           color: i < _words1.length ? Colors.red : Colors.blue,
           text: _tmptxt,
-          refresh: _refresh,
+          //refresh: _refresh,
         ),
       );
 
       _pos = cardNewPos(_cardSizeX, _cardSizeY);
     }
-
+    //setState(() {});
     return myCards;
   }
 
@@ -170,9 +178,11 @@ class _GameMatchState extends State<GameMatch> {
         child: WidgetFinder.sizeNotifer(
           onSizeChanged: (size) {
             setState(() {
-              _offstage = false;
+              _area = size as Size;
+              if (_area != Size.zero) {
+                _offstage = false;
+              }
             });
-            _area = size as Size;
           },
           child: Stack(
             children: _area == Size.zero ? <Widget>[] : getMyCards(),
@@ -199,7 +209,7 @@ new ChildWidget( notifyParent: refresh );
 4.On Child Widget : call the Parent Function
   widget.notifyParent(); */
 
-class MyNotify extends StatelessWidget {
+/* class MyNotify extends StatelessWidget {
   const MyNotify({Key? key, required this.notify, required this.child})
       : super(key: key);
   final Function notify;
@@ -208,7 +218,7 @@ class MyNotify extends StatelessWidget {
   Widget build(BuildContext context) {
     return child;
   }
-}
+} */
 
 /////////////////////////////////////////////////////
 // виджет карточки
@@ -221,7 +231,7 @@ class MyCard extends StatefulWidget {
     required this.sizeY,
     required this.color,
     required this.text,
-    required this.refresh,
+    //required this.refresh,
   }) : super(key: key);
   final int ind;
   final Offset pos;
@@ -229,7 +239,7 @@ class MyCard extends StatefulWidget {
   final double sizeY;
   final Color color;
   final String text;
-  final Function refresh;
+  //final Function refresh;
 
   @override
   State<MyCard> createState() => _MyCardState();
@@ -268,7 +278,7 @@ result =
               setState(() {});
             }
           } */
-          widget.refresh;
+          //widget.refresh;
         }
       },
       onPanUpdate: (details) {

@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  ChangeNotifierProvider<Data>(create: (context) => Data(),
-      child: const MaterialApp(
+    return  /* ChangeNotifierProvider<Data>(create: (context) => Data(),
+      child: */ const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Memory Games',
         home: MyHomePage(),
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           '/ModulesScreen': (BuildContext context) => const Modules(),
           // '/GamesScreen': (BuildContext context) => const Games(),
         }, */
-      ),
+    //  ),
     );
   }
 }
