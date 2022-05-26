@@ -12,15 +12,15 @@ List _words2 = [];
 final myCards = <MyCard>[];
 List<Map<String, dynamic>> _cardProperties = [];
 
-class GameMatch extends StatefulWidget {
-  const GameMatch({Key? key, required this.mapdata}) : super(key: key);
+class GameMatch1 extends StatefulWidget {
+  const GameMatch1({Key? key, required this.mapdata}) : super(key: key);
   final Map<String, dynamic> mapdata;
 
   @override
-  State<GameMatch> createState() => _GameMatchState();
+  State<GameMatch1> createState() => _GameMatch1State();
 }
 
-class _GameMatchState extends State<GameMatch> {
+class _GameMatch1State extends State<GameMatch1> {
   @override
   void initState() {
     _words1 = widget.mapdata['words1'] as List;
