@@ -2,11 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/helpers/appbarmenu.dart';
-import 'package:myapp/helpers/data.dart';
+
 import 'package:myapp/helpers/styles.dart';
 //import 'package:myapp/pages/game_match.dart';
 import 'package:myapp/pages/module_list.dart';
-import 'package:provider/provider.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,12 +21,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => Data()),
-        //ChangeNotifierProvider(create: (context) => MyCardData()),
-      ],
-      child: const MaterialApp(
+    return  const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Memory Games',
         home: MyHomePage(),
@@ -39,7 +34,7 @@ class MyApp extends StatelessWidget {
           '/ModulesScreen': (BuildContext context) => const Modules(),
           // '/GamesScreen': (BuildContext context) => const Games(),
         }, */
-      ),
+      
     );
   }
 }

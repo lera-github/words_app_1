@@ -1,10 +1,11 @@
-import 'dart:developer';
 import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:widget_finder/widget_finder.dart';
 import 'package:controllable_widgets/controllable_widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:myapp/helpers/drag_drop_match.dart';
+import 'package:myapp/pages/game_match_1.dart';
+import 'package:widget_finder/widget_finder.dart';
 
 List _words1 = []; //массивы слов
 List _words2 = [];
@@ -20,16 +21,16 @@ class GameMatch extends StatefulWidget {
 
 class _GameMatchState extends State<GameMatch> {
 // Key and Size of the widget
-  final _key = GlobalKey();
+
   final _random = Random();
   var _area = Size.zero; // размер области размещения карточек
 
   bool _offstage = true;
 
   // обновление родительского виджета
-  _refresh() {
-    // setState(() {});
-  }
+/*   _refresh() {
+     setState(() {});
+  } */
 
   @override
   void initState() {
@@ -111,15 +112,15 @@ class _GameMatchState extends State<GameMatch> {
           }
           //требуется ли включать наложение?
           if (_tmp <= Offset(_cardSizeX - _coverX, _cardSizeY - _coverY)) {
-            _pos = cardNewPos(_cardSizeX, _cardSizeY); //новай позиция карточки
+            _pos = cardNewPos(_cardSizeX, _cardSizeY); //новая позиция карточки
             // включаем наложение карточек если 500 и более раз не удается разместить
-            if (_cnt >= 500) {
-              _coverX = _cardSizeX - 30;
-              _coverY = _cardSizeY - 30;
-            }
             if (_cnt >= 1000) {
               _coverX = _cardSizeX - 10;
               _coverY = _cardSizeY - 10;
+            }
+            if (_cnt >= 5000) {
+              _coverX = _cardSizeX - 30;
+              _coverY = _cardSizeY - 30;
             }
             //увеличиваем счетчик попыток и перезапускаем цикл
             p = -1;
@@ -146,7 +147,7 @@ class _GameMatchState extends State<GameMatch> {
           sizeY: _cardSizeY,
           color: i < _words1.length ? Colors.red : Colors.blue,
           text: _tmptxt,
-          refresh: _refresh,
+          //refresh: _refresh,
         ),
       );
 
@@ -179,9 +180,8 @@ class _GameMatchState extends State<GameMatch> {
           },
           child: Stack(
             children: _area == Size.zero ? <Widget>[] : getMyCards(),
-
-            //getControls(),
           ),
+          //getControls(),
         ),
       ),
     );
@@ -202,7 +202,7 @@ new ChildWidget( notifyParent: refresh );
 4.On Child Widget : call the Parent Function
   widget.notifyParent(); */
 
-class MyNotify extends StatelessWidget {
+/* class MyNotify extends StatelessWidget {
   const MyNotify({Key? key, required this.notify, required this.child})
       : super(key: key);
   final Function notify;
@@ -211,7 +211,7 @@ class MyNotify extends StatelessWidget {
   Widget build(BuildContext context) {
     return child;
   }
-}
+} */
 
 /////////////////////////////////////////////////////
 // виджет карточки
@@ -224,7 +224,7 @@ class MyCard extends StatefulWidget {
     required this.sizeY,
     required this.color,
     required this.text,
-    required this.refresh,
+    //required this.refresh,
   }) : super(key: key);
   final int ind;
   final Offset pos;
@@ -232,7 +232,7 @@ class MyCard extends StatefulWidget {
   final double sizeY;
   final Color color;
   final String text;
-  final Function refresh;
+  //final Function refresh;
 
   @override
   State<MyCard> createState() => _MyCardState();
@@ -241,83 +241,144 @@ class MyCard extends StatefulWidget {
 class _MyCardState extends State<MyCard> {
   @override
   Widget build(BuildContext context) {
-    final CustomPositionedWidgetController _controller =
+    /* final CustomPositionedWidgetController _controller =
         CustomPositionedWidgetController(
       offsetBuilder: (contentSize) => Offset(widget.pos.dx, widget.pos.dy),
       padding: const EdgeInsets.all(4),
       canGoOffParentBounds: false,
-    );
-    return /* Positioned(
+    ); */
+    return //DragDropItem(key: 'key', value: 'value', dragChild:
+        Positioned(
       top: widget.pos.dy,
-      left: widget.pos.dx, */
-        GestureDetector(
-      onPanDown: (details) {
-/*         final numbers = <int>[1, 2, 3, 5, 6, 7];
-var result = numbers.firstWhere((element) => element < 5); // 1
-result = numbers.firstWhere((element) => element > 5); // 6
-result =
-    numbers.firstWhere((element) => element > 10, orElse: () => -1); // -1
-//If no element satisfies [test], the result of invoking the */
-// [orElse] function is returned. If [orElse] is omitted, it defaults to throwing a [StateError].
-
-        if (_words1.length * 2 == myCards.length) {
-          final _lastCard = myCards[myCards.length - 1];
-          myCards[myCards.length - 1] = myCards[widget.ind];
-          myCards[widget.ind] = _lastCard;
-
-          /* for (int i = 0; i < myCards.length; i++) {
-            if (_currentCard == myCards[i]) {
-              myCards[i] = _lastCard;
-              setState(() {});
-            }
-          } */
-          //widget.refresh();
-        }
-      },
-      onPanUpdate: (details) {
-        final currentBuilder = _controller.offsetBuilder;
-        _controller.offsetBuilder = (Size containerSize) {
-          return currentBuilder.call(containerSize) + details.delta;
-        };
-      },
-      child: CustomPositionedWidget(
+      left: widget.pos.dx,
+/*       child: GestureDetector(
+        onPanDown: (details) {
+          if (_words1.length * 2 == myCards.length) {
+            final _lastCard = myCards[myCards.length - 1];
+            myCards[myCards.length - 1] = myCards[widget.ind];
+            myCards[widget.ind] = _lastCard;
+          }
+        },
+        onPanUpdate: (details) {
+          final currentBuilder = _controller.offsetBuilder;
+          _controller.offsetBuilder = (Size containerSize) {
+            return currentBuilder.call(containerSize) + details.delta;
+          };
+        }, */
+      /* child: CustomPositionedWidget(
         key: UniqueKey(),
         maxSize: Size(widget.pos.dx, widget.pos.dy),
-        controller: _controller,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          shadowColor: Colors.blueAccent,
-          elevation: 8,
-          child: ClipPath(
-            clipper: ShapeBorderClipper(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: Container(
-              height: widget.sizeY, //size
-              width: widget.sizeX,
-              decoration: BoxDecoration(
-                border:
-                    Border(left: BorderSide(color: widget.color, width: 10)),
-                color: Colors.yellowAccent.shade100,
-              ),
-              padding: const EdgeInsets.all(2.0),
-              alignment: Alignment.centerLeft,
-              child: AutoSizeText(
-                widget.text,
-                maxLines: 5,
-                wrapWords: false,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
+        controller: _controller, */
+      child: widget.ind < _words1.length * 2
+          ? Draggable<MyCard>(
+              data: myCards[widget.ind],
+              feedback: Opacity(
+                opacity: 0.8,
+                child: TheCard(
+                  sizeX: widget.sizeX,
+                  sizeY: widget.sizeY,
+                  color: widget.color,
+                  text: widget.text,
                 ),
-                overflow: TextOverflow.ellipsis,
-                minFontSize: 8,
+              ),
+              childWhenDragging: Container(),
+              child: TheCard(
+                sizeX: widget.sizeX,
+                sizeY: widget.sizeY,
+                color: widget.color,
+                text: widget.text,
+              ),
+            )
+          :
+//dragTarget!!!
+          DragTarget<MyCard>(
+              onAccept: (receivedItem) {
+                if (receivedItem.ind == widget.ind) {
+                  setState(() {
+                    //item.isAccepted = true;
+                  });
+                  print("ACCEPTED");
+                  //widget.onMatched(receivedItem);
+                }
+                print("ACCEPTED");
+              },
+              onLeave: (receivedItem) {
+                print("NOT ACCEPTED");
+                /* item.willAccept = false;
+                  widget.onMisMatched(receivedItem!); */
+              },
+              /*   onWillAccept: (receivedItem) {
+                  final bool willAccept =
+                      receivedItem?.ind == myCards[widget.ind] && !item.isAccepted == true;
+                  item.willAccept = willAccept;
+                  return willAccept;
+                }, */
+              builder: (context, acceptedItems, rejectedItem) => Container(
+                alignment: Alignment.center,
+                //margin: const EdgeInsets.all(8.0),
+                child: Container(
+                  color: /* item.isAccepted */ true
+                      ? Colors.green
+                      : Colors.transparent,
+                  child: TheCard(
+                    sizeX: widget.sizeX,
+                    sizeY: widget.sizeY,
+                    color: widget.color,
+                    text: widget.text,
+                  ), //item.dropChild,
+                ),
               ),
             ),
+    );
+  }
+}
+
+class TheCard extends StatelessWidget {
+  const TheCard({
+    Key? key,
+    required this.sizeX,
+    required this.sizeY,
+    required this.color,
+    required this.text,
+  }) : super(key: key);
+  final double sizeX;
+  final double sizeY;
+  final Color color;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      shadowColor: Colors.blueAccent,
+      elevation: 8,
+      child: ClipPath(
+        clipper: ShapeBorderClipper(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Container(
+          height: sizeY, //size
+          width: sizeX,
+          decoration: BoxDecoration(
+            border: Border(left: BorderSide(color: color, width: 10)),
+            color: Colors.yellowAccent.shade100,
+          ),
+          padding: const EdgeInsets.all(2.0),
+          alignment: Alignment.centerLeft,
+          child: AutoSizeText(
+            text,
+            maxLines: 5,
+            wrapWords: false,
+            style: const TextStyle(
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+            ),
+            overflow: TextOverflow.ellipsis,
+            minFontSize: 8,
           ),
         ),
       ),
