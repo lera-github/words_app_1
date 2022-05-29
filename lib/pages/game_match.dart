@@ -1,18 +1,13 @@
 import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
-//import 'package:controllable_widgets/controllable_widgets.dart';
 import 'package:flutter/material.dart';
-//import 'package:myapp/helpers/drag_drop_match.dart';
-import 'package:myapp/pages/game_match_1.dart';
 import 'package:widget_finder/widget_finder.dart';
 
 List _words1 = []; //массивы слов
 List _words2 = [];
 final myCards = <Widget>[];
-final double _cardSizeX = 90;
-final double _cardSizeY = 60;
-
+const double cardSizeX = 90; //размер карточки
+const double cardSizeY = 60;
 final List<Offset> _points = []; // массив позиций карточек
 
 class GameMatch extends StatefulWidget {
@@ -46,72 +41,22 @@ class _GameMatchState extends State<GameMatch> {
     isDropped = List<bool>.generate(_words1.length * 2, (index) => false);
 
     getMyCards();
-    /* WidgetsBinding.instance?.addPersistentFrameCallback((_) {
-      // do something
-      debugPrint("Build Completed");
-    }); */
   }
-
-/*   @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      _area = MediaQuery.of(context).size;
-      super.setState(fn);
-    }
-  } */
 
   @override
   void dispose() {
-    //_words1.clear();
-    //_words2.clear();
     myCards.clear();
     super.dispose();
   }
 
-/*   Size _getSize() {
-    final RenderBox render =
-        _key.currentContext!.findRenderObject()! as RenderBox;
-    return render.size;
-  } */
-
   List<Widget> getMyCards() {
     _points.clear();
-    List<int> _indexListI = []; //массивы перемешанных индексов
-    List<int> _indexListJ = [];
-    //final List<List<double>> _posList = []; //массив координат
-
-    // если карточки сформированы - выход для обхода перегенерации
-    /* if (myCards.length == _words1.length * 2) {
-      if (myCards.isNotEmpty) {
-        return myCards;
-      }
-    } */
     myCards.clear();
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
-    // Массивы  индексов перемешанный ВСЕХ слов
-    _indexListI = List.generate(_words1.length, (index) => index);
-    _indexListJ = List.generate(_words2.length, (index) => index);
-    //перемешивание
-    //_indexListI.shuffle();
-    //_indexListJ.shuffle();
-/*     for (int i = _indexListI.length - 1; i >= 1; i--) {
-      final int j = _random.nextInt(i + 1);
-      // обменять значения
-      final _temp = _indexListI[j];
-      _indexListI[j] = _indexListI[i];
-      _indexListI[i] = _temp;
-    }
-    for (int i = _indexListJ.length - 1; i >= 1; i--) {
-      final int j = _random.nextInt(i + 1);
-      // обменять значения
-      final _temp = _indexListJ[j];
-      _indexListJ[j] = _indexListJ[i];
-      _indexListJ[i] = _temp;
-    } */
 
     // начальные координаты первой карточки
-    var _pos = cardNewPos(_cardSizeX, _cardSizeY);
+    var _pos = cardNewPos(cardSizeX, cardSizeY);
     for (var i = 0; i < _words1.length * 2; i++) {
       if (_points.isEmpty) {
         // сохр. координат карточки
@@ -129,16 +74,16 @@ class _GameMatchState extends State<GameMatch> {
             _tmp = _points[p] - _pos;
           }
           //требуется ли включать наложение?
-          if (_tmp <= Offset(_cardSizeX - _coverX, _cardSizeY - _coverY)) {
-            _pos = cardNewPos(_cardSizeX, _cardSizeY); //новая позиция карточки
-            // включаем наложение карточек если 500 и более раз не удается разместить
+          if (_tmp <= Offset(cardSizeX - _coverX, cardSizeY - _coverY)) {
+            _pos = cardNewPos(cardSizeX, cardSizeY); //новая позиция карточки
+            // включаем наложение карточек если 1000 и более раз не удается разместить
             if (_cnt >= 1000) {
-              _coverX = _cardSizeX - 10;
-              _coverY = _cardSizeY - 10;
+              _coverX = cardSizeX - 10;
+              _coverY = cardSizeY - 10;
             }
             if (_cnt >= 5000) {
-              _coverX = _cardSizeX - 30;
-              _coverY = _cardSizeY - 30;
+              _coverX = cardSizeX - 30;
+              _coverY = cardSizeY - 30;
             }
             //увеличиваем счетчик попыток и перезапускаем цикл
             p = -1;
@@ -152,23 +97,21 @@ class _GameMatchState extends State<GameMatch> {
       // выбор текста из нужного массива
       var _tmptxt = '';
       if (i < _words1.length) {
-        _tmptxt = _words1[_indexListI[i]] as String;
+        _tmptxt = _words1[i] as String;
       } else {
-        _tmptxt = _words2[_indexListJ[i - _words1.length]] as String;
+        _tmptxt = _words2[i - _words1.length] as String;
       }
       //формирование карточки
       myCards.add(
         TheCard(
-          sizeX: _cardSizeX,
-          sizeY: _cardSizeY,
+          sizeX: cardSizeX,
+          sizeY: cardSizeY,
           color: i < _words1.length ? Colors.blue : Colors.green,
           text: _tmptxt,
         ),
       );
-
-      _pos = cardNewPos(_cardSizeX, _cardSizeY);
+      _pos = cardNewPos(cardSizeX, cardSizeY);
     }
-
     return myCards;
   }
 
@@ -201,6 +144,7 @@ class _GameMatchState extends State<GameMatch> {
     );
   }
 
+  // размещаем карточки
   List<Widget> dragItems() {
     final List<Positioned> _items = [];
     for (var g = 0; g < _words1.length; g++) {
@@ -211,9 +155,12 @@ class _GameMatchState extends State<GameMatch> {
           visible: !isDropped[g],
           child: Draggable(
             data: g + _words1.length,
-            feedback: Opacity(
-              opacity: 0.8,
-              child: myCards[g],
+            feedback: Transform.scale(
+              scale: 1.2,
+              child: Opacity(
+                opacity: 0.75,
+                child: myCards[g],
+              ),
             ),
             childWhenDragging: Container(),
             child: myCards[g],
@@ -223,6 +170,7 @@ class _GameMatchState extends State<GameMatch> {
       _items.add(_item);
     }
     for (var g = _words1.length; g < _words1.length * 2; g++) {
+      //for (var g = 0; g < _words1.length * 2; g++) {
       final Positioned _item = Positioned(
         top: _points[g].dy,
         left: _points[g].dx,
@@ -250,39 +198,11 @@ class _GameMatchState extends State<GameMatch> {
       );
       _items.add(_item);
     }
-
     return _items;
   }
 }
 
-/////////////////////////////////////////////////////
-/* 1.On Child Widget : add parameter Function paramter
-class ChildWidget extends StatefulWidget {
-  final Function() notifyParent;
-  ChildWidget({Key key, @required this.notifyParent}) : super(key: key);
-}
-2.On Parent Widget : create a Function for the child to callback
-refresh() {
-  setState(() {});
-}
-3.On Parent Widget : pass parentFunction to Child Widget
-new ChildWidget( notifyParent: refresh );
-4.On Child Widget : call the Parent Function
-  widget.notifyParent(); */
-
-/* class MyNotify extends StatelessWidget {
-  const MyNotify({Key? key, required this.notify, required this.child})
-      : super(key: key);
-  final Function notify;
-  final Widget child;
-  @override
-  Widget build(BuildContext context) {
-    return child;
-  }
-} */
-
-/////////////////////////////////////////////////////
-
+// карточка
 class TheCard extends StatelessWidget {
   const TheCard({
     Key? key,
