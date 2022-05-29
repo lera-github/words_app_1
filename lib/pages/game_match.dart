@@ -6,7 +6,7 @@ import 'package:widget_finder/widget_finder.dart';
 List _words1 = []; //массивы слов
 List _words2 = [];
 final myCards = <Widget>[];
-const double cardSizeX = 90; //размер карточки
+const double cardSizeX = 120; //размер карточки
 const double cardSizeY = 60;
 final List<Offset> _points = []; // массив позиций карточек
 
@@ -26,7 +26,8 @@ class _GameMatchState extends State<GameMatch> {
 
   bool _offstage = true;
 
-  List<bool> isDropped = [];
+  List<bool> isDropped =
+      []; // признаки обработанных карточек (совпадение установлено)
 
   // обновление родительского виджета
 /*   _refresh() {
@@ -76,12 +77,12 @@ class _GameMatchState extends State<GameMatch> {
           //требуется ли включать наложение?
           if (_tmp <= Offset(cardSizeX - _coverX, cardSizeY - _coverY)) {
             _pos = cardNewPos(cardSizeX, cardSizeY); //новая позиция карточки
-            // включаем наложение карточек если 1000 и более раз не удается разместить
-            if (_cnt >= 1000) {
+            // включаем наложение карточек если 10000 и более раз не удается разместить
+            if (_cnt >= 10000) {
               _coverX = cardSizeX - 10;
               _coverY = cardSizeY - 10;
             }
-            if (_cnt >= 5000) {
+            if (_cnt >= 50000) {
               _coverX = cardSizeX - 30;
               _coverY = cardSizeY - 30;
             }
@@ -126,18 +127,24 @@ class _GameMatchState extends State<GameMatch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Offstage(
-        offstage: _offstage,
-        child: WidgetFinder.sizeNotifer(
-          onSizeChanged: (size) {
-            setState(() {
-              _offstage = false;
-              _area = size as Size;
-              getMyCards();
-            });
-          },
-          child: Stack(
-            children: dragItems(),
+      body: Container(
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Offstage(
+          offstage: _offstage,
+          child: WidgetFinder.sizeNotifer(
+            onSizeChanged: (size) {
+              setState(() {
+                _offstage = false;
+                _area = size as Size;
+                getMyCards();
+              });
+            },
+            child: Stack(
+              children: dragItems(),
+            ),
           ),
         ),
       ),
@@ -147,6 +154,7 @@ class _GameMatchState extends State<GameMatch> {
   // размещаем карточки
   List<Widget> dragItems() {
     final List<Positioned> _items = [];
+    //
     for (var g = 0; g < _words1.length; g++) {
       final Positioned _item = Positioned(
         top: _points[g].dy,
@@ -169,8 +177,10 @@ class _GameMatchState extends State<GameMatch> {
       );
       _items.add(_item);
     }
-    for (var g = _words1.length; g < _words1.length * 2; g++) {
-      //for (var g = 0; g < _words1.length * 2; g++) {
+    //
+
+    //for (var g = _words1.length; g < _words1.length * 2; g++) {
+    for (var g = 0; g < _words1.length * 2; g++) {
       final Positioned _item = Positioned(
         top: _points[g].dy,
         left: _points[g].dx,
@@ -182,15 +192,43 @@ class _GameMatchState extends State<GameMatch> {
               List<dynamic> accepted,
               List<dynamic> rejected,
             ) {
-              return myCards[g];
+              //return myCards[g];
+              return Draggable(
+                data: g,
+                feedback: Visibility(
+                  visible: !isDropped[g],
+                  child: Transform.scale(
+                    scale: 1.2,
+                    child: Opacity(
+                      opacity: 0.75,
+                      child: myCards[g],
+                    ),
+                  ),
+                ),
+                childWhenDragging: Container(),
+                child: Visibility(
+                  visible: !isDropped[g],
+                  child: myCards[g],
+                ),
+              );
             },
+            //условия совпадения карточек
             onWillAccept: (data) {
-              return data == g;
+              final _data = data! as int;
+              return (g < _words1.length)
+                  ? (_data == g + _words1.length) && (_data != g)
+                  : ((_data + _words1.length) == g) && (_data != g);
             },
+            //действия при совпадении
             onAccept: (data) {
               setState(() {
-                isDropped[g] = true;
-                isDropped[g - _words1.length] = true;
+                if (g < _words1.length) {
+                  isDropped[g] = true;
+                  isDropped[g + _words1.length] = true;
+                } else {
+                  isDropped[g] = true;
+                  isDropped[g - _words1.length] = true;
+                }
               });
             },
           ),

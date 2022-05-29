@@ -154,8 +154,14 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Expanded(
                       child: actionSelector(), // виджет игр
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                   ],
                 ),
