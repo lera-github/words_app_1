@@ -161,18 +161,9 @@ class _GameMatchState extends State<GameMatch> {
         TheCard(
           sizeX: _cardSizeX,
           sizeY: _cardSizeY,
-          color: i < _words1.length ? Colors.red : Colors.blue,
+          color: i < _words1.length ? Colors.blue : Colors.green,
           text: _tmptxt,
         ),
-        /* myCardWidget(
-          ind: i,
-          pos: _points[i], //_pos
-          sizeX: _cardSizeX,
-          sizeY: _cardSizeY,
-          color: i < _words1.length ? Colors.red : Colors.blue,
-          text: _tmptxt,
-          //refresh: _refresh,
-        ), */
       );
 
       _pos = cardNewPos(_cardSizeX, _cardSizeY);
@@ -189,91 +180,6 @@ class _GameMatchState extends State<GameMatch> {
     );
   }
 
-// виджет карточки
-  Widget myCardWidget({
-    int ind = 0,
-    Offset pos = Offset.zero,
-    double sizeX = 0,
-    double sizeY = 0,
-    Color color = Colors.black,
-    String text = '',
-  }) {
-    return /* Positioned(
-      top: pos.dy,
-      left: pos.dx,
-      child: */
-        TheCard(
-      sizeX: sizeX,
-      sizeY: sizeY,
-      color: color,
-      text: text,
-      // ),
-
-////////////////////////////////////////////////////////////////////////////////
-      /* ind < _words1.length * 2
-          ? Draggable(
-              data: myCards[ind],
-              feedback: Opacity(
-                opacity: 0.8,
-                child: TheCard(
-                  sizeX: sizeX,
-                  sizeY: sizeY,
-                  color: color,
-                  text: text,
-                ),
-              ),
-              childWhenDragging: Container(),
-              child: TheCard(
-                sizeX: sizeX,
-                sizeY: sizeY,
-                color: color,
-                text: text,
-              ),
-            )
-          : DragTarget(
-              onAccept: (receivedItem) {
-                if (receivedItem  == ind) {
-                  setState(() {
-                    //item.isAccepted = true;
-                  });
-                  print("ACCEPTED");
-                  //widget.onMatched(receivedItem);
-                }
-                print("ACCEPTED");
-              },
-              onLeave: (receivedItem) {
-                print("NOT ACCEPTED");
-                /* item.willAccept = false;
-                  widget.onMisMatched(receivedItem!); */
-              },
-              /*   onWillAccept: (receivedItem) {
-                  final bool willAccept =
-                      receivedItem?.ind == myCards[widget.ind] && !item.isAccepted == true;
-                  item.willAccept = willAccept;
-                  return willAccept;
-                }, */
-              builder: (context, acceptedItems, rejectedItem) => Container(
-                alignment: Alignment.center,
-                //margin: const EdgeInsets.all(8.0),
-                child: Container(
-                  color: /* item.isAccepted */ true
-                      ? Colors.green
-                      : Colors.transparent,
-                  child: TheCard(
-                    sizeX: sizeX,
-                    sizeY: sizeY,
-                    color: color,
-                    text: text,
-                  ), //item.dropChild,
-                ),
-              ),
-            ), */
-
-////////////////////////////////////////////////////////////////////////////////////////
-    );
-  }
-
-//////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -289,12 +195,7 @@ class _GameMatchState extends State<GameMatch> {
           },
           child: Stack(
             children: dragItems(),
-
-            //dragElements(),
-
-            //myCards, //_area == Size.zero ? <Widget>[] : getMyCards(),
           ),
-          //getControls(),
         ),
       ),
     );
@@ -336,14 +237,12 @@ class _GameMatchState extends State<GameMatch> {
               return myCards[g];
             },
             onWillAccept: (data) {
-              //print(data.toString() + '-' + g.toString());
               return data == g;
             },
             onAccept: (data) {
               setState(() {
                 isDropped[g] = true;
                 isDropped[g - _words1.length] = true;
-                //print('попал');
               });
             },
           ),
