@@ -124,33 +124,6 @@ class _GameMatchState extends State<GameMatch> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Offstage(
-          offstage: _offstage,
-          child: WidgetFinder.sizeNotifer(
-            onSizeChanged: (size) {
-              setState(() {
-                _offstage = false;
-                _area = size as Size;
-                getMyCards();
-              });
-            },
-            child: Stack(
-              children: dragItems(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   // размещаем карточки
   List<Widget> dragItems() {
     final List<Positioned> _items = [];
@@ -237,6 +210,33 @@ class _GameMatchState extends State<GameMatch> {
       _items.add(_item);
     }
     return _items;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Offstage(
+          offstage: _offstage,
+          child: WidgetFinder.sizeNotifer(
+            onSizeChanged: (size) {
+              setState(() {
+                _offstage = false;
+                _area = size as Size;
+                getMyCards();
+              });
+            },
+            child: Stack(
+              children: dragItems(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
