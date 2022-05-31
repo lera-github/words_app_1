@@ -1,9 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/styles.dart';
 
 List _words1 = []; //массивы слов
 List _words2 = [];
+int index = 0;
 
 class GameFlashCard extends StatefulWidget {
   const GameFlashCard({Key? key, required this.mapdata}) : super(key: key);
@@ -14,12 +16,12 @@ class GameFlashCard extends StatefulWidget {
 }
 
 class _GameFlashCardState extends State<GameFlashCard> {
-/*   @override
+  @override
   void initState() {
     super.initState();
-    _words1 = widget.mapdata['words1'] as List;
-    _words2 = widget.mapdata['words2'] as List;
-  } */
+    index = 0;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,19 +69,112 @@ class _GameFlashCardState extends State<GameFlashCard> {
     return Scaffold(
       body: Center(
         child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
-            child: ListView.builder(
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child:
+//
+                  DefaultTabController(
+                length: flashCard.length,
+                // Use a Builder here, otherwise DefaultTabController.of(context) below
+                // returns null.
+                child: Builder(
+                  builder: (BuildContext context) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        const TabPageSelector(),
+                        SizedBox(
+                          width: 300,
+                          height: 200,
+                          child: TabBarView(children: flashCard),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Transform.scale(
+                              scale: 1.4,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    index--;
+                                    if (index < 0) {
+                                      index = flashCard.length - 1;
+                                    }
+                                  });
+
+                                  final TabController controller =
+                                      DefaultTabController.of(context)!;
+                                  if (!controller.indexIsChanging) {
+                                    controller.animateTo(index);
+                                  }
+                                },
+                                child: const Icon(
+                                  Icons.arrow_back_outlined,
+                                  color: Colors.yellow,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '${index + 1} / ${flashCard.length}',
+                              style: textStyle,
+                            ),
+                            Transform.scale(
+                              scale: 1.4,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    index++;
+                                    if (index > flashCard.length - 1) {
+                                      index = 0;
+                                    }
+                                  });
+
+                                  final TabController controller =
+                                      DefaultTabController.of(context)!;
+                                  if (!controller.indexIsChanging) {
+                                    controller.animateTo(index);
+                                  }
+                                },
+                                child: const Icon(
+                                  Icons.arrow_forward_outlined,
+                                  color: Colors.yellow,
+                                ),
+                              ),
+                            ),
+
+                            /* ElevatedButton(
+                            onPressed: () {
+                              final TabController controller =
+                                  DefaultTabController.of(context)!;
+                              if (!controller.indexIsChanging) {
+                                controller.animateTo(flashCard.length - 1);
+                              }
+                            },
+                            child: const Text('SKIP'),
+                          ), */
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+
+//
+            //flashCard[1],
+            /* ListView.builder(
               itemCount: flashCard.length,
               itemBuilder: (context, index) {
                 return flashCard[index];
               },
+            ), */
+
             ),
-          ),
-        ),
       ),
     );
   }
