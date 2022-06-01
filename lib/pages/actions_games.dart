@@ -4,6 +4,7 @@ import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/game_flash_card.dart';
 import 'package:myapp/pages/game_match.dart';
+import 'package:myapp/pages/game_memorise.dart';
 
 String actionSelect = '';
 
@@ -90,6 +91,25 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         textScaleFactor: 0.7,
                       ),
                     ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    // Заучивание
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          actionSelect = 'GameMemorise';
+                        });
+                      },
+                      child: Text(
+                        'Заучивание',
+                        style: titleStyle,
+                        textScaleFactor: 0.7,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
                     // Подбор
                     TextButton(
                       onPressed: () {
@@ -102,7 +122,10 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         style: titleStyle,
                         textScaleFactor: 0.7,
                       ),
-                    )
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
                   ],
                 ),
               ),
@@ -184,9 +207,10 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
       case 'GameFlashCard':
         return GameFlashCard(mapdata: widget.mapdata);
       //break;
+      case 'GameMemorise':
+        return GameMemorise(mapdata: widget.mapdata);
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
-      //break;
       default:
         return GameFlashCard(mapdata: widget.mapdata);
     }
