@@ -72,7 +72,7 @@ class _GameMemoriseState extends State<GameMemorise> {
 
     final List<Widget> flashCard = List.generate(
       _words1.length,
-      (_) {
+      (index) {
         final int _answerindex =
             _random.nextInt(4); //в какой карточке будет ответ
         return Column(
