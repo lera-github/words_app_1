@@ -73,33 +73,57 @@ class _GameMemoriseState extends State<GameMemorise> {
     final List<Widget> flashCard = List.generate(
       _words1.length,
       (index) {
-        final int _answerindex =
-            _random.nextInt(4); //в какой карточке будет ответ
+        //индекс карточки
+        final int _answerindex = index;
+        //в какой карточке будет ответ (0-3)
+        final int _answerindexplace = _random.nextInt(4);
+        //массив без текущего индекса карточки
+        final List<int> _shuffledindex = List.generate(
+          _words1.length - 1,
+          (index) {
+            if (index >= _answerindex) {
+              return index + 1;
+            } else {
+              return index;
+            }
+          },
+        );
+        //перемешать
+        _shuffledindex.shuffle();
+        //вставить по индексу _answerindexplace правильный ответ _answerindex
+        _shuffledindex[_answerindexplace] = _answerindex;
         return Column(
           children: [
             SizedBox(
-              height: 80,
-              child: AutoSizeText(
-                _words2[index] as String,
-                textAlign: TextAlign.center,
-                maxLines: 5,
-                wrapWords: false,
-                overflow: TextOverflow.ellipsis,
-                minFontSize: 10,
-                style: const TextStyle(
-                  color: Colors.blue,
-                  fontSize: 26,
-                  //fontWeight: FontWeight.w900,
-                ),
-              ),
+                height: 80,
+                child: Center(
+                  child: AutoSizeText(
+                    _words2[index] as String,
+                    textAlign: TextAlign.center,
+                    maxLines: 5,
+                    wrapWords: false,
+                    overflow: TextOverflow.ellipsis,
+                    minFontSize: 10,
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 26,
+                      //fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _fourCards(_shuffledindex[0]),
+                _fourCards(_shuffledindex[1])
+              ], //_answerindex==0 ? :
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [_fourCards(0), _fourCards(1)], //_answerindex==0 ? :
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [_fourCards(2), _fourCards(3)],
+              children: [
+                _fourCards(_shuffledindex[2]),
+                _fourCards(_shuffledindex[3])
+              ],
             ),
           ],
         );
@@ -122,14 +146,13 @@ class _GameMemoriseState extends State<GameMemorise> {
                 builder: (BuildContext context) => Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       const SizedBox(
                         height: 10,
                       ),
                       const TabPageSelector(),
                       const SizedBox(
-                        height: 18,
+                        height: 10,
                       ),
                       Expanded(
                         child: TabBarView(children: flashCard),

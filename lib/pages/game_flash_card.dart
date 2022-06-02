@@ -88,8 +88,8 @@ class _GameFlashCardState extends State<GameFlashCard> {
                       children: <Widget>[
                         const TabPageSelector(),
                         SizedBox(
-                          width: 300,
-                          height: 200,
+                          width: 320,
+                          height: 220,
                           child: TabBarView(children: flashCard),
                         ),
                         Row(
