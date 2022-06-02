@@ -36,6 +36,7 @@ class _GameMemoriseState extends State<GameMemorise> {
 
     Card _fourCards(int idx) {
       //_list.shuffle();
+      var _visFlag = false;
       return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -48,22 +49,54 @@ class _GameMemoriseState extends State<GameMemorise> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          child: Container(
-            height: 80, //size
-            width: 300,
-            padding: const EdgeInsets.all(6.0),
-            alignment: Alignment.center,
-            child: AutoSizeText(
-              idx < _words1.length ? _words1[idx] as String : '',
-              maxLines: 5,
-              wrapWords: false,
-              style: const TextStyle(
-                fontSize: 18,
-                fontStyle: FontStyle.italic,
-                color: Colors.deepPurple,
-              ),
-              overflow: TextOverflow.ellipsis,
-              minFontSize: 8,
+          child: InkWell(
+            onTap: () {
+              if (idx == index) {
+                setState(() {
+                  _visFlag = true;
+                });
+              }
+
+              //debugPrint((idx == index).toString());
+            },
+            child: Stack(
+              alignment: AlignmentDirectional.bottomEnd,
+              children: [
+                Container(
+                  height: 80, //size
+                  width: 300,
+                  padding: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  child: AutoSizeText(
+                    idx < _words1.length ? _words1[idx] as String : '',
+                    maxLines: 5,
+                    wrapWords: false,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.deepPurple,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    minFontSize: 8,
+                  ),
+                ),
+                Visibility(
+                  visible: _visFlag,
+                  child: Container(
+                    child: idx == index
+                        ? const Icon(
+                            Icons.sentiment_satisfied_alt_outlined,
+                            color: Colors.green,
+                            size: 32,
+                          )
+                        : const Icon(
+                            Icons.sentiment_dissatisfied_outlined,
+                            color: Colors.red,
+                            size: 32,
+                          ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -73,25 +106,32 @@ class _GameMemoriseState extends State<GameMemorise> {
     final List<Widget> flashCard = List.generate(
       _words1.length,
       (index) {
-        //индекс карточки
-        final int _answerindex = index;
-        //в какой карточке будет ответ (0-3)
-        final int _answerindexplace = _random.nextInt(4);
-        //массив без текущего индекса карточки
-        final List<int> _shuffledindex = List.generate(
-          _words1.length - 1,
-          (index) {
-            if (index >= _answerindex) {
-              return index + 1;
-            } else {
-              return index;
-            }
-          },
-        );
-        //перемешать
-        _shuffledindex.shuffle();
-        //вставить по индексу _answerindexplace правильный ответ _answerindex
-        _shuffledindex[_answerindexplace] = _answerindex;
+        //карточки сформированы?
+        bool _generated = false;
+        List<int> _shuffledindex = [];
+        if (!_generated) {
+          //индекс карточки
+          final int _answerindex = index;
+          //в какой карточке будет ответ (0-3)
+          final int _answerindexplace = _random.nextInt(4);
+          //массив без текущего индекса карточки
+          _shuffledindex = List.generate(
+            _words1.length - 1,
+            (index) {
+              if (index >= _answerindex) {
+                return index + 1;
+              } else {
+                return index;
+              }
+            },
+          );
+          //перемешать
+          _shuffledindex.shuffle();
+          //вставить по индексу _answerindexplace правильный ответ _answerindex
+          _shuffledindex[_answerindexplace] = _answerindex;
+          _generated = true;
+        }
+
         return Column(
           children: [
             SizedBox(
@@ -116,7 +156,7 @@ class _GameMemoriseState extends State<GameMemorise> {
               children: [
                 _fourCards(_shuffledindex[0]),
                 _fourCards(_shuffledindex[1])
-              ], //_answerindex==0 ? :
+              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -140,8 +180,6 @@ class _GameMemoriseState extends State<GameMemorise> {
           child: Center(
             child: DefaultTabController(
               length: flashCard.length,
-              // Use a Builder here, otherwise DefaultTabController.of(context) below
-              // returns null.
               child: Builder(
                 builder: (BuildContext context) => Padding(
                   padding: const EdgeInsets.all(8.0),
