@@ -163,7 +163,7 @@ class _GameFlashCardState extends State<GameFlashCard> {
                   ),
                 ),
               ),
-            )
+            ),
 
 //
             //flashCard[1],
