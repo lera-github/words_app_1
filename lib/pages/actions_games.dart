@@ -177,10 +177,8 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
     switch (actionSelect) {
       case 'GameFlashCard':
         return GameFlashCard(mapdata: widget.mapdata);
-        break;
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
-        break;
       default:
         GameFlashCard(mapdata: widget.mapdata);
     }
