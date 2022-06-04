@@ -2,15 +2,17 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+
 import 'package:myapp/helpers/styles.dart';
 
 List _words1 = []; //массивы слов
 List _words2 = [];
 int index = 0;
 final _random = Random();
-bool _generated = false; //карточки сформированы?
-List<int> _shuffledindex = []; //массив перемешанных индексов
-
+//List<bool> _generated = []; //карточки сформированы?
+bool _cardsReady = false;
+//List<int> _shuffledindex = []; //массив перемешанных индексов
+List<List<int>> _indexCards = [];
 List<bool> _visFlag = [];
 
 class GameMemorise extends StatefulWidget {
@@ -26,9 +28,11 @@ class _GameMemoriseState extends State<GameMemorise> {
   void initState() {
     super.initState();
     index = 0;
+    _cardsReady = false;
+    _indexCards = [];
+    //_generated = List.generate(_words1.length, (index) => false);
 
-    _generated = false;
-    _shuffledindex = [];
+    //_shuffledindex = [];
 
     _visFlag = [false, false, false, false];
   }
@@ -38,10 +42,47 @@ class _GameMemoriseState extends State<GameMemorise> {
   Widget build(BuildContext context) {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
+    bool _hasListeners = false;
+    /* if (_generated.isEmpty) {
+      _generated = List.generate(_words1.length, (index) => false);
+    } */
+    if (!_cardsReady) {
+      //индекс карточки
+      for (int i = 0; i < _words1.length; i++) {
+        //в какой карточке будет ответ (0-3)
+        final int _answerindexplace = _random.nextInt(4);
+        //массив без текущего индекса карточки
+        final List<int> _shuffledindex = List.generate(
+          _words1.length - 1,
+          (j) {
+            if (j >= i) {
+              return j + 1;
+            } else {
+              return j;
+            }
+          },
+        );
+        //перемешать
+        _shuffledindex.shuffle();
+        //вставить по индексу _answerindexplace правильный ответ i
+        _shuffledindex[_answerindexplace] = i;
+        _indexCards.add([i]);
+        _indexCards[i] = [
+          _shuffledindex[0],
+          _shuffledindex[1],
+          _shuffledindex[2],
+          _shuffledindex[3],
+        ];
+        //print(i.toString());
+        //print(_indexCards[i].toString());
+      }
+
+      _cardsReady = true;
+    }
 
     //final List<int> _list = List.generate(_words1.length, (index) => index++, growable: false);
     //_list.shuffle();
-//--------------------------------------------------------------
+    //--------------------------------------------------------------
     Card _card({
       required int idx,
       required bool visFlag,
@@ -103,32 +144,10 @@ class _GameMemoriseState extends State<GameMemorise> {
       );
     }
 
-//----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
     final List<Widget> flashCard = List.generate(
       _words1.length,
-      (index) {
-        if (!_generated) {
-          //индекс карточки
-          final int _answerindex = index;
-          //в какой карточке будет ответ (0-3)
-          final int _answerindexplace = _random.nextInt(4);
-          //массив без текущего индекса карточки
-          _shuffledindex = List.generate(
-            _words1.length - 1,
-            (index) {
-              if (index >= _answerindex) {
-                return index + 1;
-              } else {
-                return index;
-              }
-            },
-          );
-          //перемешать
-          _shuffledindex.shuffle();
-          //вставить по индексу _answerindexplace правильный ответ _answerindex
-          _shuffledindex[_answerindexplace] = _answerindex;
-          _generated = true;
-        }
+      (ind) {
         return Column(
           children: [
             SizedBox(
@@ -157,10 +176,9 @@ class _GameMemoriseState extends State<GameMemorise> {
                     setState(() {
                       _visFlag[0] = true;
                     });
-                    //debugPrint((idx == index).toString());
                   },
                   child: _card(
-                    idx: _shuffledindex[0],
+                    idx: _indexCards[index][0],
                     visFlag: _visFlag[0],
                   ),
                 ),
@@ -171,7 +189,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                     });
                   },
                   child: _card(
-                    idx: _shuffledindex[1],
+                    idx: _indexCards[index][1],
                     visFlag: _visFlag[1],
                   ),
                 ),
@@ -180,8 +198,6 @@ class _GameMemoriseState extends State<GameMemorise> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                //_card(_shuffledindex[2]),
-                //_card(_shuffledindex[3])
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -189,7 +205,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                     });
                   },
                   child: _card(
-                    idx: _shuffledindex[2],
+                    idx: _indexCards[index][2],
                     visFlag: _visFlag[2],
                   ),
                 ),
@@ -200,7 +216,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                     });
                   },
                   child: _card(
-                    idx: _shuffledindex[3],
+                    idx: _indexCards[index][3],
                     visFlag: _visFlag[3],
                   ),
                 ),
@@ -211,7 +227,7 @@ class _GameMemoriseState extends State<GameMemorise> {
       },
     );
 
-//===================================
+    //===================================
     return Scaffold(
       body: Center(
         child: Container(
@@ -226,13 +242,11 @@ class _GameMemoriseState extends State<GameMemorise> {
                 builder: (BuildContext context) {
                   final TabController controller =
                       DefaultTabController.of(context)!;
-                  if (!controller.hasListeners) {
+
+                  if (!_hasListeners) {
                     controller.addListener(() {
-                      setState(() {
-                        /* _generated = false;
-                        _visFlag = [false, false, false, false]; */
-                      });
-                      print('ggg');
+                      _hasListeners = true;
+                      setState(() {});
                     });
                   }
 
@@ -257,17 +271,12 @@ class _GameMemoriseState extends State<GameMemorise> {
                               scale: 1.4,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  //_list.shuffle();
-
-                                  _generated = false;
-                                  _visFlag = [false, false, false, false];
                                   index--;
                                   if (index < 0) {
                                     index = flashCard.length - 1;
                                   }
+                                  _visFlag = [false, false, false, false];
 
-                                  /* final TabController controller =
-                                      DefaultTabController.of(context)!; */
                                   if (!controller.indexIsChanging) {
                                     controller.animateTo(index);
                                   }
@@ -286,17 +295,12 @@ class _GameMemoriseState extends State<GameMemorise> {
                               scale: 1.4,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  //_list.shuffle();
-
-                                  _generated = false;
-                                  _visFlag = [false, false, false, false];
                                   index++;
                                   if (index > flashCard.length - 1) {
                                     index = 0;
                                   }
+                                  _visFlag = [false, false, false, false];
 
-                                  /* final TabController controller =
-                                      DefaultTabController.of(context)!; */
                                   if (!controller.indexIsChanging) {
                                     controller.animateTo(index);
                                   }
@@ -317,15 +321,6 @@ class _GameMemoriseState extends State<GameMemorise> {
               ),
             ),
           ),
-
-//
-          //flashCard[1],
-          /* ListView.builder(
-              itemCount: flashCard.length,
-              itemBuilder: (context, index) {
-                return flashCard[index];
-              },
-            ), */
         ),
       ),
     );

@@ -62,7 +62,6 @@ class _GameFlashCardState extends State<GameFlashCard> {
           ),
         ),
         width: 300,
-        height: 200,
       ),
     );
 
