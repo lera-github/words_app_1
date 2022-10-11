@@ -38,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 30,
                 ),
                 reusableTextField(
-                  "Enter UserName",
+                  "Введите имя пользователя",
                   Icons.person_outline,
                   false,
                   _emailTextController,
@@ -47,7 +47,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 20,
                 ),
                 reusableTextField(
-                  "Enter	Password",
+                  "Введите пароль",
                   Icons.lock_outline,
                   true,
                   _passwordTextController,
@@ -121,7 +121,7 @@ Container signInSignUpButton(
         onTap();
       },
       child: Text(
-        isLogin ? 'LOG IN' : 'SIGN UP',
+        isLogin ? 'Вход' : 'Регистрация',
         style: const TextStyle(
             color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
       ),
