@@ -48,7 +48,7 @@ class ProfileState extends State<Profile> {
   TextEditingController mymailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  get obscureText => null;
+  void get obscureText => null;
 
   @override
   Widget build(BuildContext context) {

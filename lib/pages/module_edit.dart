@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 
+
 class ModuleEdit extends StatefulWidget {
   const ModuleEdit({Key? key, required this.mapdata, required this.isAdd})
       : super(key: key);
@@ -272,7 +273,7 @@ class _ModuleEditState extends State<ModuleEdit> {
   Widget _buildItem(
     String item1,
     String item2,
-    Animation animation,
+    Animation<double> animation,
     int index,
   ) {
     final TextEditingController item1Controller = TextEditingController();
@@ -280,7 +281,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     final TextEditingController item2Controller = TextEditingController();
     item2Controller.text = item2; //_words2[index] as String;
     return SizeTransition(
-      sizeFactor: animation as Animation<double>,
+      sizeFactor: animation, // as Animation<double>,
       child: Card(
         elevation: 5.0,
         child: ListTile(
@@ -386,9 +387,8 @@ class _ModuleEditState extends State<ModuleEdit> {
     final int removeIndex = removeAt;
     final String removedItem1 = _words1.removeAt(removeIndex) as String;
     final String removedItem2 = _words2.removeAt(removeIndex) as String;
-    final AnimatedListRemovedItemBuilder builder = (context, animation) {
-      return _buildItem(removedItem1, removedItem2, animation, removeAt);
-    };
+    final AnimatedListRemovedItemBuilder builder = (context, animation) =>
+        _buildItem(removedItem1, removedItem2, animation, removeAt);
     _listKey.currentState!.removeItem(removeIndex, builder);
 /*     int removeIndex = removeAt;
     String removedItem = _data.removeAt(removeIndex);

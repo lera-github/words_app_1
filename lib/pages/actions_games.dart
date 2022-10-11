@@ -4,6 +4,8 @@ import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/game_flash_card.dart';
 import 'package:myapp/pages/game_match.dart';
+import 'package:myapp/pages/game_memorise.dart';
+
 
 String actionSelect = '';
 
@@ -20,9 +22,9 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
 
   @override
   Widget build(BuildContext context) {
-    final _scrwidth = MediaQuery.of(context).size.width < 600.0
+    final _scrwidth = MediaQuery.of(context).size.width < 800.0
         ? MediaQuery.of(context).size.width
-        : 600.0;
+        : 800.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,10 +79,12 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                     const SizedBox(
                       height: 80,
                     ),
+                    // Карточки
                     TextButton(
                       onPressed: () {
-                        actionSelect = 'GameFlashCard';
-                        setState(() {});
+                        setState(() {
+                          actionSelect = 'GameFlashCard';
+                        });
                       },
                       child: Text(
                         'Карточки',
@@ -88,17 +92,41 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         textScaleFactor: 0.7,
                       ),
                     ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    // Заучивание
                     TextButton(
                       onPressed: () {
-                        actionSelect = 'GameMatch';
-                        setState(() {});
+                        setState(() {
+                          actionSelect = 'GameMemorise';
+                        });
+                      },
+                      child: Text(
+                        'Заучивание',
+                        style: titleStyle,
+                        textScaleFactor: 0.7,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    // Подбор
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          actionSelect = 'GameMatch';
+                        });
                       },
                       child: Text(
                         'Подбор',
                         style: titleStyle,
                         textScaleFactor: 0.7,
                       ),
-                    )
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
                   ],
                 ),
               ),
@@ -150,12 +178,14 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Expanded(
-                      child:
-/////////////////////////////////////////////////////////////////////   сюда идет поле игры
-                          /// Icon   - это для примера
-                          ///
-                          actionSelector(),
+                      child: actionSelector(), // виджет игр
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                   ],
                 ),
@@ -177,11 +207,13 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
     switch (actionSelect) {
       case 'GameFlashCard':
         return GameFlashCard(mapdata: widget.mapdata);
+      //break;
+      case 'GameMemorise':
+        return GameMemorise(mapdata: widget.mapdata);
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
       default:
-        GameFlashCard(mapdata: widget.mapdata);
+        return GameFlashCard(mapdata: widget.mapdata);
     }
-    return GameFlashCard(mapdata: widget.mapdata);
   }
 }
