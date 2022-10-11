@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_edit.dart';
+import 'package:myapp/pages/mysignin.dart';
 
 class LibButton extends StatefulWidget {
   const LibButton({Key? key}) : super(key: key);
@@ -47,6 +48,16 @@ class _LibButtonState extends State<LibButton> {
             );
           },
           child: const Text("Создать модуль"),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        ElevatedButton(
+          child: Text("Logout"),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SignInScreen()));
+          },
         ),
       ],
     );

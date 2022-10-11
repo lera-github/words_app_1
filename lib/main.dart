@@ -8,6 +8,7 @@ import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_list.dart';
 
 import 'package:myapp/pages/mysignin.dart';
+import 'package:myapp/pages/mysignup.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memory Games',
-      home: SignInScreen(),      //MyHomePage(),
+      home: SignInScreen(), //MyHomePage(),
       /* theme: ThemeData(
           primarySwatch: Colors.green,
         ), */
@@ -104,4 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  
+
+
+  
 }
