@@ -53,7 +53,7 @@ class _LibButtonState extends State<LibButton> {
           width: 20,
         ),
         ElevatedButton(
-          child: Text("Logout"),
+          child: Text("Выйти"),
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const SignInScreen()));
