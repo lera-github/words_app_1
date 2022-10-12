@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_edit.dart';
@@ -53,10 +54,16 @@ class _LibButtonState extends State<LibButton> {
           width: 20,
         ),
         ElevatedButton(
-          child: Text("Выйти"),
+          child: const Text("Выйти"),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const SignInScreen()));
+            FirebaseAuth.instance.signOut().then((value) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignInScreen(),
+                ),
+              );
+            });
           },
         ),
       ],

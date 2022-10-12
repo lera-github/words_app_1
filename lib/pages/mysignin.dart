@@ -61,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 signInSignUpButton(context, true, () {
                   FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
+                      .signInWithEmailAndPassword(
                     email: _emailTextController.text,
                     password: _passwordTextController.text,
                   )
@@ -69,8 +69,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const MyHomePage(),),
+                        builder: (context) => const MyHomePage(),
+                      ),
                     );
+                  }).onError((error, stackTrace) {
+                    print("Error ${error.toString()}");
                   });
                 }),
                 signUpOption()
