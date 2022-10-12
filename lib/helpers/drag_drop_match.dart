@@ -159,7 +159,7 @@ class _DragDropWidgetState extends State<DragDropWidget> {
                 builder: (context, acceptedItems, rejectedItem) => Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.all(8.0),
-                  child: Container(
+                  child: ColoredBox(
                     color: item.isAccepted ? Colors.green : Colors.transparent,
                     child: item.dropChild,
                   ),

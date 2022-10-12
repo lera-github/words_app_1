@@ -57,7 +57,7 @@ class _LibButtonState extends State<LibButton> {
           child: const Text("Выйти"),
           onPressed: () {
             FirebaseAuth.instance.signOut().then((value) {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const SignInScreen(),

@@ -66,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     password: _passwordTextController.text,
                   )
                       .then((value) {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const MyHomePage(),
@@ -90,12 +90,12 @@ class _SignInScreenState extends State<SignInScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          "Нет учётной записи?  ",
+          "Не можете войти?  ",
           style: TextStyle(color: Colors.white70),
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => SignUpScreen()),
             );
@@ -155,7 +155,7 @@ TextField reusableTextField(
 }
 
 Container signInSignUpButton(
-    BuildContext context, bool isLogin, Function onTap) {
+    BuildContext context, bool isLogin, Function onTap,) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 50,
@@ -165,11 +165,6 @@ Container signInSignUpButton(
       onPressed: () {
         onTap();
       },
-      child: Text(
-        isLogin ? 'Вход' : 'Регистрация',
-        style: const TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
-      ),
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.pressed)) {
@@ -178,7 +173,12 @@ Container signInSignUpButton(
             return Colors.white;
           }),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),),),
+      child: Text(
+        isLogin ? 'Вход' : 'Регистрация',
+        style: const TextStyle(
+            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16,),
+      ),
     ),
   );
 }

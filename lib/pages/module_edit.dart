@@ -81,23 +81,23 @@ class _ModuleEditState extends State<ModuleEdit> {
                       }
                     }
                     if (moduleNameOK & moduleItemsOK) {
-                      var _id = widget.mapdata['id'];
+                      var idx = widget.mapdata['id'];
                       //добавление модуля?
                       if (widget.isAdd) {
                         await FirebaseFirestore.instance
                             .collection('modules')
                             .add({'favourite': false}).then((value) {
-                          _id = value.id;
+                          idx = value.id;
                         });
                         await FirebaseFirestore.instance
                             .collection('modules')
-                            .doc(_id as String)
-                            .update({'id': _id});
+                            .doc(idx as String)
+                            .update({'id': idx});
                       }
 
                       await FirebaseFirestore.instance
                           .collection('modules')
-                          .doc(_id as String)
+                          .doc(idx as String)
                           .update({
                         'words1': _words1,
                         'words2': _words2,

@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/mysignin.dart';
 
 class SignUpScreen extends StatefulWidget {
-  SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -62,14 +63,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                signInSignUpButton(context, false, () {
-                 FirebaseAuth.instance
+                signInSignUpButton(context, false, () async {
+                  await FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
-                    email: _emailTextController.text,
-                    password: _passwordTextController.text,
+                    email: _emailTextController.text.trim(),
+                    password: _passwordTextController.text.trim(),
                   )
-                      .then((value) {
-                    Navigator.push(
+                      .then((value) async {
+                    var idx;
+//запись в базу нового пользователя
+                    await FirebaseFirestore.instance.collection('users').add({
+                      'username': _userNameTextController.text.trim()
+                    }).then((value) {
+                      idx = value.id;
+                    });
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(idx as String)
+                        .update({
+                      'userid': idx,
+                      'useremail': _emailTextController.text.trim()
+                    });
+                    if (!mounted) return;
+
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const MyHomePage(),
@@ -79,6 +96,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     print("Error ${error.toString()}");
                   });
                 }),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignInScreen()),
+                    );
+                  },
+                  child: Row(
+                    children: const [
+                      Icon(Icons.arrow_back_rounded),
+                      Text(
+                        " назад",
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
