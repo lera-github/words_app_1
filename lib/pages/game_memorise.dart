@@ -46,26 +46,66 @@ class _GameMemoriseState extends State<GameMemorise> {
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
     } */
+
+/* //проверка - должно быть >= 5 пар карточек, иначе диалог и выход
+    if (_words1.length < 5) {
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          elevation: 1.2,
+          backgroundColor: Colors.red.shade900,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: InkWell(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              child: const Text(
+                'Для этого модуля необходимо не менее 5 пар карточек!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.yellow,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(
+                context,
+              );
+            },
+          ),
+        ),
+      );
+    } */
+
     if (!_cardsReady) {
       //индекс карточки
       for (int i = 0; i < _words1.length; i++) {
         //в какой карточке будет ответ (0-3)
-        final int _answerindexplace = _random.nextInt(4);
+        //final int _answerindexplace = _random.nextInt(4);
         //массив без текущего индекса карточки
         final List<int> _shuffledindex = List.generate(
-          _words1.length - 1,
-          (j) {
-            if (j >= i) {
-              return j + 1;
-            } else {
-              return j;
-            }
-          },
+          _words1.length,
+          (j) => j,
         );
-        //перемешать
-        _shuffledindex.shuffle();
+
+        bool eqfl = false;
+        do {
+          //перемешать
+          _shuffledindex.shuffle();
+          //первые 4 элемента проверяем на наличие индекса ответа
+
+          for (int j = 0; j < 4; j++) {
+            if (_shuffledindex[j] == i) {
+              eqfl = true;
+            }
+          }
+        } while (eqfl);
         //вставить по индексу _answerindexplace правильный ответ i
-        _shuffledindex[_answerindexplace] = i;
+        //_shuffledindex[_answerindexplace] = i;
+
         _indexCards.add([i]);
         _indexCards[i] = [
           _shuffledindex[0],
@@ -75,6 +115,7 @@ class _GameMemoriseState extends State<GameMemorise> {
         ];
         //print(i.toString());
         //print(_indexCards[i].toString());
+
       }
 
       _cardsReady = true;
@@ -230,7 +271,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     //===================================
     return Scaffold(
       body: Center(
-        child: Container(
+        child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(),
             borderRadius: BorderRadius.circular(5),

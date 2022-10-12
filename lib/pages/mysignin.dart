@@ -59,11 +59,15 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+
                 signInSignUpButton(context, true, () {
                   FirebaseAuth.instance
                       .signInWithEmailAndPassword(
-                    email: _emailTextController.text,
-                    password: _passwordTextController.text,
+//-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ                        
+                    email: "aaaaaa@ya.ru",
+                    password: "aaaaaa",
+//                    email: _emailTextController.text.trim(),
+//                    password: _passwordTextController.text.trim(),
                   )
                       .then((value) {
                     Navigator.pushReplacement(
@@ -97,7 +101,7 @@ class _SignInScreenState extends State<SignInScreen> {
           onTap: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => SignUpScreen()),
+              MaterialPageRoute(builder: (context) => const SignUpScreen()),
             );
           },
           child: const Text(
@@ -155,7 +159,10 @@ TextField reusableTextField(
 }
 
 Container signInSignUpButton(
-    BuildContext context, bool isLogin, Function onTap,) {
+  BuildContext context,
+  bool isLogin,
+  Function onTap,
+) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 50,
@@ -166,18 +173,23 @@ Container signInSignUpButton(
         onTap();
       },
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.pressed)) {
-              return Colors.black26;
-            }
-            return Colors.white;
-          }),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),),),
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.pressed)) {
+            return Colors.black26;
+          }
+          return Colors.white;
+        }),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+      ),
       child: Text(
         isLogin ? 'Вход' : 'Регистрация',
         style: const TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16,),
+          color: Colors.black87,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
       ),
     ),
   );

@@ -7,7 +7,6 @@ import 'package:myapp/main.dart';
 import 'package:myapp/pages/actions_games.dart';
 import 'package:myapp/pages/module_edit.dart';
 
-
 class ModuleList extends StatefulWidget {
   const ModuleList({Key? key}) : super(key: key);
 
@@ -22,7 +21,8 @@ class ModuleListState extends State<ModuleList> {
         ? MediaQuery.of(context).size.width
         : 600.0;
     return FutureBuilder(
-      future: getFS(collection: 'modules', order: 'module'),
+      future: getFS(
+          collection: 'users/yaAbGEmB9Ho4AOHXz5Be/modules', order: 'module'),
       builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
