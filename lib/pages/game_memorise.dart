@@ -102,7 +102,7 @@ class _GameMemoriseState extends State<GameMemorise> {
               eqfl = true;
             }
           }
-        } while (eqfl);
+        } while (!eqfl);
         //вставить по индексу _answerindexplace правильный ответ i
         //_shuffledindex[_answerindexplace] = i;
 

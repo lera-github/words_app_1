@@ -5,7 +5,8 @@ import 'package:myapp/pages/module_edit.dart';
 import 'package:myapp/pages/mysignin.dart';
 
 class LibButton extends StatefulWidget {
-  const LibButton({Key? key}) : super(key: key);
+  const LibButton({Key? key, required this.collectionPath} ) : super(key: key);
+  final String collectionPath;
 
   @override
   State<LibButton> createState() => _LibButtonState();
@@ -41,7 +42,7 @@ class _LibButtonState extends State<LibButton> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ModuleEdit(
+                builder: (context) => ModuleEdit(collectionPath: widget.collectionPath,
                   mapdata: cleanModule,
                   isAdd: true,
                 ),

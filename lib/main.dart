@@ -41,7 +41,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key, required this.collectionPath}) : super(key: key);
+  final String collectionPath;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -71,9 +72,11 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                LibButton(),
-                SizedBox(
+              children: [
+                LibButton(
+                  collectionPath: widget.collectionPath,
+                ),
+                const SizedBox(
                   width: 20,
                 ),
                 //MyMenu(),
@@ -97,7 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 /* decoration: const BoxDecoration(
                         color: Color.fromRGBO(0xFF, 0xFF, 0xF5, 0x9D),
                     ), */
-                child: const ModuleList(),
+                child: ModuleList(
+                  collectionPath: widget.collectionPath,
+                ),
               ),
             ),
           ],
@@ -105,9 +110,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  
-
-
-  
 }

@@ -89,7 +89,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MyHomePage(),
+                        builder: (context) => MyHomePage(
+                          collectionPath: 'users/${idx as String}/modules',
+                        ),
                       ),
                     );
                   }).onError((error, stackTrace) {
@@ -100,7 +102,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignInScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const SignInScreen()),
                     );
                   },
                   child: Row(

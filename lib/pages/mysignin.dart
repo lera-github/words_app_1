@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/mysignup.dart';
 
@@ -13,7 +15,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordTextController = TextEditingController();
-  final TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _userNameTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +47,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   "Введите имя пользователя",
                   Icons.person_outline,
                   false,
-                  _emailTextController,
+                  _userNameTextController,
                 ),
                 const SizedBox(
                   height: 20,
@@ -59,21 +61,39 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+                signInSignUpButton(context, true, () async {
+                  final List<Object?> userCollection = await getFSfind(
+                    collection: 'users',
+                    myfield: 'username',
+                    myvalue: _userNameTextController.text.trim(),
+                  );
+                  //такой пользователь зарегистрирован?
+                  if (userCollection.isEmpty) {
+                    myAlert(
+                        context: context,
+                        mytext:
+                            'Пользователя с таким именем не существует!\nЗарегистрируйтесь!');
+                    return;
+                  }
 
-                signInSignUpButton(context, true, () {
+                  final userCollectionItem =
+                      userCollection[0]! as Map<String, dynamic>;
+                  final emailText = '${userCollectionItem['useremail']}';
+
                   FirebaseAuth.instance
                       .signInWithEmailAndPassword(
-//-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ                        
-                    email: "aaaaaa@ya.ru",
-                    password: "aaaaaa",
-//                    email: _emailTextController.text.trim(),
-//                    password: _passwordTextController.text.trim(),
+                    //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
+                    //email: "aaaaaa@ya.ru",
+                    //password: "aaaaaa",
+                    //email: _emailTextController.text.trim(),
+                    email: emailText,
+                    password: _passwordTextController.text.trim(),
                   )
                       .then((value) {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MyHomePage(),
+                        builder: (context) =>  MyHomePage(collectionPath: 'users/${userCollectionItem['userid']}/modules',),
                       ),
                     );
                   }).onError((error, stackTrace) {
@@ -184,7 +204,7 @@ Container signInSignUpButton(
         ),
       ),
       child: Text(
-        isLogin ? 'Вход' : 'Регистрация',
+        isLogin ? 'Войти' : 'Зарегистрироваться',
         style: const TextStyle(
           color: Colors.black87,
           fontWeight: FontWeight.bold,

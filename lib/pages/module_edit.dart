@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 
-
 class ModuleEdit extends StatefulWidget {
-  const ModuleEdit({Key? key, required this.mapdata, required this.isAdd})
+  const ModuleEdit({Key? key, required this.collectionPath, required this.mapdata, required this.isAdd})
       : super(key: key);
+       final String collectionPath;
   final Map<String, dynamic> mapdata;
   final bool isAdd;
   @override
@@ -58,7 +59,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyHomePage(),
+                    builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
                   ),
                 );
               },
@@ -85,18 +86,18 @@ class _ModuleEditState extends State<ModuleEdit> {
                       //добавление модуля?
                       if (widget.isAdd) {
                         await FirebaseFirestore.instance
-                            .collection('modules')
+                            .collection(widget.collectionPath)
                             .add({'favourite': false}).then((value) {
                           idx = value.id;
                         });
                         await FirebaseFirestore.instance
-                            .collection('modules')
+                            .collection(widget.collectionPath)
                             .doc(idx as String)
                             .update({'id': idx});
                       }
 
                       await FirebaseFirestore.instance
-                          .collection('modules')
+                          .collection(widget.collectionPath)
                           .doc(idx as String)
                           .update({
                         'words1': _words1,
@@ -108,39 +109,13 @@ class _ModuleEditState extends State<ModuleEdit> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const MyHomePage(),
+                          builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
                         ),
                       );
                     } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => Dialog(
-                          elevation: 1.2,
-                          backgroundColor: Colors.red.shade900,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: InkWell(
-                            child: Container(
-                              margin: const EdgeInsets.all(16),
-                              child: const Text(
-                                'Внесите обязательные данные!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.yellow,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.pop(
-                                context,
-                              );
-                            },
-                          ),
-                        ),
-                      );
+                      myAlert(
+                          context: context,
+                          mytext: 'Внесите обязательные данные!');
                     }
                   },
                   child: const Text("Сохранить"),

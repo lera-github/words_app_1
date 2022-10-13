@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,8 @@ import 'package:myapp/pages/actions_games.dart';
 import 'package:myapp/pages/module_edit.dart';
 
 class ModuleList extends StatefulWidget {
-  const ModuleList({Key? key}) : super(key: key);
+  const ModuleList({Key? key, required this.collectionPath}) : super(key: key);
+  final String collectionPath;
 
   @override
   ModuleListState createState() => ModuleListState();
@@ -22,7 +25,7 @@ class ModuleListState extends State<ModuleList> {
         : 600.0;
     return FutureBuilder(
       future: getFS(
-          collection: 'users/yaAbGEmB9Ho4AOHXz5Be/modules', order: 'module'),
+          collection: widget.collectionPath, order: 'module'),
       builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -57,7 +60,7 @@ class ModuleListState extends State<ModuleList> {
                     ), */
 
                       // ),
-/*                     ConstrainedBox(
+                      /*                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child: Text(
                         'Библиотека модулей',
@@ -197,7 +200,7 @@ class ModuleListState extends State<ModuleList> {
                   Future.delayed(Duration.zero, () async {
                     _favourite = !_favourite;
                     await updateFS(
-                      collection: 'modules',
+                      collection: widget.collectionPath,
                       id: '${_moduleCollection['id']}',
                       val: 'favourite',
                       valdata: _favourite,
@@ -234,7 +237,7 @@ class ModuleListState extends State<ModuleList> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            ActionsAndGames(mapdata: _moduleCollection),
+                            ActionsAndGames(collectionPath: widget.collectionPath, mapdata: _moduleCollection),
                       ),
                     );
                   },
@@ -277,7 +280,7 @@ class ModuleListState extends State<ModuleList> {
                     color: Colors.blue.shade800,
                   ),
                 ),
-                onPressed: () => _gotoedit(
+                onPressed: () => _gotoedit(widget.collectionPath,
                   context,
                   _moduleCollection,
                 ),
@@ -325,7 +328,7 @@ class ModuleListState extends State<ModuleList> {
                                 Duration.zero,
                                 () async {
                                   await deleteFS(
-                                    collection: 'modules',
+                                    collection: widget.collectionPath,
                                     id: '${_moduleCollection['id']}',
                                   );
                                 },
@@ -334,7 +337,7 @@ class ModuleListState extends State<ModuleList> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const MyHomePage(),
+                                  builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
                                 ),
                               );
                             },
@@ -365,11 +368,11 @@ class ModuleListState extends State<ModuleList> {
 }
 
 //переход на редактирование модуля
-void _gotoedit(BuildContext context, Map<String, dynamic> _mapdata) {
+void _gotoedit(String collectionPath, BuildContext context, Map<String, dynamic> _mapdata) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => ModuleEdit(
+      builder: (context) => ModuleEdit(collectionPath: collectionPath,
         mapdata: _mapdata,
         isAdd: false,
       ),

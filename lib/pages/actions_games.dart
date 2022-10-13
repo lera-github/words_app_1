@@ -10,7 +10,8 @@ import 'package:myapp/pages/game_memorise.dart';
 String actionSelect = '';
 
 class ActionsAndGames extends StatefulWidget {
-  const ActionsAndGames({Key? key, required this.mapdata}) : super(key: key);
+  const ActionsAndGames({Key? key,  required this.collectionPath, required this.mapdata}) : super(key: key);
+  final String collectionPath;
   final Map<String, dynamic> mapdata;
 
   @override
@@ -45,7 +46,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyHomePage(),
+                    builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
                   ),
                 );
               },

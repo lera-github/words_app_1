@@ -17,6 +17,23 @@ Future<List<Object?>> getFS({
   return allData;
 }
 
+Future<List<Object?>> getFSfind({
+  required String collection,
+  required String myfield,
+  required String myvalue
+}) async {
+  // Get docs from collection reference
+  final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection(collection)
+      .where(myfield, isEqualTo: myvalue )
+      .get();
+  // Get data from docs and convert map to List
+  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  return allData;
+}
+
+
+
 Future<void> updateFS({
   required String collection,
   required String id,
