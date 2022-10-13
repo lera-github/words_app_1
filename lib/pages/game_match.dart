@@ -215,7 +215,7 @@ class _GameMatchState extends State<GameMatch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           border: Border.all(),
           borderRadius: BorderRadius.circular(5),

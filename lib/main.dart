@@ -2,13 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/helpers/appbarmenu.dart';
-
 import 'package:myapp/helpers/styles.dart';
-//import 'package:myapp/pages/game_match.dart';
 import 'package:myapp/pages/module_list.dart';
-
 import 'package:myapp/pages/mysignin.dart';
-import 'package:myapp/pages/mysignup.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

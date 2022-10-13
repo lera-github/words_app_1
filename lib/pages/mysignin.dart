@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
@@ -72,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     myAlert(
                         context: context,
                         mytext:
-                            'Пользователя с таким именем не существует!\nЗарегистрируйтесь!');
+                            'Пользователя с таким именем не существует!\nЗарегистрируйтесь!',);
                     return;
                   }
 
@@ -93,7 +92,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>  MyHomePage(collectionPath: 'users/${userCollectionItem['userid']}/modules',),
+                        builder: (context) => MyHomePage(
+                          collectionPath:
+                              'users/${userCollectionItem['userid']}/modules',
+                        ),
                       ),
                     );
                   }).onError((error, stackTrace) {
@@ -190,7 +192,8 @@ Container signInSignUpButton(
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(
       onPressed: () {
-        onTap();
+        onTap()
+        ;
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((states) {

@@ -67,7 +67,7 @@ class _GameFlashCardState extends State<GameFlashCard> {
 
     return Scaffold(
       body: Center(
-        child: Container(
+        child: DecoratedBox(
             decoration: BoxDecoration(
               border: Border.all(),
               borderRadius: BorderRadius.circular(5),

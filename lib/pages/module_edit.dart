@@ -115,7 +115,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                     } else {
                       myAlert(
                           context: context,
-                          mytext: 'Внесите обязательные данные!');
+                          mytext: 'Внесите обязательные данные!',);
                     }
                   },
                   child: const Text("Сохранить"),

@@ -20,7 +20,7 @@ Future<List<Object?>> getFS({
 Future<List<Object?>> getFSfind({
   required String collection,
   required String myfield,
-  required String myvalue
+  required String myvalue,
 }) async {
   // Get docs from collection reference
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance

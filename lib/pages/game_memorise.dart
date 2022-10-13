@@ -1,14 +1,12 @@
-import 'dart:math';
-
+//import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-
 import 'package:myapp/helpers/styles.dart';
 
 List _words1 = []; //массивы слов
 List _words2 = [];
 int index = 0;
-final _random = Random();
+//final _random = Random();
 //List<bool> _generated = []; //карточки сформированы?
 bool _cardsReady = false;
 //List<int> _shuffledindex = []; //массив перемешанных индексов

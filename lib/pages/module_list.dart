@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +23,7 @@ class ModuleListState extends State<ModuleList> {
         : 600.0;
     return FutureBuilder(
       future: getFS(
-          collection: widget.collectionPath, order: 'module'),
+          collection: widget.collectionPath, order: 'module',),
       builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

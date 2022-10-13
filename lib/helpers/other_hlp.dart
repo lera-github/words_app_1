@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // показ предупреждений
-myAlert({
+void myAlert({
   required BuildContext context,
   required String mytext,
 }) {
