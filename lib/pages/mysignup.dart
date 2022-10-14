@@ -37,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 reusableTextField(
-                  "Enter UserName",
+                  "Введите имя пользователя",
                   Icons.person_outline,
                   false,
                   _userNameTextController,
@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 reusableTextField(
-                  "Enter Email Id",
+                  "Введите адрес электронной почты",
                   Icons.person_outline,
                   false,
                   _emailTextController,
@@ -55,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 reusableTextField(
-                  "Enter Password",
+                  "Введите пароль",
                   Icons.lock_outlined,
                   true,
                   _passwordTextController,
@@ -103,7 +103,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SignInScreen(),),
+                        builder: (context) => const SignInScreen(),
+                      ),
                     );
                   },
                   child: Row(
