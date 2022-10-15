@@ -17,6 +17,9 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _userNameTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final scrwidth = MediaQuery.of(context).size.width < 600.0
+        ? MediaQuery.of(context).size.width
+        : 600.0;
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -28,91 +31,97 @@ class _SignInScreenState extends State<SignInScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              20,
-              MediaQuery.of(context).size.height * 0.05,
-              20,
-              0,
-            ),
-            child: Column(
-              children: <Widget>[
-                logoWidget("assets/logo1.png"),
-                const SizedBox(
-                  height: 30,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: BoxConstraints.expand(width: scrwidth),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  20,
+                  MediaQuery.of(context).size.height * 0.05,
+                  20,
+                  0,
                 ),
-                reusableTextField(
-                  text: "Введите имя пользователя",
-                  icon: Icons.person_outline,
-                  isPasswordType: false,
-                  controller: _userNameTextController,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField(
-                  text: "Введите пароль",
-                  icon: Icons.lock_outline,
-                  isPasswordType: true,
-                  controller: _passwordTextController,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                signInSignUpButton(
-                  context: context,
-                  isLogin: true,
-                  onTap: () async {
-                    //поиск пользователя
-                    final List<Object?> userCollection = await getFSfind(
-                      collection: 'users',
-                      myfield: 'username',
-                      myvalue: _userNameTextController.text.trim(),
-                    );
-                    //такой пользователь зарегистрирован?
+                child: Column(
+                  children: <Widget>[
+                    logoWidget("assets/logo1.png"),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    reusableTextField(
+                      text: "Введите имя пользователя",
+                      icon: Icons.person_outline,
+                      isPasswordType: false,
+                      controller: _userNameTextController,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    reusableTextField(
+                      text: "Введите пароль",
+                      icon: Icons.lock_outline,
+                      isPasswordType: true,
+                      controller: _passwordTextController,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    signInSignUpButton(
+                      context: context,
+                      isLogin: true,
+                      onTap: () async {
+                        //поиск пользователя
+                        final List<Object?> userCollection = await getFSfind(
+                          collection: 'users',
+                          myfield: 'username',
+                          myvalue: _userNameTextController.text.trim(),
+                        );
+                        //такой пользователь зарегистрирован?
 
-                    if (userCollection.isEmpty) {
-                      myAlert(
-                        context: context,
-                        mytext:
-                            'Пользователя с таким именем не существует!\nЗарегистрируйтесь!',
-                      );
-                      return;
-                    } 
+                        if (userCollection.isEmpty) {
+                          myAlert(
+                            context: context,
+                            mytext:
+                                'Пользователя с таким именем не существует!\nЗарегистрируйтесь!',
+                          );
+                          return;
+                        }
 
-                    final userCollectionItem =
-                        userCollection[0]! as Map<String, dynamic>;
-                    final emailText = '${userCollectionItem['useremail']}';
-                    final userid = '${userCollectionItem['userid']}';
+                        final userCollectionItem =
+                            userCollection[0]! as Map<String, dynamic>;
+                        final emailText = '${userCollectionItem['useremail']}';
+                        final userid = '${userCollectionItem['userid']}';
 
-                    FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                      //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
-                      //email: "aaaaaa@ya.ru",
-                      //password: "aaaaaa",
-                      //email: _emailTextController.text.trim(),
-                      email: emailText,
-                      password: _passwordTextController.text.trim(),
-                    )
-                        .then((value) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyHomePage(
-                            collectionPath: 'modules',
-                            //    'users/${userCollectionItem['userid']}/modules',
-                            userid: userid, //'lut4hDl8Jqv5uyaY6CDL',
-                          ),
-                        ),
-                      );
-                    }).onError((error, stackTrace) {
-                      print("Error ${error.toString()}");
-                    });
-                  },
+                        FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                          //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
+                          //email: "aaaaaa@ya.ru",
+                          //password: "aaaaaa",
+                          //email: _emailTextController.text.trim(),
+                          email: emailText,
+                          password: _passwordTextController.text.trim(),
+                        )
+                            .then((value) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyHomePage(
+                                collectionPath: 'modules',
+                                //    'users/${userCollectionItem['userid']}/modules',
+                                userid: userid, //'lut4hDl8Jqv5uyaY6CDL',
+                              ),
+                            ),
+                          );
+                        }).onError((error, stackTrace) {
+                          print("Error ${error.toString()}");
+                        });
+                      },
+                    ),
+                    signUpOption()
+                  ],
                 ),
-                signUpOption()
-              ],
+              ),
             ),
           ),
         ),
@@ -136,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
             );
           },
           child: const Text(
-            "Зарегистрироваться",
+            "Зарегистрируйтесь",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         )

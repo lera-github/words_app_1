@@ -9,9 +9,11 @@ import 'package:myapp/pages/actions_games.dart';
 import 'package:myapp/pages/module_edit.dart';
 
 class ModuleList extends StatefulWidget {
-  const ModuleList(
-      {Key? key, required this.collectionPath, required this.userid})
-      : super(key: key);
+  const ModuleList({
+    Key? key,
+    required this.collectionPath,
+    required this.userid,
+  }) : super(key: key);
   final String collectionPath;
   final String userid;
 
@@ -155,9 +157,26 @@ class ModuleListState extends State<ModuleList> {
     final moduleCollection = obj! as Map<String, dynamic>;
     final moduleName = '${moduleCollection['module']}';
     final moduleDescription = '${moduleCollection['description']}';
-    var favourite = false;
+    /* var favourite = false;
     if (moduleCollection['favourite'] != null) {
       favourite = moduleCollection['favourite'] as bool;
+    } */
+
+    //bool favourite = moduleCollection['favourite'] as bool;
+
+    //значения массива keys - id польз-ля и признак общего доступа
+    final List shared = moduleCollection['keys'] as List;
+    //признак общего доступа
+    String sharedfl = '';
+    if (shared[1] == '#') {
+      sharedfl = '#';
+    }
+    //цвет папочки (значок общего доступа)
+    Color sharedColor =
+        (sharedfl == '#') ? Colors.yellow.shade600 : Colors.grey.shade400;
+    //если модуль не текущего польз-ля
+    if (shared[0] != widget.userid) {
+      sharedColor = Colors.blue.shade600;
     }
 
     return Align(
@@ -187,31 +206,48 @@ class ModuleListState extends State<ModuleList> {
               const SizedBox(
                 width: 6,
               ),
-              //общий доступ   (звезды)
+              //общий доступ
               TTip(
-                message: 'Общий доступ',
+                message: (sharedfl == '#')
+                    ? 'Модуль доступен всем'
+                    : 'Модуль доступен только вам',
+                //'Общий доступ',
                 child: IconButton(
                   icon: Transform.scale(
                     scale: 1.4,
                     child: Icon(
-                      favourite
-                          ? Icons.folder_shared //star_rate_rounded
-                          : Icons.folder_shared_outlined, //star_border_rounded,
-                      color: favourite
+                        (sharedfl == '#')
+                            ? Icons.folder_shared //star_rate_rounded
+                            : Icons
+                                .folder_shared_outlined, //star_border_rounded,
+                        color: sharedColor
+                        /* (sharedfl == '#')
                           ? Colors.yellow.shade600
-                          : Colors.grey.shade400,
-                    ),
+                          : Colors.grey.shade400, */
+                        ),
                   ),
                   // избранное
                   onPressed: () {
                     Future.delayed(Duration.zero, () async {
-                      favourite = !favourite;
-                      await updateFS(
-                        collection: widget.collectionPath,
-                        id: '${moduleCollection['id']}',
-                        val: 'favourite',
-                        valdata: favourite,
-                      ).then((value) => setState(() {}));
+                      if (sharedfl == '#') {
+                        sharedfl = '';
+                      } else {
+                        sharedfl = '#';
+                      }
+                      if (shared[0] == widget.userid) {
+                        await updatesharedFS(
+                          collection: widget.collectionPath,
+                          id: '${moduleCollection['id']}',
+                          val: 'keys',
+                          valdata: sharedfl,
+                        ).then((value) => setState(() {}));
+                      } else {
+                        myAlert(
+                          context: context,
+                          mytext:
+                              'Вы не можете изменить\nмодуль другого пользователя',
+                        );
+                      }
                     });
                   },
                 ),
@@ -286,100 +322,106 @@ class ModuleListState extends State<ModuleList> {
                 ),
               ),
               //редактирование
-              TTip(
-                message: 'Изменить',
-                child: IconButton(
-                  icon: Transform.scale(
-                    scale: 1.4,
-                    child: Icon(
-                      Icons.edit_note_rounded,
-                      color: Colors.blue.shade800,
+              Visibility(
+                visible: shared[0] == widget.userid,
+                child: TTip(
+                  message: 'Изменить',
+                  child: IconButton(
+                    icon: Transform.scale(
+                      scale: 1.4,
+                      child: Icon(
+                        Icons.edit_note_rounded,
+                        color: Colors.blue.shade800,
+                      ),
                     ),
-                  ),
-                  onPressed: () => _gotoedit(
-                    widget.collectionPath,
-                    widget.userid,
-                    context,
-                    moduleCollection,
+                    onPressed: () => _gotoedit(
+                      widget.collectionPath,
+                      widget.userid,
+                      context,
+                      moduleCollection,
+                    ),
                   ),
                 ),
               ),
               //удаление
-              TTip(
-                message: 'Удалить',
-                child: IconButton(
-                  icon: Transform.scale(
-                    scale: 1.4,
-                    child: Icon(
-                      Icons.clear_rounded,
-                      color: Colors.red.shade900,
+              Visibility(
+                visible: shared[0] == widget.userid,
+                child: TTip(
+                  message: 'Удалить',
+                  child: IconButton(
+                    icon: Transform.scale(
+                      scale: 1.4,
+                      child: Icon(
+                        Icons.clear_rounded,
+                        color: Colors.red.shade900,
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          elevation: 24,
-                          title: const Text('Подтверждаете удаление модуля?'),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: <Widget>[
-                                Text(
-                                  moduleName,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text(
-                                'Да',
-                                style:
-                                    TextStyle(fontSize: 18, color: Colors.red),
-                              ),
-                              onPressed: () {
-                                //удаление
-                                Future.delayed(
-                                  Duration.zero,
-                                  () async {
-                                    await deleteFS(
-                                      collection: widget.collectionPath,
-                                      id: '${moduleCollection['id']}',
-                                    );
-                                  },
-                                );
-                                Navigator.of(context).pop();
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyHomePage(
-                                      collectionPath: widget.collectionPath,
-                                      userid: widget.userid,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            elevation: 24,
+                            title: const Text('Подтверждаете удаление модуля?'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                    moduleName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
                                     ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                );
-                              },
-                            ),
-                            TextButton(
-                              child: const Text(
-                                'Нет',
-                                style: TextStyle(fontSize: 18),
+                                ],
                               ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text(
+                                  'Да',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.red),
+                                ),
+                                onPressed: () {
+                                  //удаление
+                                  Future.delayed(
+                                    Duration.zero,
+                                    () async {
+                                      await deleteFS(
+                                        collection: widget.collectionPath,
+                                        id: '${moduleCollection['id']}',
+                                      );
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyHomePage(
+                                        collectionPath: widget.collectionPath,
+                                        userid: widget.userid,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              TextButton(
+                                child: const Text(
+                                  'Нет',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 6),
@@ -449,7 +491,6 @@ void _gotoedit(
     debugPrint(result.prefixes.length.toString());
   } */
 } */
-
 
 /* //удаление модуля
 Future<bool> delModuleDialog(

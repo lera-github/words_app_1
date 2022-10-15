@@ -17,6 +17,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _userNameTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final scrwidth = MediaQuery.of(context).size.width < 600.0
+        ? MediaQuery.of(context).size.width
+        : 600.0;
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -28,105 +31,116 @@ class _SignUpScreenState extends State<SignUpScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField(
-                  text: "Введите имя пользователя",
-                  icon: Icons.person_outline,
-                  isPasswordType: false,
-                  controller: _userNameTextController,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField(
-                  text: "Введите адрес электронной почты",
-                  icon: Icons.person_outline,
-                  isPasswordType: false,
-                  controller: _emailTextController,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField(
-                  text: "Введите пароль",
-                  icon: Icons.lock_outlined,
-                  isPasswordType: true,
-                  controller: _passwordTextController,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                signInSignUpButton(
-                  context: context,
-                  isLogin: false,
-                  onTap: () async {
-                    await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: _emailTextController.text.trim(),
-                      password: _passwordTextController.text.trim(),
-                    )
-                        .then((value) async {
-                      var idx;
-//запись в базу нового пользователя
-                      await FirebaseFirestore.instance.collection('users').add({
-                        'username': _userNameTextController.text.trim()
-                      }).then((value) {
-                        idx = value.id;
-                      });
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(idx as String)
-                          .update({
-                        'userid': idx as String,
-                        'useremail': _emailTextController.text.trim()
-                      });
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: BoxConstraints.expand(width: scrwidth),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    reusableTextField(
+                      text: "Введите имя пользователя",
+                      icon: Icons.person_outline,
+                      isPasswordType: false,
+                      controller: _userNameTextController,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    reusableTextField(
+                      text: "Введите адрес электронной почты",
+                      icon: Icons.person_outline,
+                      isPasswordType: false,
+                      controller: _emailTextController,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    reusableTextField(
+                      text: "Введите пароль",
+                      icon: Icons.lock_outlined,
+                      isPasswordType: true,
+                      controller: _passwordTextController,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    signInSignUpButton(
+                      context: context,
+                      isLogin: false,
+                      onTap: () async {
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                          email: _emailTextController.text.trim(),
+                          password: _passwordTextController.text.trim(),
+                        )
+                            .then((value) async {
+                          var idx;
+                          //запись в базу нового пользователя
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .add({
+                            'username': _userNameTextController.text.trim()
+                          }).then((value) {
+                            idx = value.id;
+                          });
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(idx as String)
+                              .update({
+                            'userid': idx as String,
+                            'useremail': _emailTextController.text.trim()
+                          });
 
-                      if (!mounted) return;
+                          if (!mounted) return;
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>  MyHomePage(
-                            collectionPath: 'modules',
-                            //'users/${idx as String}/modules',
-                            userid: idx as String,
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyHomePage(
+                                collectionPath: 'modules',
+                                //'users/${idx as String}/modules',
+                                userid: idx as String,
+                              ),
+                            ),
+                          );
+                        }).onError((error, stackTrace) {
+                          print("Error ${error.toString()}");
+                        });
+                      },
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignInScreen(),
                           ),
-                        ),
-                      );
-                    }).onError((error, stackTrace) {
-                      print("Error ${error.toString()}");
-                    });
-                  },
+                        );
+                      },
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.arrow_back_rounded,
+                            color: Colors.white70,
+                          ),
+                          Text(
+                            " назад",
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignInScreen(),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(Icons.arrow_back_rounded),
-                      Text(
-                        " назад",
-                        style: TextStyle(
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+              ),
             ),
           ),
         ),

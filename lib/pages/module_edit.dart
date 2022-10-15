@@ -55,7 +55,12 @@ class _ModuleEditState extends State<ModuleEdit> {
             width: 20,
           ),
           Align(
-            child: InkWell(
+            child: 
+           TTip(
+                message: 'На домашнюю страницу...',
+                child:
+            
+            InkWell(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: Text(
                 'Memory Games',
@@ -72,7 +77,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                   ),
                 );
               },
-            ),
+            ),),
           ),
           const SizedBox(
             width: 20,

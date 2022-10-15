@@ -57,6 +57,21 @@ Future<void> updateFS({
       .catchError((e) => print("Failed to update user: $e")); */
 }
 
+Future<void> updatesharedFS({
+  required String collection,
+  required String id,
+  required String val,
+  required String valdata,
+}) async {
+  await FirebaseFirestore.instance.collection(collection).doc(id).update({
+    val: FieldValue.arrayRemove([if (valdata == '#') '' else '#'])
+  });
+
+  await FirebaseFirestore.instance.collection(collection).doc(id).update({
+    val: FieldValue.arrayUnion([valdata])
+  });
+}
+
 Future<void> deleteFS({
   required String collection,
   required String id,
