@@ -43,65 +43,74 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 30,
                 ),
                 reusableTextField(
-                  "Введите имя пользователя",
-                  Icons.person_outline,
-                  false,
-                  _userNameTextController,
+                  text: "Введите имя пользователя",
+                  icon: Icons.person_outline,
+                  isPasswordType: false,
+                  controller: _userNameTextController,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 reusableTextField(
-                  "Введите пароль",
-                  Icons.lock_outline,
-                  true,
-                  _passwordTextController,
+                  text: "Введите пароль",
+                  icon: Icons.lock_outline,
+                  isPasswordType: true,
+                  controller: _passwordTextController,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                signInSignUpButton(context, true, () async {
-                  final List<Object?> userCollection = await getFSfind(
-                    collection: 'users',
-                    myfield: 'username',
-                    myvalue: _userNameTextController.text.trim(),
-                  );
-                  //такой пользователь зарегистрирован?
-                  if (userCollection.isEmpty) {
-                    myAlert(
+                signInSignUpButton(
+                  context: context,
+                  isLogin: true,
+                  onTap: () async {
+                    //поиск пользователя
+                    final List<Object?> userCollection = await getFSfind(
+                      collection: 'users',
+                      myfield: 'username',
+                      myvalue: _userNameTextController.text.trim(),
+                    );
+                    //такой пользователь зарегистрирован?
+
+                    if (userCollection.isEmpty) {
+                      myAlert(
                         context: context,
                         mytext:
-                            'Пользователя с таким именем не существует!\nЗарегистрируйтесь!',);
-                    return;
-                  }
+                            'Пользователя с таким именем не существует!\nЗарегистрируйтесь!',
+                      );
+                      return;
+                    } 
 
-                  final userCollectionItem =
-                      userCollection[0]! as Map<String, dynamic>;
-                  final emailText = '${userCollectionItem['useremail']}';
+                    final userCollectionItem =
+                        userCollection[0]! as Map<String, dynamic>;
+                    final emailText = '${userCollectionItem['useremail']}';
+                    final userid = '${userCollectionItem['userid']}';
 
-                  FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                    //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
-                    //email: "aaaaaa@ya.ru",
-                    //password: "aaaaaa",
-                    //email: _emailTextController.text.trim(),
-                    email: emailText,
-                    password: _passwordTextController.text.trim(),
-                  )
-                      .then((value) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                          collectionPath:
-                              'users/${userCollectionItem['userid']}/modules',
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                      //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
+                      //email: "aaaaaa@ya.ru",
+                      //password: "aaaaaa",
+                      //email: _emailTextController.text.trim(),
+                      email: emailText,
+                      password: _passwordTextController.text.trim(),
+                    )
+                        .then((value) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyHomePage(
+                            collectionPath: 'modules',
+                            //    'users/${userCollectionItem['userid']}/modules',
+                            userid: userid, //'lut4hDl8Jqv5uyaY6CDL',
+                          ),
                         ),
-                      ),
-                    );
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });
-                }),
+                      );
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
+                  },
+                ),
                 signUpOption()
               ],
             ),
@@ -146,12 +155,12 @@ Image logoWidget(String imageName) {
   );
 }
 
-TextField reusableTextField(
-  String text,
-  IconData icon,
-  bool isPasswordType,
-  TextEditingController controller,
-) {
+TextField reusableTextField({
+  required String text,
+  required IconData icon,
+  required bool isPasswordType,
+  required TextEditingController controller,
+}) {
   return TextField(
     controller: controller,
     obscureText: isPasswordType,
@@ -180,11 +189,11 @@ TextField reusableTextField(
   );
 }
 
-Container signInSignUpButton(
-  BuildContext context,
-  bool isLogin,
-  Function onTap,
-) {
+Container signInSignUpButton({
+  required BuildContext context,
+  required bool isLogin,
+  required Function onTap,
+}) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 50,
@@ -192,8 +201,7 @@ Container signInSignUpButton(
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(
       onPressed: () {
-        onTap()
-        ;
+        onTap();
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((states) {

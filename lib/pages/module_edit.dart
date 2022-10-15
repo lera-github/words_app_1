@@ -5,9 +5,15 @@ import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 
 class ModuleEdit extends StatefulWidget {
-  const ModuleEdit({Key? key, required this.collectionPath, required this.mapdata, required this.isAdd})
-      : super(key: key);
-       final String collectionPath;
+  const ModuleEdit({
+    Key? key,
+    required this.collectionPath,
+    required this.userid,
+    required this.mapdata,
+    required this.isAdd,
+  }) : super(key: key);
+  final String collectionPath;
+  final String userid;
   final Map<String, dynamic> mapdata;
   final bool isAdd;
   @override
@@ -29,7 +35,7 @@ class _ModuleEditState extends State<ModuleEdit> {
 
   @override
   Widget build(BuildContext context) {
-    final _scrwidth = MediaQuery.of(context).size.width < 600.0
+    final scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
         : 600.0;
     if (!widget.isAdd) {
@@ -59,7 +65,10 @@ class _ModuleEditState extends State<ModuleEdit> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
+                    builder: (context) => MyHomePage(
+                      collectionPath: widget.collectionPath,
+                      userid: widget.userid,
+                    ),
                   ),
                 );
               },
@@ -109,13 +118,16 @@ class _ModuleEditState extends State<ModuleEdit> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
+                          builder: (context) => MyHomePage(
+                            collectionPath: widget.collectionPath, userid: widget.userid,
+                          ),
                         ),
                       );
                     } else {
                       myAlert(
-                          context: context,
-                          mytext: 'Внесите обязательные данные!',);
+                        context: context,
+                        mytext: 'Внесите обязательные данные!',
+                      );
                     }
                   },
                   child: const Text("Сохранить"),
@@ -132,7 +144,7 @@ class _ModuleEditState extends State<ModuleEdit> {
         child: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
-            constraints: BoxConstraints.expand(width: _scrwidth),
+            constraints: BoxConstraints.expand(width: scrwidth),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

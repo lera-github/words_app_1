@@ -6,12 +6,23 @@ import 'package:firebase_storage/firebase_storage.dart' as fbs;
 Future<List<Object?>> getFS({
   required String collection,
   required String order,
+  required String userid,
 }) async {
   // Get docs from collection reference
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
       .collection(collection)
       .orderBy(order)
+      .where('keys', arrayContainsAny: ['#', userid])
+      /* .where(
+        'public',
+        isEqualTo: true,
+      )
+      .where(
+        'userid',
+        isEqualTo: 'lut4hDl8Jqv5uyaY6CDL', 
+      )*/
       .get();
+  //.catchError((error) => print("$error"));
   // Get data from docs and convert map to List
   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
   return allData;
@@ -25,14 +36,12 @@ Future<List<Object?>> getFSfind({
   // Get docs from collection reference
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
       .collection(collection)
-      .where(myfield, isEqualTo: myvalue )
+      .where(myfield, isEqualTo: myvalue)
       .get();
   // Get data from docs and convert map to List
   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
   return allData;
 }
-
-
 
 Future<void> updateFS({
   required String collection,
@@ -55,14 +64,12 @@ Future<void> deleteFS({
   await FirebaseFirestore.instance.collection(collection).doc(id).delete();
 }
 
-
-
 //-------------- ниже неактуально
-Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> _doc) async {
+Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> doc) async {
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
       .collection('users')
       .doc(
-        '${_doc['myclas'] as String} ${_doc['myfio'] as String} ${_doc['mymail'] as String}',
+        '${doc['myclas'] as String} ${doc['myfio'] as String} ${doc['mymail'] as String}',
       )
       .collection('vars')
       .get();
@@ -72,12 +79,12 @@ Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> _doc) async {
 }
 
 @override
-Future<void> deleteUser(Map<String, dynamic> _doc) async {
+Future<void> deleteUser(Map<String, dynamic> doc) async {
   //удаление документа var
   await FirebaseFirestore.instance
       .collection('users')
       .doc(
-        '${_doc['myclas'] as String} ${_doc['myfio'] as String} ${_doc['mymail'] as String}',
+        '${doc['myclas'] as String} ${doc['myfio'] as String} ${doc['mymail'] as String}',
       )
       .collection('vars')
       .get()
@@ -86,7 +93,7 @@ Future<void> deleteUser(Map<String, dynamic> _doc) async {
       FirebaseFirestore.instance
           .collection('users')
           .doc(
-            '${_doc['myclas'] as String} ${_doc['myfio'] as String} ${_doc['mymail'] as String}',
+            '${doc['myclas'] as String} ${doc['myfio'] as String} ${doc['mymail'] as String}',
           )
           .collection('vars')
           .doc(element.id)
@@ -97,7 +104,7 @@ Future<void> deleteUser(Map<String, dynamic> _doc) async {
   await FirebaseFirestore.instance
       .collection('users')
       .doc(
-        '${_doc['myclas'] as String} ${_doc['myfio'] as String} ${_doc['mymail'] as String}',
+        '${doc['myclas'] as String} ${doc['myfio'] as String} ${doc['mymail'] as String}',
       )
       .delete();
 }
@@ -151,8 +158,8 @@ Future<void> toFBS(String name, Uint8List data) async {
   }
 }
 
-Future<Uint8List?> fromFBS(String _path) async {
-  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(_path);
+Future<Uint8List?> fromFBS(String path) async {
+  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(path);
   try {
     // Upload raw data.
     //await ref.putData(data);

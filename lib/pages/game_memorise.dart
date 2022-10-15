@@ -9,7 +9,7 @@ int index = 0;
 //final _random = Random();
 //List<bool> _generated = []; //карточки сформированы?
 bool _cardsReady = false;
-//List<int> _shuffledindex = []; //массив перемешанных индексов
+//List<int> shuffledindex = []; //массив перемешанных индексов
 List<List<int>> _indexCards = [];
 List<bool> _visFlag = [];
 
@@ -30,7 +30,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     _indexCards = [];
     //_generated = List.generate(_words1.length, (index) => false);
 
-    //_shuffledindex = [];
+    //shuffledindex = [];
 
     _visFlag = [false, false, false, false];
   }
@@ -40,7 +40,7 @@ class _GameMemoriseState extends State<GameMemorise> {
   Widget build(BuildContext context) {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
-    bool _hasListeners = false;
+    bool haslisteners = false;
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
     } */
@@ -84,7 +84,7 @@ class _GameMemoriseState extends State<GameMemorise> {
         //в какой карточке будет ответ (0-3)
         //final int _answerindexplace = _random.nextInt(4);
         //массив без текущего индекса карточки
-        final List<int> _shuffledindex = List.generate(
+        final List<int> shuffledindex = List.generate(
           _words1.length,
           (j) => j,
         );
@@ -92,24 +92,24 @@ class _GameMemoriseState extends State<GameMemorise> {
         bool eqfl = false;
         do {
           //перемешать
-          _shuffledindex.shuffle();
+          shuffledindex.shuffle();
           //первые 4 элемента проверяем на наличие индекса ответа
 
           for (int j = 0; j < 4; j++) {
-            if (_shuffledindex[j] == i) {
+            if (shuffledindex[j] == i) {
               eqfl = true;
             }
           }
         } while (!eqfl);
         //вставить по индексу _answerindexplace правильный ответ i
-        //_shuffledindex[_answerindexplace] = i;
+        //shuffledindex[_answerindexplace] = i;
 
         _indexCards.add([i]);
         _indexCards[i] = [
-          _shuffledindex[0],
-          _shuffledindex[1],
-          _shuffledindex[2],
-          _shuffledindex[3],
+          shuffledindex[0],
+          shuffledindex[1],
+          shuffledindex[2],
+          shuffledindex[3],
         ];
         //print(i.toString());
         //print(_indexCards[i].toString());
@@ -122,7 +122,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     //final List<int> _list = List.generate(_words1.length, (index) => index++, growable: false);
     //_list.shuffle();
     //--------------------------------------------------------------
-    Card _card({
+    Card cardX({
       required int idx,
       required bool visFlag,
     }) {
@@ -216,7 +216,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                       _visFlag[0] = true;
                     });
                   },
-                  child: _card(
+                  child: cardX(
                     idx: _indexCards[index][0],
                     visFlag: _visFlag[0],
                   ),
@@ -227,7 +227,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                       _visFlag[1] = true;
                     });
                   },
-                  child: _card(
+                  child: cardX(
                     idx: _indexCards[index][1],
                     visFlag: _visFlag[1],
                   ),
@@ -243,7 +243,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                       _visFlag[2] = true;
                     });
                   },
-                  child: _card(
+                  child: cardX(
                     idx: _indexCards[index][2],
                     visFlag: _visFlag[2],
                   ),
@@ -254,7 +254,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                       _visFlag[3] = true;
                     });
                   },
-                  child: _card(
+                  child: cardX(
                     idx: _indexCards[index][3],
                     visFlag: _visFlag[3],
                   ),
@@ -282,9 +282,9 @@ class _GameMemoriseState extends State<GameMemorise> {
                   final TabController controller =
                       DefaultTabController.of(context)!;
 
-                  if (!_hasListeners) {
+                  if (!haslisteners) {
                     controller.addListener(() {
-                      _hasListeners = true;
+                      haslisteners = true;
                       setState(() {});
                     });
                   }

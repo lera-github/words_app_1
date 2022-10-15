@@ -57,50 +57,50 @@ class _GameMatchState extends State<GameMatch> {
     _words2 = widget.mapdata['words2'] as List;
 
     // начальные координаты первой карточки
-    var _pos = cardNewPos(cardSizeX, cardSizeY);
+    var pos = cardNewPos(cardSizeX, cardSizeY);
     for (var i = 0; i < _words1.length * 2; i++) {
       if (_points.isEmpty) {
         // сохр. координат карточки
-        _points.add(_pos);
+        _points.add(pos);
       } else {
-        int _cnt = 0; //счетчик попыток наложения карточки
-        double _coverX = 0.0; //наложение при нехватке места в области
-        double _coverY = 0.0; //наложение при нехватке места в области
+        int cnt = 0; //счетчик попыток наложения карточки
+        double coverX = 0.0; //наложение при нехватке места в области
+        double coverY = 0.0; //наложение при нехватке места в области
         // проверка перекрытия имеющихся карточек новой
         for (var p = 0; p < _points.length; p++) {
-          var _tmp = Offset.zero;
-          if (_pos > _points[p]) {
-            _tmp = _pos - _points[p];
+          var tmp = Offset.zero;
+          if (pos > _points[p]) {
+            tmp = pos - _points[p];
           } else {
-            _tmp = _points[p] - _pos;
+            tmp = _points[p] - pos;
           }
           //требуется ли включать наложение?
-          if (_tmp <= Offset(cardSizeX - _coverX, cardSizeY - _coverY)) {
-            _pos = cardNewPos(cardSizeX, cardSizeY); //новая позиция карточки
+          if (tmp <= Offset(cardSizeX - coverX, cardSizeY - coverY)) {
+            pos = cardNewPos(cardSizeX, cardSizeY); //новая позиция карточки
             // включаем наложение карточек если 10000 и более раз не удается разместить
-            if (_cnt >= 10000) {
-              _coverX = cardSizeX - 10;
-              _coverY = cardSizeY - 10;
+            if (cnt >= 10000) {
+              coverX = cardSizeX - 10;
+              coverY = cardSizeY - 10;
             }
-            if (_cnt >= 50000) {
-              _coverX = cardSizeX - 30;
-              _coverY = cardSizeY - 30;
+            if (cnt >= 50000) {
+              coverX = cardSizeX - 30;
+              coverY = cardSizeY - 30;
             }
             //увеличиваем счетчик попыток и перезапускаем цикл
             p = -1;
-            _cnt++;
+            cnt++;
             continue;
           }
         }
         // сохр. координат карточки
-        _points.add(_pos);
+        _points.add(pos);
       }
       // выбор текста из нужного массива
-      var _tmptxt = '';
+      var tmptxt = '';
       if (i < _words1.length) {
-        _tmptxt = _words1[i] as String;
+        tmptxt = _words1[i] as String;
       } else {
-        _tmptxt = _words2[i - _words1.length] as String;
+        tmptxt = _words2[i - _words1.length] as String;
       }
       //формирование карточки
       myCards.add(
@@ -108,28 +108,28 @@ class _GameMatchState extends State<GameMatch> {
           sizeX: cardSizeX,
           sizeY: cardSizeY,
           color: i < _words1.length ? Colors.blue : Colors.green,
-          text: _tmptxt,
+          text: tmptxt,
         ),
       );
-      _pos = cardNewPos(cardSizeX, cardSizeY);
+      pos = cardNewPos(cardSizeX, cardSizeY);
     }
     return myCards;
   }
 
   //получение случайных координат в области
-  Offset cardNewPos(double _sx, double _sy) {
+  Offset cardNewPos(double sx, double sy) {
     return Offset(
-      (_random.nextDouble() * (_area.width - _sx)).abs(),
-      (_random.nextDouble() * (_area.height - _sy)).abs(),
+      (_random.nextDouble() * (_area.width - sx)).abs(),
+      (_random.nextDouble() * (_area.height - sy)).abs(),
     );
   }
 
   // размещаем карточки
   List<Widget> dragItems() {
-    final List<Positioned> _items = [];
+    final List<Positioned> items = [];
     //
     for (var g = 0; g < _words1.length; g++) {
-      final Positioned _item = Positioned(
+      final Positioned item = Positioned(
         top: _points[g].dy,
         left: _points[g].dx,
         child: Visibility(
@@ -148,13 +148,13 @@ class _GameMatchState extends State<GameMatch> {
           ),
         ),
       );
-      _items.add(_item);
+      items.add(item);
     }
     //
 
     //for (var g = _words1.length; g < _words1.length * 2; g++) {
     for (var g = 0; g < _words1.length * 2; g++) {
-      final Positioned _item = Positioned(
+      final Positioned item = Positioned(
         top: _points[g].dy,
         left: _points[g].dx,
         child: Visibility(
@@ -187,10 +187,10 @@ class _GameMatchState extends State<GameMatch> {
             },
             //условия совпадения карточек
             onWillAccept: (data) {
-              final _data = data! as int;
+              final dat = data! as int;
               return (g < _words1.length)
-                  ? (_data == g + _words1.length) && (_data != g)
-                  : ((_data + _words1.length) == g) && (_data != g);
+                  ? (dat == g + _words1.length) && (dat != g)
+                  : ((dat + _words1.length) == g) && (dat != g);
             },
             //действия при совпадении
             onAccept: (data) {
@@ -207,9 +207,9 @@ class _GameMatchState extends State<GameMatch> {
           ),
         ),
       );
-      _items.add(_item);
+      items.add(item);
     }
-    return _items;
+    return items;
   }
 
   @override

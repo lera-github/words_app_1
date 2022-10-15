@@ -6,12 +6,14 @@ import 'package:myapp/pages/game_flash_card.dart';
 import 'package:myapp/pages/game_match.dart';
 import 'package:myapp/pages/game_memorise.dart';
 
-
 String actionSelect = '';
 
 class ActionsAndGames extends StatefulWidget {
-  const ActionsAndGames({Key? key,  required this.collectionPath, required this.mapdata}) : super(key: key);
+  const ActionsAndGames(
+      {Key? key, required this.collectionPath, required this.userid, required this.mapdata,})
+      : super(key: key);
   final String collectionPath;
+  final String userid;
   final Map<String, dynamic> mapdata;
 
   @override
@@ -23,7 +25,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
 
   @override
   Widget build(BuildContext context) {
-    final _scrwidth = MediaQuery.of(context).size.width < 800.0
+    final scrwidth = MediaQuery.of(context).size.width < 800.0
         ? MediaQuery.of(context).size.width
         : 800.0;
 
@@ -46,7 +48,10 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  MyHomePage(collectionPath: widget.collectionPath,),
+                    builder: (context) => MyHomePage(
+                      collectionPath: widget.collectionPath,
+                      userid: widget.userid,
+                    ),
                   ),
                 );
               },
@@ -132,7 +137,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                 ),
               ),
               ConstrainedBox(
-                constraints: BoxConstraints.expand(width: _scrwidth),
+                constraints: BoxConstraints.expand(width: scrwidth),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -91,34 +91,35 @@ class ProfileState extends State<Profile> {
                         style: titleStyle,
                       ),
                       TextFormField(
-                          textAlign: TextAlign.center,
-                          style: txtStyle,
-                          keyboardType: TextInputType.name,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: myfioController,
-                          decoration: const InputDecoration(
-                            hintText: 'Введите свое Имя',
-                            hintStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          validator: (myfio) {
-                            myfioOK = false;
-                            if (myfio!.isEmpty) {
-                              return '* Обязательно для заполнения';
+                        textAlign: TextAlign.center,
+                        style: txtStyle,
+                        keyboardType: TextInputType.name,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: myfioController,
+                        decoration: const InputDecoration(
+                          hintText: 'Введите свое Имя',
+                          hintStyle:
+                              TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                        validator: (myfio) {
+                          myfioOK = false;
+                          if (myfio!.isEmpty) {
+                            return '* Обязательно для заполнения';
+                          } else {
+                            if (myfio.length < 3) {
+                              return '* Не может быть менее трех символов';
+                              //  } else {
+                              //   if (myfio.trim().contains(' ') == false) {
+                              //   return '* Разделите слова пробелами';
                             } else {
-                              if (myfio.length < 3) {
-                                return '* Не может быть менее трех символов';
-                                //  } else {
-                                //   if (myfio.trim().contains(' ') == false) {
-                                //   return '* Разделите слова пробелами';
-                              } else {
-                                myfioOK = true;
-                              }
+                              myfioOK = true;
                             }
-                            return null;
                           }
-                          //},
-                          ,),
+                          return null;
+                        }
+                        //},
+                        ,
+                      ),
                       const SizedBox(height: 20.0),
                       Text(
                         'E-mail:',
@@ -192,7 +193,7 @@ class ProfileState extends State<Profile> {
     );
   }
 
-  void _saveData(bool _direction) {
+  void _saveData(bool direct) {
     if (!(myfioOK & mymailOK & passwordOK)) {
       Fluttertoast.showToast(
         msg: "Не все данные сохранены, исправте ошибки!",

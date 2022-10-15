@@ -37,67 +37,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 reusableTextField(
-                  "Введите имя пользователя",
-                  Icons.person_outline,
-                  false,
-                  _userNameTextController,
+                  text: "Введите имя пользователя",
+                  icon: Icons.person_outline,
+                  isPasswordType: false,
+                  controller: _userNameTextController,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 reusableTextField(
-                  "Введите адрес электронной почты",
-                  Icons.person_outline,
-                  false,
-                  _emailTextController,
+                  text: "Введите адрес электронной почты",
+                  icon: Icons.person_outline,
+                  isPasswordType: false,
+                  controller: _emailTextController,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 reusableTextField(
-                  "Введите пароль",
-                  Icons.lock_outlined,
-                  true,
-                  _passwordTextController,
+                  text: "Введите пароль",
+                  icon: Icons.lock_outlined,
+                  isPasswordType: true,
+                  controller: _passwordTextController,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                signInSignUpButton(context, false, () async {
-                  await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                    email: _emailTextController.text.trim(),
-                    password: _passwordTextController.text.trim(),
-                  )
-                      .then((value) async {
-                    var idx;
+                signInSignUpButton(
+                  context: context,
+                  isLogin: false,
+                  onTap: () async {
+                    await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                      email: _emailTextController.text.trim(),
+                      password: _passwordTextController.text.trim(),
+                    )
+                        .then((value) async {
+                      var idx;
 //запись в базу нового пользователя
-                    await FirebaseFirestore.instance.collection('users').add({
-                      'username': _userNameTextController.text.trim()
-                    }).then((value) {
-                      idx = value.id;
-                    });
-                    await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(idx as String)
-                        .update({
-                      'userid': idx,
-                      'useremail': _emailTextController.text.trim()
-                    });
-                    if (!mounted) return;
+                      await FirebaseFirestore.instance.collection('users').add({
+                        'username': _userNameTextController.text.trim()
+                      }).then((value) {
+                        idx = value.id;
+                      });
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(idx as String)
+                          .update({
+                        'userid': idx as String,
+                        'useremail': _emailTextController.text.trim()
+                      });
 
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                          collectionPath: 'users/${idx as String}/modules',
+                      if (!mounted) return;
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  MyHomePage(
+                            collectionPath: 'modules',
+                            //'users/${idx as String}/modules',
+                            userid: idx as String,
+                          ),
                         ),
-                      ),
-                    );
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });
-                }),
+                      );
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
+                  },
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
