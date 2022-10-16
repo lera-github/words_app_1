@@ -55,8 +55,7 @@ dependencies:
   provider: ^6.0.2
   flash_card: ^0.0.7
   firebase_auth: ^3.11.2
-  
- 
+  http: ^0.13.5
  
   
 dev_dependencies:

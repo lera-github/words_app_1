@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
+import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -382,7 +384,9 @@ class ModuleListState extends State<ModuleList> {
                                 child: const Text(
                                   'Да',
                                   style: TextStyle(
-                                      fontSize: 18, color: Colors.red),
+                                    fontSize: 18,
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 onPressed: () {
                                   //удаление

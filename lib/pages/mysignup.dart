@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/mysignin.dart';
 
@@ -110,7 +111,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           );
                         }).onError((error, stackTrace) {
-                          print("Error ${error.toString()}");
+                          myAlert(
+                              context: context,
+                              mytext: 'Error ${error.toString()}',);
+                          //print("Error ${error.toString()}");
                         });
                       },
                     ),
