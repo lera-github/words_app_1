@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -55,29 +57,27 @@ class _ModuleEditState extends State<ModuleEdit> {
             width: 20,
           ),
           Align(
-            child: 
-           TTip(
-                message: 'На домашнюю страницу...',
-                child:
-            
-            InkWell(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: Text(
-                'Memory Games',
-                style: titleStyle,
-              ),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                      collectionPath: widget.collectionPath,
-                      userid: widget.userid,
+            child: TTip(
+              message: 'На домашнюю страницу...',
+              child: InkWell(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: Text(
+                  'Memory Games',
+                  style: titleStyle,
+                ),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                        collectionPath: widget.collectionPath,
+                        userid: widget.userid,
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),),
+                  );
+                },
+              ),
+            ),
           ),
           const SizedBox(
             width: 20,
@@ -124,7 +124,8 @@ class _ModuleEditState extends State<ModuleEdit> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => MyHomePage(
-                            collectionPath: widget.collectionPath, userid: widget.userid,
+                            collectionPath: widget.collectionPath,
+                            userid: widget.userid,
                           ),
                         ),
                       );
@@ -272,6 +273,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     item1Controller.text = item1; //_words1[index] as String;
     final TextEditingController item2Controller = TextEditingController();
     item2Controller.text = item2; //_words2[index] as String;
+
     return SizeTransition(
       sizeFactor: animation, // as Animation<double>,
       child: Card(
@@ -330,6 +332,24 @@ class _ModuleEditState extends State<ModuleEdit> {
                   //Text(item2,style: TextStyle(fontSize: 14),),
                 ),
               ),
+              const Spacer(),
+              Expanded(
+                flex: 5,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  child: SizedBox(
+                    width: 20,
+                    child: Image.network(
+                      'https://cdn1.ozone.ru/s3/multimedia-h/6300467429.jpg', /////////////////////
+                    ),
+                  ),
+                  onTap: () {
+                    ////////////////////////////////////
+                    myAlert(context: context, mytext: 'нажалось...');
+                    setState(() {});
+                  },
+                ),
+              ),
             ],
           ),
           trailing: InkWell(
@@ -379,8 +399,13 @@ class _ModuleEditState extends State<ModuleEdit> {
     final int removeIndex = removeAt;
     final String removedItem1 = _words1.removeAt(removeIndex) as String;
     final String removedItem2 = _words2.removeAt(removeIndex) as String;
-    final AnimatedListRemovedItemBuilder builder = (context, animation) =>
-        _buildItem(removedItem1, removedItem2, animation, removeAt);
+    final AnimatedListRemovedItemBuilder builder =
+        (context, animation) => _buildItem(
+              removedItem1,
+              removedItem2,
+              animation,
+              removeAt,
+            );
     _listKey.currentState!.removeItem(removeIndex, builder);
 /*     int removeIndex = removeAt;
     String removedItem = _data.removeAt(removeIndex);

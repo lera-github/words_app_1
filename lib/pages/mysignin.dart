@@ -192,6 +192,7 @@ TextField reusableTextField({
         borderSide: BorderSide.none,
       ),
     ),
+    textInputAction: TextInputAction.next,
     keyboardType: isPasswordType
         ? TextInputType.visiblePassword
         : TextInputType.emailAddress,

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/game_flash_card.dart';
@@ -9,9 +10,12 @@ import 'package:myapp/pages/game_memorise.dart';
 String actionSelect = '';
 
 class ActionsAndGames extends StatefulWidget {
-  const ActionsAndGames(
-      {Key? key, required this.collectionPath, required this.userid, required this.mapdata,})
-      : super(key: key);
+  const ActionsAndGames({
+    Key? key,
+    required this.collectionPath,
+    required this.userid,
+    required this.mapdata,
+  }) : super(key: key);
   final String collectionPath;
   final String userid;
   final Map<String, dynamic> mapdata;
@@ -38,23 +42,26 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
             width: 20,
           ),
           Align(
-            child: InkWell(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: Text(
-                'Memory Games',
-                style: titleStyle,
-              ),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                      collectionPath: widget.collectionPath,
-                      userid: widget.userid,
+            child: TTip(
+              message: 'На домашнюю страницу...',
+              child: InkWell(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: Text(
+                  'Memory Games',
+                  style: titleStyle,
+                ),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                        collectionPath: widget.collectionPath,
+                        userid: widget.userid,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(
