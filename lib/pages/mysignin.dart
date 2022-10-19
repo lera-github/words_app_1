@@ -96,9 +96,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         FirebaseAuth.instance
                             .signInWithEmailAndPassword(
                           //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
-                          //email: "aaaaaa@ya.ru",
-                          //password: "aaaaaa",
-                          //email: _emailTextController.text.trim(),
+                          //email: "z@z.ru",
+                          //password: "zzzzzz",
                           email: emailText,
                           password: _passwordTextController.text.trim(),
                         )

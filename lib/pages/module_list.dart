@@ -1,9 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
-import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -226,7 +224,7 @@ class ModuleListState extends State<ModuleList> {
                         /* (sharedfl == '#')
                           ? Colors.yellow.shade600
                           : Colors.grey.shade400, */
-                        ),
+                        ,),
                   ),
                   // избранное
                   onPressed: () {

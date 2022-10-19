@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
@@ -126,7 +128,7 @@ void showImgDialog({
                   /// введён URL?
                   if (s.isNotEmpty) {
                     //получим изображение
-                    await getImg(
+                    await loadImg(
                       s,
                       //'https://i.pinimg.com/originals/12/56/b0/1256b0c13c4d6bb9c5c471d1c04ddd24.gif',
                       //https://i.pinimg.com/originals/13/84/72/1384724a21fc9943f65dedfb9619c2e9.png
@@ -134,24 +136,39 @@ void showImgDialog({
                       val = value;
                     });
 
-                    //проверка, есть в последних 5 символах точка
-                    if ((s.substring(s.length - 5, s.length - 1))
-                        .contains('.')) {
-                      //вычленим расширение файла
-                      String exts = s.substring(
-                        s.lastIndexOf('.') + 1,
-                      );
-
+                    //вычленим расширение файла
+                    final String exts = s.substring(
+                      s.lastIndexOf('.'),
+                    );
+                    const regularExt = [
+                      '.JPEG',
+                      '.PNG',
+                      '.GIF',
+                      '.JPG',
+                      '.WebP',
+                      '.BMP',
+                      '.WBMP'
+                    ];
+                    debugPrint(exts);
+                    //проверка, есть ли в конце одно из допустимых расширений
+                    if (regularExt.contains(exts.toUpperCase())) {
+                      //генератор имени файла
+                      final generatedfilename = md5
+                          .convert(
+                            utf8.encode(
+                              DateTime.now().millisecondsSinceEpoch.toString(),
+                            ),
+                          )
+                          .toString();
                       //запишем в FBS
-                      await toFBS(
-                          'ddd24.gif', val!); //////////////////////////////
+                      await toFBS(generatedfilename, val!);
                       //debugPrint(val!.toString());
                       //debugPrint(txtController.text.trim());
                     } else {
                       showAlert(
                           context: context,
                           mytext:
-                              'Неверный URL!\nИзображение получить невозможно.');
+                              'Неверный URL!\nИзображение получить невозможно.',);
                     }
                   } else {
                     //если не введен URL
