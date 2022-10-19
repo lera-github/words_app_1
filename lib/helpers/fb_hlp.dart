@@ -57,6 +57,7 @@ Future<void> updateFS({
       .catchError((e) => print("Failed to update user: $e")); */
 }
 
+//изменение признака общего доступа модуля
 Future<void> updatesharedFS({
   required String collection,
   required String id,
@@ -72,6 +73,7 @@ Future<void> updatesharedFS({
   });
 }
 
+//удаление модуля
 Future<void> deleteFS({
   required String collection,
   required String id,
@@ -79,7 +81,51 @@ Future<void> deleteFS({
   await FirebaseFirestore.instance.collection(collection).doc(id).delete();
 }
 
-//-------------- ниже неактуально
+//запись в FBS
+Future<void> toFBS(String name, Uint8List data) async {
+/*   // имя файла
+  String _path = '/${globals.myclas} ${globals.myfio}-$name';
+  if ((globals.myclas == '') & (globals.myfio == '')) {
+    _path = '/~temp-$name';
+  }
+  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(_path); */
+  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(name);
+  try {
+    // Upload raw data.
+    await ref.putData(data);
+    // Get raw data.
+    //final Uint8List? downloadedData = await ref.getData();
+
+  } on fbs.FirebaseException catch (e) {
+    // e.g,
+    if (e.code == 'canceled') {}
+    //print('toFBS error: $e');
+  }
+}
+
+//чтение из FBS
+Future<Uint8List?> fromFBS(String path) async {
+  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(path);
+  try {
+    // Upload raw data.
+    //await ref.putData(data);
+    // Get raw data.
+    final Uint8List? downloadedData = await ref.getData();
+
+    //debugPrint(downloadedData.toString());
+
+    return downloadedData;
+  } on fbs.FirebaseException catch (e) {
+    // e.g,
+    if (e.code == 'canceled') {}
+    //print('fromFBS error: $e');
+  }
+  return null;
+}
+
+
+
+//--------------------------------------------------------------------------------- ниже неактуально
 Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> doc) async {
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
       .collection('users')
@@ -152,42 +198,4 @@ Future<void> updateUsersFS({
   }
 } */
 
-Future<void> toFBS(String name, Uint8List data) async {
-/*   // имя файла
-  String _path = '/${globals.myclas} ${globals.myfio}-$name';
-  if ((globals.myclas == '') & (globals.myfio == '')) {
-    _path = '/~temp-$name';
-  }
-  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(_path); */
-  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(name);
-  try {
-    // Upload raw data.
-    await ref.putData(data);
-    // Get raw data.
-    //final Uint8List? downloadedData = await ref.getData();
 
-  } on fbs.FirebaseException catch (e) {
-    // e.g,
-    if (e.code == 'canceled') {}
-    //print('toFBS error: $e');
-  }
-}
-
-Future<Uint8List?> fromFBS(String path) async {
-  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(path);
-  try {
-    // Upload raw data.
-    //await ref.putData(data);
-    // Get raw data.
-    final Uint8List? downloadedData = await ref.getData();
-
-    //debugPrint(downloadedData.toString());
-
-    return downloadedData;
-  } on fbs.FirebaseException catch (e) {
-    // e.g,
-    if (e.code == 'canceled') {}
-    //print('fromFBS error: $e');
-  }
-  return null;
-}

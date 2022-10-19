@@ -111,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           );
                         }).onError((error, stackTrace) {
-                          myAlert(
+                          showAlert(
                               context: context,
                               mytext: 'Error ${error.toString()}',);
                           //print("Error ${error.toString()}");

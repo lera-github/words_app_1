@@ -80,7 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         //такой пользователь зарегистрирован?
 
                         if (userCollection.isEmpty) {
-                          myAlert(
+                          showAlert(
                             context: context,
                             mytext:
                                 'Пользователя с таким именем не существует!\nЗарегистрируйтесь!',

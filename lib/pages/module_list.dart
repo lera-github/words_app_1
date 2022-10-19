@@ -244,7 +244,7 @@ class ModuleListState extends State<ModuleList> {
                           valdata: sharedfl,
                         ).then((value) => setState(() {}));
                       } else {
-                        myAlert(
+                        showAlert(
                           context: context,
                           mytext:
                               'Вы не можете изменить\nмодуль другого пользователя',

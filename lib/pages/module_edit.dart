@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
@@ -30,6 +31,7 @@ class _ModuleEditState extends State<ModuleEdit> {
   // List<String> _data = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Last Item'];
   List _words1 = [];
   List _words2 = [];
+
   bool moduleNameOK = false;
   TextEditingController moduleNameController = TextEditingController();
   TextEditingController moduleDescriptionController = TextEditingController();
@@ -47,6 +49,12 @@ class _ModuleEditState extends State<ModuleEdit> {
     }
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
+    /* Uint8List? img;
+    Future.delayed(Duration.zero, () async {
+      await fromFBS('ffffffNDLokxzVclUdMs.png').then((value) {
+        img = value;
+      });
+    }); */
 
     return Scaffold(
       appBar: AppBar(
@@ -130,7 +138,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                         ),
                       );
                     } else {
-                      myAlert(
+                      showAlert(
                         context: context,
                         mytext: 'Внесите обязательные данные!',
                       );
@@ -244,6 +252,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                         _words2[index] as String,
                         animation,
                         index,
+                        img!,
                       );
                       //_buildItem(_data[index], animation, index);
                     },
@@ -268,6 +277,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     String item2,
     Animation<double> animation,
     int index,
+    Uint8List img,
   ) {
     final TextEditingController item1Controller = TextEditingController();
     item1Controller.text = item1; //_words1[index] as String;
@@ -339,13 +349,16 @@ class _ModuleEditState extends State<ModuleEdit> {
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: SizedBox(
                     width: 20,
-                    child: Image.network(
+                    child: Image.memory(img),
+
+                    /* Image.network(
                       'https://cdn1.ozone.ru/s3/multimedia-h/6300467429.jpg', /////////////////////
-                    ),
+                    ), */
                   ),
                   onTap: () {
                     ////////////////////////////////////
-                    myAlert(context: context, mytext: 'нажалось...');
+                    //showAlert(context: context, mytext: 'нажалось...');
+                    showImgDialog(context: context);
                     setState(() {});
                   },
                 ),
@@ -359,7 +372,7 @@ class _ModuleEditState extends State<ModuleEdit> {
               color: Colors.red,
             ),
             onTap: () {
-              _removeSingleItems(index);
+              _removeSingleItems(index, img);
               setState(() {});
             },
           ),
@@ -395,7 +408,7 @@ class _ModuleEditState extends State<ModuleEdit> {
   }
 
   /// Method to remove an item at an index from the list
-  void _removeSingleItems(int removeAt) {
+  void _removeSingleItems(int removeAt, Uint8List img) {
     final int removeIndex = removeAt;
     final String removedItem1 = _words1.removeAt(removeIndex) as String;
     final String removedItem2 = _words2.removeAt(removeIndex) as String;
@@ -405,6 +418,7 @@ class _ModuleEditState extends State<ModuleEdit> {
               removedItem2,
               animation,
               removeAt,
+              img,
             );
     _listKey.currentState!.removeItem(removeIndex, builder);
 /*     int removeIndex = removeAt;
