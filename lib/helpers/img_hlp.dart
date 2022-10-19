@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapp/helpers/fb_hlp.dart';
@@ -26,13 +25,11 @@ Future<List<Uint8List>> getImgs({required List imgname}) async {
     placeholderimg = value!;
   });
   for (int i = 0; i < imgname.length; i++) {
-    try {
-      await fromFBS(imgname[i] as String).then((value) {
-        ret.add(value!);
-      });
-    } catch (_) {
+    await fromFBS(imgname[i] as String).then((value) {
+      ret.add(value!);
+    }).onError((_, __) {
       ret.add(placeholderimg);
-    }
+    });
   }
   return ret;
 }

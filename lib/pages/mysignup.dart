@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             " назад",
                             style: TextStyle(
                                 color: Colors.white70,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,),
                           ),
                         ],
                       ),

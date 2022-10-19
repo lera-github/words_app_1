@@ -70,8 +70,9 @@ class TTip extends StatelessWidget {
   }
 }
 
+//------------------------------------------------------------------------------
 // диалог выбора изображения
-void showImgDialog({
+Future<Uint8List>? showImgDialog({
   required BuildContext context,
 }) {
   final TextEditingController txtController = TextEditingController();
@@ -149,10 +150,11 @@ void showImgDialog({
                       '.BMP',
                       '.WBMP'
                     ];
-                    debugPrint(exts);
+                    //debugPrint(exts);
                     //проверка, есть ли в конце одно из допустимых расширений
                     if (regularExt.contains(exts.toUpperCase())) {
-                      //генератор имени файла
+                      return val;
+                      /* //генератор имени файла
                       final generatedfilename = md5
                           .convert(
                             utf8.encode(
@@ -160,27 +162,41 @@ void showImgDialog({
                             ),
                           )
                           .toString();
+                      
                       //запишем в FBS
-                      await toFBS(generatedfilename, val!);
+                      await toFBS(generatedfilename, val!); */
+
                       //debugPrint(val!.toString());
                       //debugPrint(txtController.text.trim());
                     } else {
                       showAlert(
-                          context: context,
-                          mytext:
-                              'Неверный URL!\nИзображение получить невозможно.',);
+                        context: context,
+                        mytext:
+                            'Неверный URL!\nИзображение получить невозможно.',
+                      );
                     }
                   } else {
                     //если не введен URL
                     //удалить файл из FBS, если он там есть
-                    showAlert(context: context, mytext: 'Изображение удалено!');
-                    //УДАЛИТЬ ИЗ FBS
-                    ///
-                    ///
+                    //showAlert(context: context, mytext: 'Изображение удалено!');
+                    //УДАЛИТЬ ИЗ FBS ===========================================================
+                    ///         ЧТО-ТО  НАДО ПРИДУМАТЬ С УДАЛЕНИЕМ КАРТИНКИ...
+                    return null;
                   }
                 },
               );
               Navigator.of(context).pop();
+              /* Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModuleEdit(
+                            collectionPath: collectionPath,
+                            userid: userid,
+                            mapdata: mapdata,
+                            isAdd: false,
+                            ), 
+                          ),
+                        ); */
             },
           ),
           TextButton(
@@ -196,4 +212,5 @@ void showImgDialog({
       );
     },
   );
+  return null;
 }

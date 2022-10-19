@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -27,11 +29,9 @@ class _ModuleEditState extends State<ModuleEdit> {
   // the GlobalKey is needed to animate the list
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  // backing data
-  // List<String> _data = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Last Item'];
   List _words1 = [];
   List _words2 = [];
-List _imgs = [];
+  List _imgs = [];
 
   bool moduleNameOK = false;
   TextEditingController moduleNameController = TextEditingController();
@@ -60,7 +60,7 @@ List _imgs = [];
 
     return FutureBuilder(
       future: //fromFBS('ffffffNDLokxzVclUdMs.png'),
-      getImgs(imgname: _imgs),
+          getImgs(imgname: _imgs),
       builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -108,6 +108,7 @@ List _imgs = [];
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      //кнопка Сохранить -----------------------------------------
                       ElevatedButton(
                         style: menuButtonStyle,
                         onPressed: () async {
@@ -138,6 +139,7 @@ List _imgs = [];
                                 .update({
                               'words1': _words1,
                               'words2': _words2,
+                              'imgs': _imgs,
                               'module': moduleNameController.text.trim(),
                               'description':
                                   moduleDescriptionController.text.trim()
@@ -179,7 +181,9 @@ List _imgs = [];
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 8,),
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
                         child: TextFormField(
                           textAlign: TextAlign.left,
                           style: textStyle,
@@ -259,7 +263,7 @@ List _imgs = [];
                         child: AnimatedList(
                           controller: scrollController,
 
-                          /// Key to call remove and insert item methods from anywhere  ///////////////////////////////
+                          /// Key to call remove and insert item methods from anywhere
                           key: _listKey,
                           initialItemCount: _words1.length,
                           //_data.length,
@@ -376,15 +380,15 @@ List _imgs = [];
                   child: SizedBox(
                     width: 20,
                     child: Image.memory(img),
-
                     /* Image.network(
                       'https://cdn1.ozone.ru/s3/multimedia-h/6300467429.jpg', /////////////////////
                     ), */
                   ),
-                  onTap: () {
-                    ////////////////////////////////////
-                    //showAlert(context: context, mytext: 'нажалось...');
-                    showImgDialog(context: context);
+                  onTap: () async {
+                    //Вызов диалога загрузки изображения
+                    await showImgDialog(context: context)?.then((value) {
+                      _imgs[index] = value;
+                    }).onError((error, stackTrace) {});
                     setState(() {});
                   },
                 ),
