@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           password: _passwordTextController.text.trim(),
                         )
                             .then((value) async {
-                          var idx;
+                          var idx='';
                           //запись в базу нового пользователя
                           await FirebaseFirestore.instance
                               .collection('users')
@@ -92,9 +92,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                           await FirebaseFirestore.instance
                               .collection('users')
-                              .doc(idx as String)
+                              .doc(idx)
                               .update({
-                            'userid': idx as String,
+                            'userid': idx,
                             'useremail': _emailTextController.text.trim()
                           });
 
@@ -106,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               builder: (context) => MyHomePage(
                                 collectionPath: 'modules',
                                 //'users/${idx as String}/modules',
-                                userid: idx as String,
+                                userid: idx,
                               ),
                             ),
                           );

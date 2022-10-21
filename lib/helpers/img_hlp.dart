@@ -5,7 +5,7 @@ import 'package:myapp/helpers/fb_hlp.dart';
 
 Future<Uint8List> loadImg(String imgurl) async {
 /*  ************ ВЫЗОВ
-                      final Uint8List ttt = await getImg(
+                      final Uint8List ttt = await loadImg(
                         'https://101kote.ru/upload/medialibrary/46f/20.jpg',
                       );
                       print(ttt);

@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +38,15 @@ class _ModuleEditState extends State<ModuleEdit> {
   TextEditingController moduleDescriptionController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
+/* @override
+void initState() {
+  super.initState();
+  
+} */
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final scrwidth = MediaQuery.of(context).size.width < 600.0
@@ -59,7 +68,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     }); */
 
     return FutureBuilder(
-      future: //fromFBS('ffffffNDLokxzVclUdMs.png'),
+      future: 
           getImgs(imgname: _imgs),
       builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -313,7 +322,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     item1Controller.text = item1; //_words1[index] as String;
     final TextEditingController item2Controller = TextEditingController();
     item2Controller.text = item2; //_words2[index] as String;
-
+    var currentImg = img;
     return SizeTransition(
       sizeFactor: animation, // as Animation<double>,
       child: Card(
@@ -379,18 +388,56 @@ class _ModuleEditState extends State<ModuleEdit> {
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: SizedBox(
                     width: 20,
-                    child: Image.memory(img),
+                    child: Image.memory(currentImg),
                     /* Image.network(
                       'https://cdn1.ozone.ru/s3/multimedia-h/6300467429.jpg', /////////////////////
                     ), */
                   ),
-                  onTap: () async {
-                    //Вызов диалога загрузки изображения
-                    await showImgDialog(context: context)?.then((value) {
-                      _imgs[index] = value;
-                    }).onError((error, stackTrace) {});
+                  onTap: () {
+                    showDialog(
+                      builder: (_) => ShowImgDialog(),
+                      context: context,
+                    ).then((value) {
+                      // введенный в диалоговом окне URL изображения
+                      if (value != null) {
+                        final val = value as String;
+                        Future.delayed(Duration.zero, () async {
+                          //  value1 содержит изображение (bin)
+                          //  _imgs[index] - массив строк с именами файлов
+                          //  currentImg - изображение (bin)
+                          //получим изображение
+                          await loadImg(val).then((value1) {
+                              currentImg = value1;
+                            //генератор имени файла
+                            _imgs[index] = md5
+                                .convert(
+                                  utf8.encode(
+                                    DateTime.now()
+                                        .millisecondsSinceEpoch
+                                        .toString(),
+                                  ),
+                                )
+                                .toString();
+
+                            //    КАК-ТО НАДО ПЕРЕДАТЬ БАЙТЫ ИЗОБРАЖЕНИЯ ВЫШЕ ДЛЯ КНОПКИ СОХРАНЕНИЯ
+                            //    ИЛИ СОХРАНЯТЬ СРАЗУ ЗДЕСЬ?
+                            //
+                            //await toFBS(_imgs[index], currentImg);
+                          });
+                        });
+                      }
+                    });
                     setState(() {});
                   },
+                  /* async {
+                    //Вызов диалога загрузки изображения
+                    await showImgDialog(context: context).then((value) {
+                      setState(() {
+                        _imgs[index] = value;
+                      });
+                    }).onError((error, stackTrace) {});
+                    debugPrint(_imgs[index].toString());
+                  }, */
                 ),
               ),
             ],
@@ -442,14 +489,13 @@ class _ModuleEditState extends State<ModuleEdit> {
     final int removeIndex = removeAt;
     final String removedItem1 = _words1.removeAt(removeIndex) as String;
     final String removedItem2 = _words2.removeAt(removeIndex) as String;
-    final AnimatedListRemovedItemBuilder builder =
-        (context, animation) => _buildItem(
-              removedItem1,
-              removedItem2,
-              animation,
-              removeAt,
-              img,
-            );
+    Widget builder(context, Animation<double> animation) => _buildItem(
+          removedItem1,
+          removedItem2,
+          animation,
+          removeAt,
+          img,
+        );
     _listKey.currentState!.removeItem(removeIndex, builder);
 /*     int removeIndex = removeAt;
     String removedItem = _data.removeAt(removeIndex);
