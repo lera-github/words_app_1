@@ -18,14 +18,14 @@ Future<Uint8List> loadImg(String imgurl) async {
 }
 
 //загрузка изображений из FBS для всего модуля
-Future<List<Uint8List>> getImgs({required List imgname}) async {
+Future<List<Uint8List>> getImgs({required List getImgsName}) async {
   final List<Uint8List> ret = [];
   Uint8List placeholderimg = Uint8List.fromList([0]);
   await fromFBS('placeholder.png').then((value) {
     placeholderimg = value!;
   });
-  for (int i = 0; i < imgname.length; i++) {
-    await fromFBS(imgname[i] as String).then((value) {
+  for (int i = 0; i < getImgsName.length; i++) {
+    await fromFBS(getImgsName[i] as String).then((value) {
       ret.add(value!);
     }).onError((_, __) {
       ret.add(placeholderimg);

@@ -28,6 +28,25 @@ Future<List<Object?>> getFS({
   return allData;
 }
 
+/* Future<List<String?>> getNamesFS({
+  required String collection,
+  required String id,
+  required String list,
+}) async {
+  // Get docs from collection reference
+  final QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection(collection).get();
+  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  //allData as List<Map<String,dynamic>>;
+  for (final element in allData) {
+    if (element == list){
+
+    }
+  }
+ 
+  return ret;
+} */
+
 Future<List<Object?>> getFSfind({
   required String collection,
   required String myfield,
@@ -122,8 +141,6 @@ Future<Uint8List?> fromFBS(String path) async {
   }
   return null;
 }
-
-
 
 //--------------------------------------------------------------------------------- ниже неактуально
 Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> doc) async {

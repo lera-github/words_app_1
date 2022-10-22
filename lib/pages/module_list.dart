@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
+import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -216,15 +218,15 @@ class ModuleListState extends State<ModuleList> {
                   icon: Transform.scale(
                     scale: 1.4,
                     child: Icon(
-                        (sharedfl == '#')
-                            ? Icons.folder_shared //star_rate_rounded
-                            : Icons
-                                .folder_shared_outlined, //star_border_rounded,
-                        color: sharedColor
-                        /* (sharedfl == '#')
+                      (sharedfl == '#')
+                          ? Icons.folder_shared //star_rate_rounded
+                          : Icons.folder_shared_outlined, //star_border_rounded,
+                      color: sharedColor
+                      /* (sharedfl == '#')
                           ? Colors.yellow.shade600
                           : Colors.grey.shade400, */
-                        ,),
+                      ,
+                    ),
                   ),
                   // избранное
                   onPressed: () {
@@ -334,12 +336,14 @@ class ModuleListState extends State<ModuleList> {
                         color: Colors.blue.shade800,
                       ),
                     ),
-                    onPressed: () => _gotoedit(
-                      widget.collectionPath,
-                      widget.userid,
-                      context,
-                      moduleCollection,
-                    ),
+                    onPressed: () async {
+                      await _gotoedit(
+                        widget.collectionPath,
+                        widget.userid,
+                        context,
+                        moduleCollection,
+                      );
+                    },
                   ),
                 ),
               ),
@@ -436,23 +440,31 @@ class ModuleListState extends State<ModuleList> {
 }
 
 //переход на редактирование модуля
-void _gotoedit(
+Future<void> _gotoedit(
   String collectionPath,
   String userid,
   BuildContext context,
   Map<String, dynamic> mapdata,
-) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ModuleEdit(
-        collectionPath: collectionPath,
-        userid: userid,
-        mapdata: mapdata,
-        isAdd: false,
-      ),
-    ),
-  );
+) async {
+  List<Uint8List> imgsData = [];
+  Future.delayed(Duration.zero, () async {
+    await getImgs(getImgsName: mapdata['imgs'] as List).then((value) {
+      imgsData = value;
+      //if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ModuleEdit(
+            collectionPath: collectionPath,
+            userid: userid,
+            mapdata: mapdata,
+            isAdd: false,
+            imgsData: imgsData, /////////////////////////
+          ),
+        ),
+      );
+    });
+  });
 }
 
 /* Future<void> delModule(

@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
+import 'package:myapp/pages/game_flash_card.dart';
 
 class ModuleEdit extends StatefulWidget {
   const ModuleEdit({
@@ -16,11 +19,13 @@ class ModuleEdit extends StatefulWidget {
     required this.userid,
     required this.mapdata,
     required this.isAdd,
+    required this.imgsData,
   }) : super(key: key);
   final String collectionPath;
   final String userid;
   final Map<String, dynamic> mapdata;
   final bool isAdd;
+  final List<Uint8List> imgsData;
   @override
   _ModuleEditState createState() => _ModuleEditState();
 }
@@ -29,23 +34,27 @@ class _ModuleEditState extends State<ModuleEdit> {
   // the GlobalKey is needed to animate the list
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
+  //слова
   List _words1 = [];
   List _words2 = [];
+  //имена файлов
   List _imgs = [];
-
+  //изображения
+  List<Uint8List> _imgsData = [];
+  //значение массива имен файлов до начала редактирования
+  //List imgName0 = [];
+  //признак корректности текстового ввода
   bool moduleNameOK = false;
+  // контроллеры
   TextEditingController moduleNameController = TextEditingController();
   TextEditingController moduleDescriptionController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
-/* @override
-void initState() {
-  super.initState();
-  
-} */
-
-
-
+/*   @override
+  void initState() {
+    super.initState();
+    imgName0 = widget.mapdata['imgs'] as List;
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +69,10 @@ void initState() {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
     _imgs = widget.mapdata['imgs'] as List;
+    _imgsData = widget.imgsData;
+    /* Future.delayed(Duration.zero, () async {
+      await getImgs(imgName0: _imgs).then((value) => _imgsData = value);
+    }); */
     /* Uint8List? img;
     Future.delayed(Duration.zero, () async {
       await fromFBS('ffffffNDLokxzVclUdMs.png').then((value) {
@@ -67,9 +80,9 @@ void initState() {
       });
     }); */
 
-    return FutureBuilder(
+    /* return FutureBuilder(
       future: 
-          getImgs(imgname: _imgs),
+          getImgs(imgName0: _imgs),
       builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -78,237 +91,259 @@ void initState() {
             ),
           );
         }
-        if (snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: const Color.fromARGB(255, 255, 255, 220),
-              actions: [
-                const SizedBox(
-                  width: 20,
+        if (snapshot.hasData) { */
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 220),
+        actions: [
+          const SizedBox(
+            width: 20,
+          ),
+          Align(
+            child: TTip(
+              message: 'На домашнюю страницу...',
+              child: InkWell(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: Text(
+                  'Memory Games',
+                  style: titleStyle,
                 ),
-                Align(
-                  child: TTip(
-                    message: 'На домашнюю страницу...',
-                    child: InkWell(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      child: Text(
-                        'Memory Games',
-                        style: titleStyle,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                        collectionPath: widget.collectionPath,
+                        userid: widget.userid,
                       ),
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyHomePage(
-                              collectionPath: widget.collectionPath,
-                              userid: widget.userid,
-                            ),
-                          ),
-                        );
-                      },
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //кнопка Сохранить -----------------------------------------
-                      ElevatedButton(
-                        style: menuButtonStyle,
-                        onPressed: () async {
-                          bool moduleItemsOK = true;
-                          for (int i = 0; i < _words1.length; i++) {
-                            if ((_words1[i] == '') | (_words2[i] == '')) {
-                              moduleItemsOK = false;
-                            }
-                          }
-                          if (moduleNameOK & moduleItemsOK) {
-                            var idx = widget.mapdata['id'];
-                            //добавление модуля?
-                            if (widget.isAdd) {
-                              await FirebaseFirestore.instance
-                                  .collection(widget.collectionPath)
-                                  .add({'favourite': false}).then((value) {
-                                idx = value.id;
-                              });
-                              await FirebaseFirestore.instance
-                                  .collection(widget.collectionPath)
-                                  .doc(idx as String)
-                                  .update({'id': idx});
-                            }
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //кнопка Сохранить -----------------------------------------
+                ElevatedButton(
+                  style: menuButtonStyle,
+                  onPressed: () async {
+                    bool moduleItemsOK = true;
+                    for (int i = 0; i < _words1.length; i++) {
+                      if ((_words1[i] == '') | (_words2[i] == '')) {
+                        moduleItemsOK = false;
+                      }
+                    }
+                    if (moduleNameOK & moduleItemsOK) {
+                      var idx = widget.mapdata['id'];
+                      //добавление модуля?
+                      if (widget.isAdd) {
+                        await FirebaseFirestore.instance
+                            .collection(widget.collectionPath)
+                            .add({'favourite': false}).then((value) {
+                          idx = value.id;
+                        });
+                        await FirebaseFirestore.instance
+                            .collection(widget.collectionPath)
+                            .doc(idx as String)
+                            .update({'id': idx});
+                      }
+                      /////////////////////////запись изображений в FBS
+                      // получим список имен изображений
 
-                            await FirebaseFirestore.instance
-                                .collection(widget.collectionPath)
-                                .doc(idx as String)
-                                .update({
-                              'words1': _words1,
-                              'words2': _words2,
-                              'imgs': _imgs,
-                              'module': moduleNameController.text.trim(),
-                              'description':
-                                  moduleDescriptionController.text.trim()
-                            });
-                            if (!mounted) return;
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyHomePage(
-                                  collectionPath: widget.collectionPath,
-                                  userid: widget.userid,
-                                ),
-                              ),
-                            );
-                          } else {
-                            showAlert(
-                              context: context,
-                              mytext: 'Внесите обязательные данные!',
-                            );
-                          }
-                        },
-                        child: const Text("Сохранить"),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
+                      final List<Object?> moduleData = await getFSfind(
+                        collection: 'modules',
+                        myfield: 'id',
+                        myvalue: idx as String,
+                      );
+                      final moduleDataMap =
+                          moduleData[0]! as Map<String, dynamic>;
+                      final moduleDataItem =
+                          moduleDataMap['imgs'] as List; // as List<String>;
+                      //сравним исходный список имен файлов с изменённым
+                      for (int i = 0; i < _words1.length; i++) {
+                        //при неравенстве записываем файл
+                        if (_imgs[i] != moduleDataItem[i]) {
+                          await toFBS(_imgs[i] as String, _imgsData[i]);
+                        }
+                      }
+
+                      // запись модуля в FB
+                      await FirebaseFirestore.instance
+                          .collection(widget.collectionPath)
+                          .doc(idx as String)
+                          .update({
+                        'words1': _words1,
+                        'words2': _words2,
+                        'imgs': _imgs,
+                        'module': moduleNameController.text.trim(),
+                        'description': moduleDescriptionController.text.trim()
+                      });
+
+                      if (!mounted) return;
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyHomePage(
+                            collectionPath: widget.collectionPath,
+                            userid: widget.userid,
+                          ),
+                        ),
+                      );
+                    } else {
+                      showAlert(
+                        context: context,
+                        mytext: 'Внесите обязательные данные!',
+                      );
+                    }
+                  },
+                  child: const Text("Сохранить"),
                 ),
               ],
             ),
-            body: SafeArea(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(width: scrwidth),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: BoxConstraints.expand(width: scrwidth),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
+                  child: TextFormField(
+                    textAlign: TextAlign.left,
+                    style: textStyle,
+                    keyboardType: TextInputType.text,
+                    autovalidateMode: AutovalidateMode.always,
+                    controller: moduleNameController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Название',
+                      hintText: 'Введите название модуля',
+                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    //onChanged: (value) => moduleNameController.text = value,
+                    validator: (moduleNameValidator) {
+                      moduleNameOK = false;
+                      if (moduleNameValidator!.isEmpty) {
+                        return '* Обязательно для заполнения';
+                      } else {
+                        moduleNameOK = true;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                  ),
+                  child: TextFormField(
+                    textAlign: TextAlign.left,
+                    style: text14Style,
+                    keyboardType: TextInputType.text,
+                    controller: moduleDescriptionController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Описание',
+                      hintText: 'Введите описание модуля',
+                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    //onChanged: (value) => moduleDescriptionController.text = value,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 16,
+                    bottom: 8,
+                    left: 8,
+                    right: 8,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
-                        ),
-                        child: TextFormField(
-                          textAlign: TextAlign.left,
-                          style: textStyle,
-                          keyboardType: TextInputType.text,
-                          autovalidateMode: AutovalidateMode.always,
-                          controller: moduleNameController,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Название',
-                            hintText: 'Введите название модуля',
-                            hintStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          //onChanged: (value) => moduleNameController.text = value,
-                          validator: (moduleNameValidator) {
-                            moduleNameOK = false;
-                            if (moduleNameValidator!.isEmpty) {
-                              return '* Обязательно для заполнения';
-                            } else {
-                              moduleNameOK = true;
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 8,
-                          right: 8,
-                        ),
-                        child: TextFormField(
-                          textAlign: TextAlign.left,
-                          style: text14Style,
-                          keyboardType: TextInputType.text,
-                          controller: moduleDescriptionController,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Описание',
-                            hintText: 'Введите описание модуля',
-                            hintStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                          //onChanged: (value) => moduleDescriptionController.text = value,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          bottom: 8,
-                          left: 8,
-                          right: 8,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Термины в модуле (${_words1.length}):',
-                              ),
-                            ),
-                            InkWell(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                              child: Icon(
-                                Icons.add_circle_outline,
-                                color: Colors.blue.shade700,
-                              ),
-                              onTap: () => _insertSingleItem(),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                          ],
-                        ),
-                      ),
                       Expanded(
-                        child: AnimatedList(
-                          controller: scrollController,
-
-                          /// Key to call remove and insert item methods from anywhere
-                          key: _listKey,
-                          initialItemCount: _words1.length,
-                          //_data.length,
-                          itemBuilder: (context, index, animation) {
-                            return _buildItem(
-                              _words1[index] as String,
-                              _words2[index] as String,
-                              animation,
-                              index,
-                              snapshot.data![index],
-                            );
-                            //_buildItem(_data[index], animation, index);
-                          },
+                        child: Text(
+                          'Термины в модуле (${_words1.length}):',
                         ),
+                      ),
+                      InkWell(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: Icon(
+                          Icons.add_circle_outline,
+                          color: Colors.blue.shade700,
+                        ),
+                        onTap: () => _insertSingleItem(),
+                      ),
+                      const SizedBox(
+                        width: 12,
                       ),
                     ],
                   ),
                 ),
-              ),
+                Expanded(
+                  child: AnimatedList(
+                    controller: scrollController,
+
+                    /// Key to call remove and insert item methods from anywhere
+                    key: _listKey,
+                    initialItemCount: _words1.length,
+                    //_data.length,
+                    itemBuilder: (context, index, animation) {
+                      return _buildItem(
+                        _words1[index] as String,
+                        _words2[index] as String,
+                        animation,
+                        index,
+                        //snapshot.data![index],
+                        _imgsData[index],
+                      );
+                      //_buildItem(_data[index], animation, index);
+                    },
+                  ),
+                ),
+              ],
             ),
-            /* floatingActionButton: FloatingActionButton(
+          ),
+        ),
+      ),
+      /* floatingActionButton: FloatingActionButton(
         child: Icon(Icons.playlist_add),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         onPressed: () => _insertSingleItem(),
       ), */
-          );
-        }
+    );
+
+    /* }
 
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
 
         return const SizedBox();
-      },
-    );
+      }, 
+    );*/
   }
 
   Widget _buildItem(
@@ -378,7 +413,6 @@ void initState() {
                     ),
                     onChanged: (value) => _words2[index] = value,
                   ),
-                  //Text(item2,style: TextStyle(fontSize: 14),),
                 ),
               ),
               const Spacer(),
@@ -388,11 +422,9 @@ void initState() {
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   child: SizedBox(
                     width: 20,
-                    child: Image.memory(currentImg),
-                    /* Image.network(
-                      'https://cdn1.ozone.ru/s3/multimedia-h/6300467429.jpg', /////////////////////
-                    ), */
+                    child: Image.memory(currentImg), // выводим изображение
                   ),
+                  //клик по изображению
                   onTap: () {
                     showDialog(
                       builder: (_) => ShowImgDialog(),
@@ -402,12 +434,13 @@ void initState() {
                       if (value != null) {
                         final val = value as String;
                         Future.delayed(Duration.zero, () async {
-                          //  value1 содержит изображение (bin)
+                          //  value1 содержит изображение полученное по ссылке (bin)
                           //  _imgs[index] - массив строк с именами файлов
-                          //  currentImg - изображение (bin)
-                          //получим изображение
+                          //  currentImg - изображение полученное по ссылке (bin)
+                          //        сохраняем для отображения
+                          //  получим изображение:
                           await loadImg(val).then((value1) {
-                              currentImg = value1;
+                            currentImg = value1;
                             //генератор имени файла
                             _imgs[index] = md5
                                 .convert(
@@ -418,11 +451,9 @@ void initState() {
                                   ),
                                 )
                                 .toString();
-
-                            //    КАК-ТО НАДО ПЕРЕДАТЬ БАЙТЫ ИЗОБРАЖЕНИЯ ВЫШЕ ДЛЯ КНОПКИ СОХРАНЕНИЯ
-                            //    ИЛИ СОХРАНЯТЬ СРАЗУ ЗДЕСЬ?
-                            //
-                            //await toFBS(_imgs[index], currentImg);
+                            setState(() {
+                              _imgsData[index] = currentImg;
+                            });
                           });
                         });
                       }
