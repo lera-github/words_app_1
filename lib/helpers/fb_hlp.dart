@@ -142,6 +142,14 @@ Future<Uint8List?> fromFBS(String path) async {
   return null;
 }
 
+Future<void> delFBS(
+  String path,
+) async {
+  final fbs.Reference ref = fbs.FirebaseStorage.instance.ref(path);
+  //удаление файла
+  await ref.delete();
+}
+
 //--------------------------------------------------------------------------------- ниже неактуально
 Future<List<Object?>> getUsersVarsFS(Map<String, dynamic> doc) async {
   final QuerySnapshot querySnapshot = await FirebaseFirestore.instance

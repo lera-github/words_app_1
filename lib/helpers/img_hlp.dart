@@ -20,6 +20,17 @@ Future<Uint8List> loadImg(String imgurl) async {
 //загрузка изображений из FBS для всего модуля
 Future<List<Uint8List>> getImgs({required List getImgsName}) async {
   final List<Uint8List> ret = [];
+  for (int i = 0; i < getImgsName.length; i++) {
+    await fromFBS(getImgsName[i] as String).then((value) {
+      ret.add(value!);
+    });
+  }
+  return ret;
+}
+/* //  ======================  УБРАТЬ ОБРАБОТКУ ЗАГЛУШКИ - ВСЕГДА ДОЛЖНО БЫТЬ ИЗОБРАЖЕНИЕ
+//загрузка изображений из FBS для всего модуля
+Future<List<Uint8List>> getImgs({required List getImgsName}) async {
+  final List<Uint8List> ret = [];
   Uint8List placeholderimg = Uint8List.fromList([0]);
   await fromFBS('placeholder.png').then((value) {
     placeholderimg = value!;
@@ -27,9 +38,10 @@ Future<List<Uint8List>> getImgs({required List getImgsName}) async {
   for (int i = 0; i < getImgsName.length; i++) {
     await fromFBS(getImgsName[i] as String).then((value) {
       ret.add(value!);
+      //если случайно изображения не будет, заменить его "заглушкой"
     }).onError((_, __) {
       ret.add(placeholderimg);
     });
   }
   return ret;
-}
+} */

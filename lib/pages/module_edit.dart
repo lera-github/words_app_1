@@ -165,12 +165,21 @@ class _ModuleEditState extends State<ModuleEdit> {
                       );
                       final moduleDataMap =
                           moduleData[0]! as Map<String, dynamic>;
+                      //это список имен файлов из FBS
                       final moduleDataItem =
                           moduleDataMap['imgs'] as List; // as List<String>;
                       //сравним исходный список имен файлов с изменённым
                       for (int i = 0; i < _words1.length; i++) {
                         //при неравенстве записываем файл
                         if (_imgs[i] != moduleDataItem[i]) {
+                          //удаление старого файла, если это не "заглушка"
+                          if (moduleDataItem[i] as String !=
+                              'placeholder.png') {
+                            await delFBS(
+                              moduleDataItem[i] as String,
+                            );
+                          }
+                          //запись нового файла
                           await toFBS(_imgs[i] as String, _imgsData[i]);
                         }
                       }
@@ -430,7 +439,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                       builder: (_) => ShowImgDialog(),
                       context: context,
                     ).then((value) {
-                      // введенный в диалоговом окне URL изображения
+                      // введенный в диалоговом окне URL изображения (или имя заглушки)
                       if (value != null) {
                         final val = value as String;
                         Future.delayed(Duration.zero, () async {
@@ -438,22 +447,35 @@ class _ModuleEditState extends State<ModuleEdit> {
                           //  _imgs[index] - массив строк с именами файлов
                           //  currentImg - изображение полученное по ссылке (bin)
                           //        сохраняем для отображения
-                          //  получим изображение:
-                          await loadImg(val).then((value1) {
-                            currentImg = value1;
-                            //генератор имени файла
-                            _imgs[index] = md5
-                                .convert(
-                                  utf8.encode(
-                                    DateTime.now()
-                                        .millisecondsSinceEpoch
-                                        .toString(),
-                                  ),
-                                )
-                                .toString();
-                            setState(() {
-                              _imgsData[index] = currentImg;
+                          if (value != 'placeholder.png') {
+                            //  получим изображение:
+                            await loadImg(val).then((value1) {
+                              currentImg = value1;
+                              //генератор имени файла
+                              _imgs[index] = md5
+                                  .convert(
+                                    utf8.encode(
+                                      DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString(),
+                                    ),
+                                  )
+                                  .toString();
+                              /* setState(() {
+                                _imgsData[index] = currentImg;
+                              }); */
                             });
+                          } else {
+                            //скачать с FBS
+                            await fromFBS('placeholder.png').then((value1) {
+                              currentImg = value1!;
+                            });
+                            //сохранить в массив имя заглушки
+                            _imgs[index] = value;
+                          }
+                          //сохранить в массив изображение
+                          setState(() {
+                            _imgsData[index] = currentImg;
                           });
                         });
                       }

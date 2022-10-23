@@ -121,7 +121,9 @@ class ShowImgDialog extends StatelessWidget {
           onPressed: () {
             // s для удобочитаемости
             s = txtController.text.trim();
-            if (s.isNotEmpty) {
+            // если пустой ввод - вставим имя файла-'заглушки'
+            if (s.isEmpty) s = 'placeholder.png';
+            //if (s.isNotEmpty) {
               //вычленим расширение файла
               final String exts = s.substring(
                 s.lastIndexOf('.'),
@@ -148,7 +150,7 @@ class ShowImgDialog extends StatelessWidget {
                 //Navigator.of(context).pop(s);
                 //    https://i.pinimg.com/originals/13/84/72/1384724a21fc9943f65dedfb9619c2e9.png
               }
-            }
+            //}
           },
         ),
         TextButton(
