@@ -175,7 +175,7 @@ class ModuleListState extends State<ModuleList> {
     }
     //цвет папочки (значок общего доступа)
     Color sharedColor =
-        (sharedfl == '#') ? Colors.yellow.shade600 : Colors.grey.shade400;
+        (sharedfl == '#') ? Colors.blue.shade600 : Colors.grey.shade400;
     //если модуль не текущего польз-ля
     if (shared[0] != widget.userid) {
       sharedColor = Colors.blue.shade600;
@@ -281,7 +281,7 @@ class ModuleListState extends State<ModuleList> {
                   message: 'Переход к модулю',
                   child: InkWell(
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ActionsAndGames(
@@ -336,8 +336,8 @@ class ModuleListState extends State<ModuleList> {
                         color: Colors.blue.shade800,
                       ),
                     ),
-                    onPressed: () async {
-                      await _gotoedit(
+                    onPressed: () {
+                      _gotoedit(
                         widget.collectionPath,
                         widget.userid,
                         context,
@@ -440,7 +440,27 @@ class ModuleListState extends State<ModuleList> {
 }
 
 //переход на редактирование модуля
-Future<void> _gotoedit(
+void _gotoedit(
+  String collectionPath,
+  String userid,
+  BuildContext context,
+  Map<String, dynamic> mapdata,
+) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ModuleEdit(
+        collectionPath: collectionPath,
+        userid: userid,
+        mapdata: mapdata,
+        isAdd: false,
+      ),
+    ),
+  );
+}
+   
+
+/*Future<void> _gotoedit(
   String collectionPath,
   String userid,
   BuildContext context,
@@ -448,8 +468,10 @@ Future<void> _gotoedit(
 ) async {
   List<Uint8List> imgsData = [];
   Future.delayed(Duration.zero, () async {
+    //debugPrint('init-${DateTime.now()}');
     await getImgs(getImgsName: mapdata['imgs'] as List).then((value) {
       imgsData = value;
+      //debugPrint('done-${DateTime.now()}');
       //if (!mounted) return;
       Navigator.push(
         context,
@@ -459,13 +481,13 @@ Future<void> _gotoedit(
             userid: userid,
             mapdata: mapdata,
             isAdd: false,
-            imgsData: imgsData, /////////////////////////
+            imgsData: imgsData,
           ),
         ),
       );
     });
-  });
-}
+  }); 
+}*/
 
 /* Future<void> delModule(
   Map<String, dynamic> moduleCollection,

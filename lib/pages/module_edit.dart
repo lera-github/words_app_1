@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +13,11 @@ import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/pages/game_flash_card.dart';
 
+//имена файлов
+List _imgs = [];
+//изображения
+List<Uint8List> imgsData = [];
+
 class ModuleEdit extends StatefulWidget {
   const ModuleEdit({
     Key? key,
@@ -19,13 +25,13 @@ class ModuleEdit extends StatefulWidget {
     required this.userid,
     required this.mapdata,
     required this.isAdd,
-    required this.imgsData,
+    //required this.imgsData,
   }) : super(key: key);
   final String collectionPath;
   final String userid;
   final Map<String, dynamic> mapdata;
   final bool isAdd;
-  final List<Uint8List> imgsData;
+  //final List<Uint8List> imgsData;
   @override
   _ModuleEditState createState() => _ModuleEditState();
 }
@@ -37,12 +43,11 @@ class _ModuleEditState extends State<ModuleEdit> {
   //слова
   List _words1 = [];
   List _words2 = [];
-  //имена файлов
-  List _imgs = [];
-  //изображения
-  List<Uint8List> _imgsData = [];
-  //значение массива имен файлов до начала редактирования
-  //List imgName0 = [];
+  //имена файлов  List _imgs = [];
+  //изображения  List<Uint8List> imgsData = [];
+
+  //значение массива имен файлов до начала редактирования  //List imgName0 = [];
+
   //признак корректности текстового ввода
   bool moduleNameOK = false;
   // контроллеры
@@ -50,11 +55,11 @@ class _ModuleEditState extends State<ModuleEdit> {
   TextEditingController moduleDescriptionController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
-/*   @override
-  void initState() {
+  /*   @override
+    void initState() {
     super.initState();
     imgName0 = widget.mapdata['imgs'] as List;
-  } */
+    } */
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +74,10 @@ class _ModuleEditState extends State<ModuleEdit> {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
     _imgs = widget.mapdata['imgs'] as List;
-    _imgsData = widget.imgsData;
+    //imgsData = widget.imgsData;
+
     /* Future.delayed(Duration.zero, () async {
-      await getImgs(imgName0: _imgs).then((value) => _imgsData = value);
+      await getImgs(imgName0: _imgs).then((value) => imgsData = value);
     }); */
     /* Uint8List? img;
     Future.delayed(Duration.zero, () async {
@@ -80,9 +86,13 @@ class _ModuleEditState extends State<ModuleEdit> {
       });
     }); */
 
-    /* return FutureBuilder(
-      future: 
-          getImgs(imgName0: _imgs),
+    //fb
+    return FutureBuilder(
+      future: getImgs(
+        getImgsName: widget.mapdata['imgs'] as List,
+      ),
+      //.then((value) {imgsData = value;});
+
       builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -91,268 +101,280 @@ class _ModuleEditState extends State<ModuleEdit> {
             ),
           );
         }
-        if (snapshot.hasData) { */
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 220),
-        actions: [
-          const SizedBox(
-            width: 20,
-          ),
-          Align(
-            child: TTip(
-              message: 'На домашнюю страницу...',
-              child: InkWell(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Text(
-                  'Memory Games',
-                  style: titleStyle,
+        if (snapshot.hasData) {
+          //fb
+          imgsData = snapshot.data!;
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: const Color.fromARGB(255, 255, 255, 220),
+              actions: [
+                const SizedBox(
+                  width: 20,
                 ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyHomePage(
-                        collectionPath: widget.collectionPath,
-                        userid: widget.userid,
+                Align(
+                  child: TTip(
+                    message: 'На домашнюю страницу...',
+                    child: InkWell(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Text(
+                        'Memory Games',
+                        style: titleStyle,
                       ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyHomePage(
+                              collectionPath: widget.collectionPath,
+                              userid: widget.userid,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //кнопка Сохранить -----------------------------------------
-                ElevatedButton(
-                  style: menuButtonStyle,
-                  onPressed: () async {
-                    bool moduleItemsOK = true;
-                    for (int i = 0; i < _words1.length; i++) {
-                      if ((_words1[i] == '') | (_words2[i] == '')) {
-                        moduleItemsOK = false;
-                      }
-                    }
-                    if (moduleNameOK & moduleItemsOK) {
-                      var idx = widget.mapdata['id'];
-                      //добавление модуля?
-                      if (widget.isAdd) {
-                        await FirebaseFirestore.instance
-                            .collection(widget.collectionPath)
-                            .add({'favourite': false}).then((value) {
-                          idx = value.id;
-                        });
-                        await FirebaseFirestore.instance
-                            .collection(widget.collectionPath)
-                            .doc(idx as String)
-                            .update({'id': idx});
-                      }
-                      /////////////////////////запись изображений в FBS
-                      // получим список имен изображений
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //кнопка Сохранить -----------------------------------------
+                      ElevatedButton(
+                        style: menuButtonStyle,
+                        onPressed: () async {
+                          bool moduleItemsOK = true;
+                          for (int i = 0; i < _words1.length; i++) {
+                            if ((_words1[i] == '') | (_words2[i] == '')) {
+                              moduleItemsOK = false;
+                            }
+                          }
+                          if (moduleNameOK & moduleItemsOK) {
+                            var idx = widget.mapdata['id'];
+                            //добавление модуля?
+                            if (widget.isAdd) {
+                              await FirebaseFirestore.instance
+                                  .collection(widget.collectionPath)
+                                  .add({'favourite': false}).then((value) {
+                                idx = value.id;
+                              });
+                              await FirebaseFirestore.instance
+                                  .collection(widget.collectionPath)
+                                  .doc(idx as String)
+                                  .update({'id': idx});
+                            }
+                            /////////////////////////запись изображений в FBS
+                            // получим список имен изображений
 
-                      final List<Object?> moduleData = await getFSfind(
-                        collection: 'modules',
-                        myfield: 'id',
-                        myvalue: idx as String,
-                      );
-                      final moduleDataMap =
-                          moduleData[0]! as Map<String, dynamic>;
-                      //это список имен файлов из FBS
-                      final moduleDataItem =
-                          moduleDataMap['imgs'] as List; // as List<String>;
-                      //сравним исходный список имен файлов с изменённым
-                      for (int i = 0; i < _words1.length; i++) {
-                        //при неравенстве записываем файл
-                        if (_imgs[i] != moduleDataItem[i]) {
-                          //удаление старого файла, если это не "заглушка"
-                          if (moduleDataItem[i] as String !=
-                              'placeholder.png') {
-                            await delFBS(
-                              moduleDataItem[i] as String,
+                            final List<Object?> moduleData = await getFSfind(
+                              collection: 'modules',
+                              myfield: 'id',
+                              myvalue: idx as String,
+                            );
+                            final moduleDataMap =
+                                moduleData[0]! as Map<String, dynamic>;
+                            //это список имен файлов из FBS
+                            final moduleDataItem = moduleDataMap['imgs']
+                                as List; // as List<String>;
+                            //сравним исходный список имен файлов с изменённым
+                            for (int i = 0; i < _words1.length; i++) {
+                              //при неравенстве записываем файл
+                              if (_imgs[i] != moduleDataItem[i]) {
+                                //удаление старого файла, если это не "заглушка"
+                                if (moduleDataItem[i] as String !=
+                                    'placeholder.png') {
+                                  await delFBS(
+                                    moduleDataItem[i] as String,
+                                  );
+                                }
+                                //запись нового файла
+                                await toFBS(_imgs[i] as String, imgsData[i]);
+                              }
+                            }
+
+                            // запись модуля в FB
+                            await FirebaseFirestore.instance
+                                .collection(widget.collectionPath)
+                                .doc(idx as String)
+                                .update({
+                              'words1': _words1,
+                              'words2': _words2,
+                              'imgs': _imgs,
+                              'module': moduleNameController.text.trim(),
+                              'description':
+                                  moduleDescriptionController.text.trim()
+                            });
+
+                            if (!mounted) return;
+                            Navigator.of(context).pop();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(
+                                  collectionPath: widget.collectionPath,
+                                  userid: widget.userid,
+                                ),
+                              ),
+                            );
+                          } else {
+                            showAlert(
+                              context: context,
+                              mytext: 'Внесите обязательные данные!',
                             );
                           }
-                          //запись нового файла
-                          await toFBS(_imgs[i] as String, _imgsData[i]);
-                        }
-                      }
-
-                      // запись модуля в FB
-                      await FirebaseFirestore.instance
-                          .collection(widget.collectionPath)
-                          .doc(idx as String)
-                          .update({
-                        'words1': _words1,
-                        'words2': _words2,
-                        'imgs': _imgs,
-                        'module': moduleNameController.text.trim(),
-                        'description': moduleDescriptionController.text.trim()
-                      });
-
-                      if (!mounted) return;
-                      Navigator.of(context).pop();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyHomePage(
-                            collectionPath: widget.collectionPath,
-                            userid: widget.userid,
-                          ),
-                        ),
-                      );
-                    } else {
-                      showAlert(
-                        context: context,
-                        mytext: 'Внесите обязательные данные!',
-                      );
-                    }
-                  },
-                  child: const Text("Сохранить"),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: BoxConstraints.expand(width: scrwidth),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
-                  ),
-                  child: TextFormField(
-                    textAlign: TextAlign.left,
-                    style: textStyle,
-                    keyboardType: TextInputType.text,
-                    autovalidateMode: AutovalidateMode.always,
-                    controller: moduleNameController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'Название',
-                      hintText: 'Введите название модуля',
-                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    //onChanged: (value) => moduleNameController.text = value,
-                    validator: (moduleNameValidator) {
-                      moduleNameOK = false;
-                      if (moduleNameValidator!.isEmpty) {
-                        return '* Обязательно для заполнения';
-                      } else {
-                        moduleNameOK = true;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                  ),
-                  child: TextFormField(
-                    textAlign: TextAlign.left,
-                    style: text14Style,
-                    keyboardType: TextInputType.text,
-                    controller: moduleDescriptionController,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'Описание',
-                      hintText: 'Введите описание модуля',
-                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    //onChanged: (value) => moduleDescriptionController.text = value,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                    left: 8,
-                    right: 8,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Термины в модуле (${_words1.length}):',
-                        ),
-                      ),
-                      InkWell(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                        child: Icon(
-                          Icons.add_circle_outline,
-                          color: Colors.blue.shade700,
-                        ),
-                        onTap: () => _insertSingleItem(),
-                      ),
-                      const SizedBox(
-                        width: 12,
+                        },
+                        child: const Text("Сохранить"),
                       ),
                     ],
                   ),
                 ),
-                Expanded(
-                  child: AnimatedList(
-                    controller: scrollController,
-
-                    /// Key to call remove and insert item methods from anywhere
-                    key: _listKey,
-                    initialItemCount: _words1.length,
-                    //_data.length,
-                    itemBuilder: (context, index, animation) {
-                      return _buildItem(
-                        _words1[index] as String,
-                        _words2[index] as String,
-                        animation,
-                        index,
-                        //snapshot.data![index],
-                        _imgsData[index],
-                      );
-                      //_buildItem(_data[index], animation, index);
-                    },
-                  ),
+                const SizedBox(
+                  width: 20,
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-      /* floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.playlist_add),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        onPressed: () => _insertSingleItem(),
-      ), */
-    );
+            body: SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints.expand(width: scrwidth),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                        child: TextFormField(
+                          textAlign: TextAlign.left,
+                          style: textStyle,
+                          keyboardType: TextInputType.text,
+                          autovalidateMode: AutovalidateMode.always,
+                          controller: moduleNameController,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Название',
+                            hintText: 'Введите название модуля',
+                            hintStyle:
+                                TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          //onChanged: (value) => moduleNameController.text = value,
+                          validator: (moduleNameValidator) {
+                            moduleNameOK = false;
+                            if (moduleNameValidator!.isEmpty) {
+                              return '* Обязательно для заполнения';
+                            } else {
+                              moduleNameOK = true;
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 8,
+                          right: 8,
+                        ),
+                        child: TextFormField(
+                          textAlign: TextAlign.left,
+                          style: text14Style,
+                          keyboardType: TextInputType.text,
+                          controller: moduleDescriptionController,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Описание',
+                            hintText: 'Введите описание модуля',
+                            hintStyle:
+                                TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          //onChanged: (value) => moduleDescriptionController.text = value,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          bottom: 8,
+                          left: 8,
+                          right: 8,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Термины в модуле (${_words1.length}):',
+                              ),
+                            ),
+                            InkWell(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                              child: Icon(
+                                Icons.add_circle_outline,
+                                color: Colors.blue.shade700,
+                              ),
+                              onTap: () => _insertSingleItem(),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: AnimatedList(
+                          controller: scrollController,
 
-    /* }
+                          /// Key to call remove and insert item methods from anywhere
+                          key: _listKey,
+                          initialItemCount: _words1.length,
+                          //_data.length,
+                          itemBuilder: (context, index, animation) {
+                            /* if (index == _words1.length) {
+                             
+                              setState(() {});
+                            } */
+                            //сохраним в массив полученные изображения из FBS
+                            //imgsData[index] = snapshot.data![index];
+                            return _buildItem(
+                              _words1[index] as String,
+                              _words2[index] as String,
+                              animation,
+                              index,
+                              //snapshot.data![index],
+                              imgsData[index],
+                            );
+                            //_buildItem(_data[index], animation, index);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            /* floatingActionButton: FloatingActionButton(
+           child: Icon(Icons.playlist_add),
+           backgroundColor: Colors.blue,
+           foregroundColor: Colors.white,
+           onPressed: () => _insertSingleItem(),
+           ), */
+          );
+        }
+        //fb
 
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
-
         return const SizedBox();
-      }, 
-    );*/
+      },
+
+      //fb
+    );
   }
 
   Widget _buildItem(
@@ -367,6 +389,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     final TextEditingController item2Controller = TextEditingController();
     item2Controller.text = item2; //_words2[index] as String;
     var currentImg = img;
+
     return SizeTransition(
       sizeFactor: animation, // as Animation<double>,
       child: Card(
@@ -434,53 +457,57 @@ class _ModuleEditState extends State<ModuleEdit> {
                     child: Image.memory(currentImg), // выводим изображение
                   ),
                   //клик по изображению
-                  onTap: () {
+                  onTap: () async {
                     showDialog(
                       builder: (_) => ShowImgDialog(),
                       context: context,
-                    ).then((value) {
+                    ).then((value) async {
                       // введенный в диалоговом окне URL изображения (или имя заглушки)
                       if (value != null) {
                         final val = value as String;
-                        Future.delayed(Duration.zero, () async {
-                          //  value1 содержит изображение полученное по ссылке (bin)
-                          //  _imgs[index] - массив строк с именами файлов
-                          //  currentImg - изображение полученное по ссылке (bin)
-                          //        сохраняем для отображения
-                          if (value != 'placeholder.png') {
-                            //  получим изображение:
-                            await loadImg(val).then((value1) {
-                              currentImg = value1;
-                              //генератор имени файла
-                              _imgs[index] = md5
-                                  .convert(
-                                    utf8.encode(
-                                      DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString(),
-                                    ),
-                                  )
-                                  .toString();
-                              /* setState(() {
-                                _imgsData[index] = currentImg;
-                              }); */
-                            });
-                          } else {
-                            //скачать с FBS
-                            await fromFBS('placeholder.png').then((value1) {
-                              currentImg = value1!;
-                            });
-                            //сохранить в массив имя заглушки
-                            _imgs[index] = value;
-                          }
-                          //сохранить в массив изображение
-                          setState(() {
-                            _imgsData[index] = currentImg;
+
+                        //Future.delayed(Duration.zero, () async {
+                        //  value1 содержит изображение полученное по ссылке (bin)
+                        //  _imgs[index] - массив строк с именами файлов
+                        //  currentImg - изображение полученное по ссылке (bin)
+                        //        сохраняем для отображения
+                        if (value != 'placeholder.png') {
+                          //  получим изображение:
+                          await loadImg(val).then((value1) {
+                            currentImg = value1;
                           });
+                          //генератор имени файла
+                          _imgs[index] = md5
+                              .convert(
+                                utf8.encode(
+                                  DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString(),
+                                ),
+                              )
+                              .toString();
+                          /* setState(() {
+                                imgsData[index] = currentImg;
+                              }); */
+
+                        } else {
+                          //скачать с FBS
+                          await fromFBS('placeholder.png').then((value1) {
+                            currentImg = value1!;
+                          });
+                          //сохранить в массив имя заглушки
+                          _imgs[index] = value;
+                        }
+                        //сохранить в массив изображение
+                        setState(() {
+                          imgsData[index] = currentImg;
+                          debugPrint('${DateTime.now()} $index');
                         });
+                        //});
+
                       }
                     });
-                    setState(() {});
+                    //setState(() {});
                   },
                   /* async {
                     //Вызов диалога загрузки изображения
@@ -511,6 +538,46 @@ class _ModuleEditState extends State<ModuleEdit> {
     );
   }
 
+  ///                        TMP
+/* Future loadImgs ({required int index, }) async {
+                          //  value1 содержит изображение полученное по ссылке (bin)
+                          //  _imgs[index] - массив строк с именами файлов
+                          //  currentImg - изображение полученное по ссылке (bin)
+                          //        сохраняем для отображения
+                          if (value != 'placeholder.png') {
+                            //  получим изображение:
+                            await loadImg(val).then((value1) {
+                              currentImg = value1;
+                              //генератор имени файла
+                              _imgs[index] = md5
+                                  .convert(
+                                    utf8.encode(
+                                      DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString(),
+                                    ),
+                                  )
+                                  .toString();
+                              /* setState(() {
+                                imgsData[index] = currentImg;
+                              }); */
+                            });
+                          } else {
+                            //скачать с FBS
+                            await fromFBS('placeholder.png').then((value1) {
+                              currentImg = value1!;
+                            });
+                            //сохранить в массив имя заглушки
+                            _imgs[index] = value;
+                          }
+                          //сохранить в массив изображение
+                          
+                            imgsData[index] = currentImg;
+                            debugPrint('${DateTime.now()} $index');
+                          setState(() {});
+                        }
+ */
+
   /// Method to add an item to an index in a list
   void _insertSingleItem() {
     int insertIndex;
@@ -526,7 +593,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     _scrollDown();
     setState(() {});
 
-/*     int insertIndex;
+    /*     int insertIndex;
     if (_data.length > 0) {
       insertIndex = _data.length;
     } else {

@@ -107,7 +107,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             MaterialPageRoute(
                               builder: (context) => MyHomePage(
                                 collectionPath: 'modules',
-                                //    'users/${userCollectionItem['userid']}/modules',
                                 userid: userid, //'lut4hDl8Jqv5uyaY6CDL',
                               ),
                             ),

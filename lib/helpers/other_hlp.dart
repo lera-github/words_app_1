@@ -93,7 +93,7 @@ class ShowImgDialog extends StatelessWidget {
                   Icons.image_search_outlined,
                   color: Colors.blue,
                 ),
-                labelText: 'URL изображения',
+                labelText: 'ничего не вводите для удаления',
                 labelStyle: TextStyle(color: Colors.black.withOpacity(0.9)),
                 filled: true,
                 floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -124,32 +124,32 @@ class ShowImgDialog extends StatelessWidget {
             // если пустой ввод - вставим имя файла-'заглушки'
             if (s.isEmpty) s = 'placeholder.png';
             //if (s.isNotEmpty) {
-              //вычленим расширение файла
-              final String exts = s.substring(
-                s.lastIndexOf('.'),
-              );
-              const regularExt = [
-                '.JPEG',
-                '.PNG',
-                '.GIF',
-                '.JPG',
-                '.WebP',
-                '.BMP',
-                '.WBMP'
-              ];
+            //вычленим расширение файла
+            final String exts = s.substring(
+              s.lastIndexOf('.'),
+            );
+            const regularExt = [
+              '.JPEG',
+              '.PNG',
+              '.GIF',
+              '.JPG',
+              '.WebP',
+              '.BMP',
+              '.WBMP'
+            ];
 
-              //проверка, есть ли в конце одно из допустимых расширений
-              if (!regularExt.contains(exts.toUpperCase())) {
-                showAlert(
-                  context: context,
-                  mytext: 'Неверный URL!\nИзображение получить невозможно.',
-                );
-              } else {
-                //debugPrint(s);
-                Navigator.pop(context, s);
-                //Navigator.of(context).pop(s);
-                //    https://i.pinimg.com/originals/13/84/72/1384724a21fc9943f65dedfb9619c2e9.png
-              }
+            //проверка, есть ли в конце одно из допустимых расширений
+            if (!regularExt.contains(exts.toUpperCase())) {
+              showAlert(
+                context: context,
+                mytext: 'Неверный URL!\nИзображение получить невозможно.',
+              );
+            } else {
+              //debugPrint(s);
+              Navigator.pop(context, s);
+              //Navigator.of(context).pop(s);
+              //    https://i.pinimg.com/originals/13/84/72/1384724a21fc9943f65dedfb9619c2e9.png
+            }
             //}
           },
         ),
