@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +52,7 @@ class _ModuleEditState extends State<ModuleEdit> {
   //признак - данные для интерфейса уже загружены в память?
   bool isLoaded = false;
   //массив удаленных файлов
-  List<String> _imgsToRemove = [];
+  List<String> imgsToRemove = [];
   /*   @override
     void initState() {
     super.initState();
@@ -180,9 +179,9 @@ class _ModuleEditState extends State<ModuleEdit> {
                               }
                             }
                             //удаление из FBS файлов изображений по списку
-                            for (int i = 0; i < _imgsToRemove.length; i++) {
+                            for (int i = 0; i < imgsToRemove.length; i++) {
                               await delFBS(
-                                _imgsToRemove[i],
+                                imgsToRemove[i],
                               );
                             }
 
@@ -498,9 +497,9 @@ class _ModuleEditState extends State<ModuleEdit> {
                           await getPlaceholderImg().then((value1) {
                             currentImg = value1;
                           });
-                          //запишем имя файла который надо будет удалить из FBS  в _imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                          //запишем имя файла который надо будет удалить из FBS  в imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                           if (_imgs[index] != 'placeholder.png') {
-                            _imgsToRemove.add(_imgs[index] as String);
+                            imgsToRemove.add(_imgs[index] as String);
                           }
                           //сохранить в массив имя заглушки 'placeholder.png'
                           _imgs[index] = value;
@@ -582,7 +581,7 @@ class _ModuleEditState extends State<ModuleEdit> {
     final int removeIndex = removeAt;
     final String removedItem1 = _words1.removeAt(removeIndex) as String;
     final String removedItem2 = _words2.removeAt(removeIndex) as String;
-    _imgsToRemove.add(_imgs[removeIndex] as String);
+    imgsToRemove.add(_imgs[removeIndex] as String);
     _imgs.removeAt(removeIndex);
 
     Widget builder(context, Animation<double> animation) => _buildItem(

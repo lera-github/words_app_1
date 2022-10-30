@@ -4,7 +4,6 @@ import 'package:myapp/firebase_options.dart';
 import 'package:myapp/helpers/appbarmenu.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_list.dart';
-import 'package:myapp/pages/mysignin.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

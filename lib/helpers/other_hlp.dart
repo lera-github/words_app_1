@@ -1,9 +1,4 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/helpers/fb_hlp.dart';
-import 'package:myapp/helpers/img_hlp.dart';
 
 // показ предупреждений
 void showAlert({

@@ -200,7 +200,7 @@ TextField reusableTextField({
 Container signInSignUpButton({
   required BuildContext context,
   required bool isLogin,
-  required Function onTap,
+  required Function() onTap,
 }) {
   return Container(
     width: MediaQuery.of(context).size.width,
