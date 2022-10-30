@@ -6,17 +6,12 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
-import 'package:myapp/pages/game_flash_card.dart';
-
-//имена файлов
-List _imgs = [];
-//изображения
-List<Uint8List> imgsData = [];
 
 class ModuleEdit extends StatefulWidget {
   const ModuleEdit({
@@ -25,13 +20,13 @@ class ModuleEdit extends StatefulWidget {
     required this.userid,
     required this.mapdata,
     required this.isAdd,
-    //required this.imgsData,
+    //required this._imgsData,
   }) : super(key: key);
   final String collectionPath;
   final String userid;
   final Map<String, dynamic> mapdata;
   final bool isAdd;
-  //final List<Uint8List> imgsData;
+  //final List<Uint8List> _imgsData;
   @override
   _ModuleEditState createState() => _ModuleEditState();
 }
@@ -43,10 +38,10 @@ class _ModuleEditState extends State<ModuleEdit> {
   //слова
   List _words1 = [];
   List _words2 = [];
-  //имена файлов  List _imgs = [];
-  //изображения  List<Uint8List> imgsData = [];
-
-  //значение массива имен файлов до начала редактирования  //List imgName0 = [];
+  //имена файлов
+  List _imgs = [];
+  //изображения
+  List<Uint8List> _imgsData = [];
 
   //признак корректности текстового ввода
   bool moduleNameOK = false;
@@ -55,6 +50,8 @@ class _ModuleEditState extends State<ModuleEdit> {
   TextEditingController moduleDescriptionController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
+  //признак - данные для интерфейса уже загружены в память?
+  bool isLoaded = false;
   /*   @override
     void initState() {
     super.initState();
@@ -74,10 +71,10 @@ class _ModuleEditState extends State<ModuleEdit> {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
     _imgs = widget.mapdata['imgs'] as List;
-    //imgsData = widget.imgsData;
+    //_imgsData = widget._imgsData;
 
     /* Future.delayed(Duration.zero, () async {
-      await getImgs(imgName0: _imgs).then((value) => imgsData = value);
+      await getImgs(imgName0: _imgs).then((value) => _imgsData = value);
     }); */
     /* Uint8List? img;
     Future.delayed(Duration.zero, () async {
@@ -90,8 +87,9 @@ class _ModuleEditState extends State<ModuleEdit> {
     return FutureBuilder(
       future: getImgs(
         getImgsName: widget.mapdata['imgs'] as List,
+        isLoaded: isLoaded,
       ),
-      //.then((value) {imgsData = value;});
+      //.then((value) {_imgsData = value;});
 
       builder: (BuildContext context, AsyncSnapshot<List<Uint8List>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -102,8 +100,10 @@ class _ModuleEditState extends State<ModuleEdit> {
           );
         }
         if (snapshot.hasData) {
-          //fb
-          imgsData = snapshot.data!;
+          if (!isLoaded) {
+            _imgsData = snapshot.data!;
+          }
+          isLoaded = true;
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
@@ -169,7 +169,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                             }
                             /////////////////////////запись изображений в FBS
                             // получим список имен изображений
-
                             final List<Object?> moduleData = await getFSfind(
                               collection: 'modules',
                               myfield: 'id',
@@ -192,10 +191,9 @@ class _ModuleEditState extends State<ModuleEdit> {
                                   );
                                 }
                                 //запись нового файла
-                                await toFBS(_imgs[i] as String, imgsData[i]);
+                                await toFBS(_imgs[i] as String, _imgsData[i]);
                               }
                             }
-
                             // запись модуля в FB
                             await FirebaseFirestore.instance
                                 .collection(widget.collectionPath)
@@ -208,7 +206,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                               'description':
                                   moduleDescriptionController.text.trim()
                             });
-
                             if (!mounted) return;
                             Navigator.of(context).pop();
                             Navigator.pushReplacement(
@@ -317,7 +314,9 @@ class _ModuleEditState extends State<ModuleEdit> {
                                 Icons.add_circle_outline,
                                 color: Colors.blue.shade700,
                               ),
-                              onTap: () => _insertSingleItem(),
+                              onTap: () async {
+                                await _insertSingleItem();
+                              },
                             ),
                             const SizedBox(
                               width: 12,
@@ -332,21 +331,16 @@ class _ModuleEditState extends State<ModuleEdit> {
                           /// Key to call remove and insert item methods from anywhere
                           key: _listKey,
                           initialItemCount: _words1.length,
-                          //_data.length,
                           itemBuilder: (context, index, animation) {
-                            /* if (index == _words1.length) {
-                             
-                              setState(() {});
-                            } */
                             //сохраним в массив полученные изображения из FBS
-                            //imgsData[index] = snapshot.data![index];
+                            //_imgsData[index] = snapshot.data![index];
                             return _buildItem(
                               _words1[index] as String,
                               _words2[index] as String,
                               animation,
                               index,
                               //snapshot.data![index],
-                              imgsData[index],
+                              _imgsData[index],
                             );
                             //_buildItem(_data[index], animation, index);
                           },
@@ -357,12 +351,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                 ),
               ),
             ),
-            /* floatingActionButton: FloatingActionButton(
-           child: Icon(Icons.playlist_add),
-           backgroundColor: Colors.blue,
-           foregroundColor: Colors.white,
-           onPressed: () => _insertSingleItem(),
-           ), */
           );
         }
         //fb
@@ -465,8 +453,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                       // введенный в диалоговом окне URL изображения (или имя заглушки)
                       if (value != null) {
                         final val = value as String;
-
-                        //Future.delayed(Duration.zero, () async {
                         //  value1 содержит изображение полученное по ссылке (bin)
                         //  _imgs[index] - массив строк с именами файлов
                         //  currentImg - изображение полученное по ссылке (bin)
@@ -486,10 +472,6 @@ class _ModuleEditState extends State<ModuleEdit> {
                                 ),
                               )
                               .toString();
-                          /* setState(() {
-                                imgsData[index] = currentImg;
-                              }); */
-
                         } else {
                           //скачать с FBS
                           await fromFBS('placeholder.png').then((value1) {
@@ -500,14 +482,10 @@ class _ModuleEditState extends State<ModuleEdit> {
                         }
                         //сохранить в массив изображение
                         setState(() {
-                          imgsData[index] = currentImg;
-                          debugPrint('${DateTime.now()} $index');
+                          _imgsData[index] = currentImg;
                         });
-                        //});
-
                       }
                     });
-                    //setState(() {});
                   },
                   /* async {
                     //Вызов диалога загрузки изображения
@@ -538,48 +516,8 @@ class _ModuleEditState extends State<ModuleEdit> {
     );
   }
 
-  ///                        TMP
-/* Future loadImgs ({required int index, }) async {
-                          //  value1 содержит изображение полученное по ссылке (bin)
-                          //  _imgs[index] - массив строк с именами файлов
-                          //  currentImg - изображение полученное по ссылке (bin)
-                          //        сохраняем для отображения
-                          if (value != 'placeholder.png') {
-                            //  получим изображение:
-                            await loadImg(val).then((value1) {
-                              currentImg = value1;
-                              //генератор имени файла
-                              _imgs[index] = md5
-                                  .convert(
-                                    utf8.encode(
-                                      DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString(),
-                                    ),
-                                  )
-                                  .toString();
-                              /* setState(() {
-                                imgsData[index] = currentImg;
-                              }); */
-                            });
-                          } else {
-                            //скачать с FBS
-                            await fromFBS('placeholder.png').then((value1) {
-                              currentImg = value1!;
-                            });
-                            //сохранить в массив имя заглушки
-                            _imgs[index] = value;
-                          }
-                          //сохранить в массив изображение
-                          
-                            imgsData[index] = currentImg;
-                            debugPrint('${DateTime.now()} $index');
-                          setState(() {});
-                        }
- */
-
   /// Method to add an item to an index in a list
-  void _insertSingleItem() {
+  Future<void> _insertSingleItem() async {
     int insertIndex;
     if (_words1.isNotEmpty) {
       insertIndex = _words1.length;
@@ -588,8 +526,18 @@ class _ModuleEditState extends State<ModuleEdit> {
     }
     _words1.insert(insertIndex, '');
     _words2.insert(insertIndex, '');
-    _listKey.currentState!.insertItem(insertIndex);
+    _imgs.insert(insertIndex, 'placeholder.png');
+    /* //файл пустышки
+    ByteData bytes;
+    await rootBundle.load('placeholder.png').then((value) {
+      bytes = value;
+      _imgsData.insert(insertIndex, bytes.buffer.asUint8List());
+    }); */
+    await getPlaceholderImg()
+        .then((value) => _imgsData.insert(insertIndex, value));
 
+    _listKey.currentState!.insertItem(insertIndex);
+    //прокрутка в конец
     _scrollDown();
     setState(() {});
 

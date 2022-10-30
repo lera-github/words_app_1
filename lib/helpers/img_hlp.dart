@@ -18,15 +18,44 @@ Future<Uint8List> loadImg(String imgurl) async {
 }
 
 //загрузка изображений из FBS для всего модуля
-Future<List<Uint8List>> getImgs({required List getImgsName}) async {
+Future<List<Uint8List>> getImgs({
+  required List getImgsName,
+  required bool isLoaded,
+}) async {
   final List<Uint8List> ret = [];
-  for (int i = 0; i < getImgsName.length; i++) {
-    await fromFBS(getImgsName[i] as String).then((value) {
-      ret.add(value!);
-    });
+  //получить файл "пустышку"
+  Uint8List? placeholderimg = Uint8List.fromList([0]);
+  placeholderimg = await getPlaceholderImg();
+  if (!isLoaded) {
+    for (int i = 0; i < getImgsName.length; i++) {
+      await fromFBS(getImgsName[i] as String).then((value) {
+        if (value != null) {
+          ret.add(value);
+        } else {
+          ret.add(placeholderimg!);
+        }
+      }).onError((_, __) {
+        ret.add(placeholderimg!);
+      });
+    }
   }
   return ret;
 }
+
+//файл "пустышки"
+Future<Uint8List> getPlaceholderImg() async {
+  ByteData bytes;
+  late Uint8List ret;
+  await rootBundle.load('placeholder.png').then((value) {
+    bytes = value;
+    ret = bytes.buffer.asUint8List();
+  });
+  return ret;
+  //return null;
+  //return Uint8List.fromList([0]);
+}
+
+
 /* //  ======================  УБРАТЬ ОБРАБОТКУ ЗАГЛУШКИ - ВСЕГДА ДОЛЖНО БЫТЬ ИЗОБРАЖЕНИЕ
 //загрузка изображений из FBS для всего модуля
 Future<List<Uint8List>> getImgs({required List getImgsName}) async {
