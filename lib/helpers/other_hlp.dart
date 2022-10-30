@@ -133,13 +133,14 @@ class ShowImgDialog extends StatelessWidget {
               '.PNG',
               '.GIF',
               '.JPG',
-              '.WebP',
+              '.WEBP',
               '.BMP',
               '.WBMP'
             ];
 
             //проверка, есть ли в конце одно из допустимых расширений
-            if (!regularExt.contains(exts.toUpperCase())) {
+            if (!regularExt.contains(exts.toUpperCase()) ||
+                s.substring(0, 4).toLowerCase() != 'http') {
               showAlert(
                 context: context,
                 mytext: 'Неверный URL!\nИзображение получить невозможно.',

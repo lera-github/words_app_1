@@ -52,6 +52,8 @@ class _ModuleEditState extends State<ModuleEdit> {
 
   //признак - данные для интерфейса уже загружены в память?
   bool isLoaded = false;
+  //массив удаленных файлов
+  List<String> _imgsToRemove = [];
   /*   @override
     void initState() {
     super.initState();
@@ -63,14 +65,16 @@ class _ModuleEditState extends State<ModuleEdit> {
     final scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
         : 600.0;
-    if (!widget.isAdd) {
-      moduleNameController.text = widget.mapdata['module'] as String;
-      moduleDescriptionController.text =
-          widget.mapdata['description'] as String;
+    if (!isLoaded) {
+      if (!widget.isAdd) {
+        moduleNameController.text = widget.mapdata['module'] as String;
+        moduleDescriptionController.text =
+            widget.mapdata['description'] as String;
+      }
+      _words1 = widget.mapdata['words1'] as List;
+      _words2 = widget.mapdata['words2'] as List;
+      _imgs = widget.mapdata['imgs'] as List;
     }
-    _words1 = widget.mapdata['words1'] as List;
-    _words2 = widget.mapdata['words2'] as List;
-    _imgs = widget.mapdata['imgs'] as List;
     //_imgsData = widget._imgsData;
 
     /* Future.delayed(Duration.zero, () async {
@@ -143,7 +147,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //кнопка Сохранить -----------------------------------------
+                      //----------------------------------------- кнопка Сохранить -----------------------------------------
                       ElevatedButton(
                         style: menuButtonStyle,
                         onPressed: () async {
@@ -168,7 +172,21 @@ class _ModuleEditState extends State<ModuleEdit> {
                                   .update({'id': idx});
                             }
                             /////////////////////////запись изображений в FBS
-                            // получим список имен изображений
+                            for (int i = 0; i < _words1.length; i++) {
+                              // "заглушку" не сохраняем
+                              if (_imgs[i] != 'placeholder.png') {
+                                //запись  файла
+                                await toFBS(_imgs[i] as String, _imgsData[i]);
+                              }
+                            }
+                            //удаление из FBS файлов изображений по списку
+                            for (int i = 0; i < _imgsToRemove.length; i++) {
+                              await delFBS(
+                                _imgsToRemove[i],
+                              );
+                            }
+
+                            /* // получим список имен изображений
                             final List<Object?> moduleData = await getFSfind(
                               collection: 'modules',
                               myfield: 'id',
@@ -193,7 +211,8 @@ class _ModuleEditState extends State<ModuleEdit> {
                                 //запись нового файла
                                 await toFBS(_imgs[i] as String, _imgsData[i]);
                               }
-                            }
+                            } */
+
                             // запись модуля в FB
                             await FirebaseFirestore.instance
                                 .collection(widget.collectionPath)
@@ -463,21 +482,27 @@ class _ModuleEditState extends State<ModuleEdit> {
                             currentImg = value1;
                           });
                           //генератор имени файла
-                          _imgs[index] = md5
-                              .convert(
-                                utf8.encode(
-                                  DateTime.now()
-                                      .millisecondsSinceEpoch
-                                      .toString(),
-                                ),
-                              )
-                              .toString();
+                          if (_imgs[index] == 'placeholder.png') {
+                            _imgs[index] = md5
+                                .convert(
+                                  utf8.encode(
+                                    DateTime.now()
+                                        .millisecondsSinceEpoch
+                                        .toString(),
+                                  ),
+                                )
+                                .toString();
+                          }
                         } else {
-                          //скачать с FBS
-                          await fromFBS('placeholder.png').then((value1) {
-                            currentImg = value1!;
+                          //получить "заглушку"
+                          await getPlaceholderImg().then((value1) {
+                            currentImg = value1;
                           });
-                          //сохранить в массив имя заглушки
+                          //запишем имя файла который надо будет удалить из FBS  в _imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                          if (_imgs[index] != 'placeholder.png') {
+                            _imgsToRemove.add(_imgs[index] as String);
+                          }
+                          //сохранить в массив имя заглушки 'placeholder.png'
                           _imgs[index] = value;
                         }
                         //сохранить в массив изображение
@@ -557,6 +582,9 @@ class _ModuleEditState extends State<ModuleEdit> {
     final int removeIndex = removeAt;
     final String removedItem1 = _words1.removeAt(removeIndex) as String;
     final String removedItem2 = _words2.removeAt(removeIndex) as String;
+    _imgsToRemove.add(_imgs[removeIndex] as String);
+    _imgs.removeAt(removeIndex);
+
     Widget builder(context, Animation<double> animation) => _buildItem(
           removedItem1,
           removedItem2,
