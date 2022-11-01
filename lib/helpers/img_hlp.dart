@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:html';
-import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapp/helpers/fb_hlp.dart';
@@ -13,17 +10,10 @@ Future<Uint8List> loadImg(String imgurl) async {
                       );
                       print(ttt);
 */
-  late http.Response response;
-  await http
-      .get(
+  final http.Response response = await http.get(
     Uri.parse(imgurl),
-  )
-      .then((value) {
-    response = value;
-  });
-
+  );
   final Uint8List bytes = response.bodyBytes;
-  debugPrint(bytes.toString());
   return bytes;
 }
 

@@ -61,8 +61,7 @@ class TTip extends StatelessWidget {
 
   void _onTap(GlobalKey key) {
     final dynamic tooltip = key.currentState;
-  tooltip?.ensureTooltipVisible();
-    
+    tooltip?.ensureTooltipVisible();
   }
 }
 
@@ -134,9 +133,11 @@ class ShowImgDialog extends StatelessWidget {
               '.WBMP'
             ];
 
-            //проверка, есть ли в конце одно из допустимых расширений
-            if (!regularExt.contains(exts.toUpperCase()) ||
-                s.substring(0, 4).toLowerCase() != 'http') {
+            //проверка, в начале 'http', в конце одно из допустимых расширений
+            // и это не "заглушка"
+            if ((!regularExt.contains(exts.toUpperCase()) ||
+                    s.substring(0, 4).toLowerCase() != 'http') &&
+                (s != 'placeholder.png')) {
               showAlert(
                 context: context,
                 mytext: 'Неверный URL!\nИзображение получить невозможно.',
@@ -145,7 +146,6 @@ class ShowImgDialog extends StatelessWidget {
               //debugPrint(s);
               Navigator.pop(context, s);
               //Navigator.of(context).pop(s);
-              //    https://i.pinimg.com/originals/13/84/72/1384724a21fc9943f65dedfb9619c2e9.png
             }
             //}
           },

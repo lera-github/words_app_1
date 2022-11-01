@@ -4,6 +4,7 @@ import 'package:myapp/firebase_options.dart';
 import 'package:myapp/helpers/appbarmenu.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_list.dart';
+import 'package:myapp/pages/mysignin.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,12 +22,13 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memory Games',
-      //home: SignInScreen(),
+      home: SignInScreen(),
+
       /////  =======================================  ВРЕМЕННО ОБХОД ВХОДА
-      home: MyHomePage(
+      /* home: MyHomePage(
         collectionPath: 'modules',
         userid: 'lut4hDl8Jqv5uyaY6CDL',
-      ),
+      ), */
 
       //MyHomePage(),
       /* theme: ThemeData(
