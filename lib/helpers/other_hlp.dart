@@ -61,7 +61,8 @@ class TTip extends StatelessWidget {
 
   void _onTap(GlobalKey key) {
     final dynamic tooltip = key.currentState;
-    tooltip?.ensureTooltipVisible();
+  tooltip?.ensureTooltipVisible();
+    
   }
 }
 

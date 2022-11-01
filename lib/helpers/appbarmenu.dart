@@ -42,6 +42,8 @@ class _LibButtonState extends State<LibButton> {
               'favourite': false,
               'words1': [''],
               'words2': [''],
+              'imgs': ['placeholder.png'],
+              'keys': [widget.userid,''],
             };
 
             Navigator.push(

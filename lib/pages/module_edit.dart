@@ -41,6 +41,8 @@ class _ModuleEditState extends State<ModuleEdit> {
   List _imgs = [];
   //изображения
   List<Uint8List> _imgsData = [];
+  //id автора модуля и признак общего доступа
+  List _keys = [];
 
   //признак корректности текстового ввода
   bool moduleNameOK = false;
@@ -73,6 +75,7 @@ class _ModuleEditState extends State<ModuleEdit> {
       _words1 = widget.mapdata['words1'] as List;
       _words2 = widget.mapdata['words2'] as List;
       _imgs = widget.mapdata['imgs'] as List;
+      _keys = widget.mapdata['keys'] as List;
     }
     //_imgsData = widget._imgsData;
 
@@ -220,6 +223,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                               'words1': _words1,
                               'words2': _words2,
                               'imgs': _imgs,
+                              'keys': _keys,
                               'module': moduleNameController.text.trim(),
                               'description':
                                   moduleDescriptionController.text.trim()
