@@ -2,7 +2,17 @@
 ///////
 ///     При регистрации добавить проверку уникальности email и username 
 /// ============================================================================
-/// на память - firebase deploy --only hosting
+/// на память - 
+/// 
+///   flutter run -d chrome --web-renderer html
+///   flutter build web --web-renderer html --release
+/// 
+/// gsutil cors set cors.json gs://words-app-1.appspot.com
+/// 
+/// flutter build web
+/// из build\web\ положить в public\
+/// .\firebase-tools-instant-win.exe
+/// firebase deploy --only hosting
 /// ===============================
 /// 
 /// Error: XMLHttpRequest error ->
@@ -11,3 +21,7 @@
 /// 2- Go to flutter\packages\flutter_tools\lib\src\web and open the file chrome.dart.
 /// 3- Find '--disable-extensions'
 /// 4- Add '--disable-web-security'
+/// 4- Add '--disable-site-isolation-trials',
+/// 
+/// BUGS:
+/// после удаления картинки в модуле не видно заглушки - только на хостинге

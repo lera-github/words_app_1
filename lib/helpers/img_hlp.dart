@@ -5,15 +5,26 @@ import 'package:myapp/helpers/fb_hlp.dart';
 
 Future<Uint8List> loadImg(String imgurl) async {
 /*  ************ ВЫЗОВ
-                      final Uint8List ttt = await loadImg(
+                      final Uint8List ttt = await loadImg(p
                         'https://101kote.ru/upload/medialibrary/46f/20.jpg',
                       );
                       print(ttt);
 */
+  //используем безплатный CORS Proxy, иначе имеем ошибку
+  // https://scrappy-php.herokuapp.com/?url=
+  // или https://pika-secret-ocean-49799.herokuapp.com/
   final http.Response response = await http.get(
-    Uri.parse(imgurl),
+    Uri.parse('https://scrappy-php.herokuapp.com/?url=$imgurl'),
   );
   final Uint8List bytes = response.bodyBytes;
+/*   Uint8List bytes = Uint8List.fromList([0]);
+  await http.readBytes(
+    Uri.parse(imgurl),
+/*     headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'image/jpeg',
+    }, */
+  ).then((value) => bytes = value); */
   return bytes;
 }
 
@@ -24,7 +35,7 @@ Future<List<Uint8List>> getImgs({
 }) async {
   final List<Uint8List> ret = [];
   //получить файл "пустышку"
-  Uint8List? placeholderimg = Uint8List.fromList([0]);
+  Uint8List? placeholderimg = Uint8List.fromList([]);
   placeholderimg = await getPlaceholderImg();
   if (!isLoaded) {
     for (int i = 0; i < getImgsName.length; i++) {
@@ -55,7 +66,6 @@ Future<Uint8List> getPlaceholderImg() async {
   //return Uint8List.fromList([0]);
 }
 
-
 /* //  ======================  УБРАТЬ ОБРАБОТКУ ЗАГЛУШКИ - ВСЕГДА ДОЛЖНО БЫТЬ ИЗОБРАЖЕНИЕ
 //загрузка изображений из FBS для всего модуля
 Future<List<Uint8List>> getImgs({required List getImgsName}) async {
@@ -74,3 +84,16 @@ Future<List<Uint8List>> getImgs({required List getImgsName}) async {
   }
   return ret;
 } */
+
+//загрузка изображения из FBS
+Future<Uint8List> getImg({
+  required String getImgName,
+}) async {
+  Uint8List ret = Uint8List.fromList([]);
+  await fromFBS(getImgName).then((value) {
+    if (value != null) {
+      ret = value;
+    }
+  });
+  return ret;
+}

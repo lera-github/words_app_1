@@ -22,13 +22,15 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memory Games',
-      home: SignInScreen(),
 
       /////  =======================================  ВРЕМЕННО ОБХОД ВХОДА
-      /* home: MyHomePage(
+      //home: SignInScreen(),
+      /////  =======================================  ИЛИ
+      home: MyHomePage(
         collectionPath: 'modules',
         userid: 'lut4hDl8Jqv5uyaY6CDL',
-      ), */
+      ),
+      /////  =======================================
 
       //MyHomePage(),
       /* theme: ThemeData(

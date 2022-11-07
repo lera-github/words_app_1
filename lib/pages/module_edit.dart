@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
+//import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
@@ -270,29 +270,32 @@ class _ModuleEditState extends State<ModuleEdit> {
                           horizontal: 8,
                           vertical: 8,
                         ),
-                        child: TextFormField(
-                          textAlign: TextAlign.left,
-                          style: textStyle,
-                          keyboardType: TextInputType.text,
-                          autovalidateMode: AutovalidateMode.always,
-                          controller: moduleNameController,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Название',
-                            hintText: 'Введите название модуля',
-                            hintStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
+                        child: TTip(
+                          message: 'Название модуля',
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            style: textStyle,
+                            keyboardType: TextInputType.text,
+                            autovalidateMode: AutovalidateMode.always,
+                            controller: moduleNameController,
+                            decoration: const InputDecoration(
+                              border: UnderlineInputBorder(),
+                              labelText: 'Название',
+                              hintText: 'Введите название модуля',
+                              hintStyle:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            //onChanged: (value) => moduleNameController.text = value,
+                            validator: (moduleNameValidator) {
+                              moduleNameOK = false;
+                              if (moduleNameValidator!.isEmpty) {
+                                return '* Обязательно для заполнения';
+                              } else {
+                                moduleNameOK = true;
+                              }
+                              return null;
+                            },
                           ),
-                          //onChanged: (value) => moduleNameController.text = value,
-                          validator: (moduleNameValidator) {
-                            moduleNameOK = false;
-                            if (moduleNameValidator!.isEmpty) {
-                              return '* Обязательно для заполнения';
-                            } else {
-                              moduleNameOK = true;
-                            }
-                            return null;
-                          },
                         ),
                       ),
                       Padding(
@@ -300,19 +303,22 @@ class _ModuleEditState extends State<ModuleEdit> {
                           left: 8,
                           right: 8,
                         ),
-                        child: TextFormField(
-                          textAlign: TextAlign.left,
-                          style: text14Style,
-                          keyboardType: TextInputType.text,
-                          controller: moduleDescriptionController,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Описание',
-                            hintText: 'Введите описание модуля',
-                            hintStyle:
-                                TextStyle(fontSize: 12, color: Colors.grey),
+                        child: TTip(
+                          message: 'Описание модуля',
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            style: text14Style,
+                            keyboardType: TextInputType.text,
+                            controller: moduleDescriptionController,
+                            decoration: const InputDecoration(
+                              border: UnderlineInputBorder(),
+                              labelText: 'Описание',
+                              hintText: 'Введите описание модуля',
+                              hintStyle:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            //onChanged: (value) => moduleDescriptionController.text = value,
                           ),
-                          //onChanged: (value) => moduleDescriptionController.text = value,
                         ),
                       ),
                       Padding(
@@ -330,16 +336,19 @@ class _ModuleEditState extends State<ModuleEdit> {
                                 'Термины в модуле (${_words1.length}):',
                               ),
                             ),
-                            InkWell(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                              child: Icon(
-                                Icons.add_circle_outline,
-                                color: Colors.blue.shade700,
+                            TTip(
+                              message: 'Добавить термин',
+                              child: InkWell(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(20)),
+                                child: Icon(
+                                  Icons.add_circle_outline,
+                                  color: Colors.blue.shade700,
+                                ),
+                                onTap: () async {
+                                  await _insertSingleItem();
+                                },
                               ),
-                              onTap: () async {
-                                await _insertSingleItem();
-                              },
                             ),
                             const SizedBox(
                               width: 12,
@@ -410,113 +419,121 @@ class _ModuleEditState extends State<ModuleEdit> {
             children: [
               Expanded(
                 flex: 20,
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  child: TextFormField(
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(fontSize: 14),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    controller: item1Controller,
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (item1Validator) {
-                      if (item1Validator!.isEmpty) {
-                        return '* Обязательно для заполнения';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
+                child: TTip(
+                  message: 'Введите слово или фразу на английском языке',
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(6)),
+                    child: TextFormField(
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(fontSize: 14),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      controller: item1Controller,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (item1Validator) {
+                        if (item1Validator!.isEmpty) {
+                          return '* Обязательно для заполнения';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                      ),
+                      onChanged: (value) => _words1[index] = value,
                     ),
-                    onChanged: (value) => _words1[index] = value,
+                    //Text(item1,style: TextStyle(fontSize: 14),),
                   ),
-                  //Text(item1,style: TextStyle(fontSize: 14),),
                 ),
               ),
               const Spacer(),
               Expanded(
                 flex: 20,
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  child: TextFormField(
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(fontSize: 14),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    controller: item2Controller,
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (item2Validator) {
-                      if (item2Validator!.isEmpty) {
-                        return '* Обязательно для заполнения';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
+                child: TTip(
+                  message: 'Введите слово или фразу на русском языке',
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(6)),
+                    child: TextFormField(
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(fontSize: 14),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      controller: item2Controller,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (item2Validator) {
+                        if (item2Validator!.isEmpty) {
+                          return '* Обязательно для заполнения';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                      ),
+                      onChanged: (value) => _words2[index] = value,
                     ),
-                    onChanged: (value) => _words2[index] = value,
                   ),
                 ),
               ),
               const Spacer(),
               Expanded(
                 flex: 5,
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  child: SizedBox(
-                    width: 20,
-                    child: Image.memory(currentImg), // выводим изображение
-                  ),
-                  //клик по изображению
-                  onTap: () async {
-                    showDialog(
-                      builder: (_) => ShowImgDialog(),
-                      context: context,
-                    ).then((value) async {
-                      // введенный в диалоговом окне URL изображения (или имя заглушки)
-                      if (value != null) {
-                        final val = value as String;
-                        //  value1 содержит изображение полученное по ссылке (bin)
-                        //  _imgs[index] - массив строк с именами файлов
-                        //  currentImg - изображение полученное по ссылке (bin)
-                        //        сохраняем для отображения
-                        if (value != 'placeholder.png') {
-                          //  получим изображение:
-                          await loadImg(val).then((value1) {
-                            currentImg = value1;
-                          });
-                          //генератор имени файла
-                          if (_imgs[index] == 'placeholder.png') {
-                            _imgs[index] = md5
-                                .convert(
-                                  utf8.encode(
-                                    DateTime.now()
-                                        .millisecondsSinceEpoch
-                                        .toString(),
-                                  ),
-                                )
-                                .toString();
+                child: TTip(
+                  message: 'Нажмите для замены картинки',
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(6)),
+                    child: SizedBox(
+                      width: 20,
+                      child: Image.memory(currentImg), // выводим изображение
+                    ),
+                    //клик по изображению
+                    onTap: () async {
+                      showDialog(
+                        builder: (_) => ShowImgDialog(),
+                        context: context,
+                      ).then((value) async {
+                        // введенный в диалоговом окне URL изображения (или имя заглушки)
+                        if (value != null) {
+                          final val = value as String;
+                          //  value1 содержит изображение полученное по ссылке (bin)
+                          //  _imgs[index] - массив строк с именами файлов
+                          //  currentImg - изображение полученное по ссылке (bin)
+                          //        сохраняем для отображения
+                          if (value != 'placeholder.png') {
+                            //  получим изображение:
+                            await loadImg(val).then((value1) {
+                              currentImg = value1;
+                            });
+                            //генератор имени файла
+                            if (_imgs[index] == 'placeholder.png') {
+                              _imgs[index] = md5
+                                  .convert(
+                                    utf8.encode(
+                                      DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString(),
+                                    ),
+                                  )
+                                  .toString();
+                            }
+                          } else {
+                            //получить "заглушку"
+                            await getPlaceholderImg().then((value1) {
+                              currentImg = value1;
+                            });
+                            //запишем имя файла который надо будет удалить из FBS  в imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            if (_imgs[index] != 'placeholder.png') {
+                              imgsToRemove.add(_imgs[index] as String);
+                            }
+                            //сохранить в массив имя заглушки 'placeholder.png'
+                            _imgs[index] = value;
                           }
-                        } else {
-                          //получить "заглушку"
-                          await getPlaceholderImg().then((value1) {
-                            currentImg = value1;
+                          //сохранить в массив изображение
+                          setState(() {
+                            _imgsData[index] = currentImg;
                           });
-                          //запишем имя файла который надо будет удалить из FBS  в imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                          if (_imgs[index] != 'placeholder.png') {
-                            imgsToRemove.add(_imgs[index] as String);
-                          }
-                          //сохранить в массив имя заглушки 'placeholder.png'
-                          _imgs[index] = value;
                         }
-                        //сохранить в массив изображение
-                        setState(() {
-                          _imgsData[index] = currentImg;
-                        });
-                      }
-                    });
-                  },
-                  /* async {
+                      });
+                    },
+                    /* async {
                     //Вызов диалога загрузки изображения
                     await showImgDialog(context: context).then((value) {
                       setState(() {
@@ -525,20 +542,24 @@ class _ModuleEditState extends State<ModuleEdit> {
                     }).onError((error, stackTrace) {});
                     debugPrint(_imgs[index].toString());
                   }, */
+                  ),
                 ),
               ),
             ],
           ),
-          trailing: InkWell(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            child: const Icon(
-              Icons.remove_circle_outline,
-              color: Colors.red,
+          trailing: TTip(
+            message: 'Удалить термин',
+            child: InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              child: const Icon(
+                Icons.remove_circle_outline,
+                color: Colors.red,
+              ),
+              onTap: () {
+                _removeSingleItems(index, img);
+                setState(() {});
+              },
             ),
-            onTap: () {
-              _removeSingleItems(index, img);
-              setState(() {});
-            },
           ),
         ),
       ),
