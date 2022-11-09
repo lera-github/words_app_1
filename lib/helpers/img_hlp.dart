@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapp/helpers/fb_hlp.dart';
@@ -96,4 +97,45 @@ Future<Uint8List> getImg({
     }
   });
   return ret;
+}
+
+class ImageLoader extends StatefulWidget {
+  const ImageLoader({Key? key, required this.imgName}) : super(key: key);
+  final String imgName;
+
+  @override
+  State<ImageLoader> createState() => _ImageLoaderState();
+}
+
+class _ImageLoaderState extends State<ImageLoader> {
+  @override
+  Widget build(BuildContext context) {
+    Uint8List bytes;
+    return FutureBuilder(
+      future: getImg(
+        getImgName: widget.imgName,
+      ),
+      builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CupertinoActivityIndicator(
+              radius: 20,
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          bytes = snapshot.data!;
+
+          return Image.memory(
+            bytes,
+            fit: BoxFit.cover,
+          );
+        }
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        return const SizedBox();
+      },
+    );
+  }
 }

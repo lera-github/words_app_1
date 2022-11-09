@@ -1,10 +1,18 @@
 //import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 
-List _words1 = []; //массивы слов
+//слова
+List _words1 = [];
 List _words2 = [];
+//имена файлов
+List _imgs = [];
+//карточки с картинками
+List<FlashCard> imgCard = [];
+
 int index = 0;
 //final _random = Random();
 //List<bool> _generated = []; //карточки сформированы?
@@ -40,6 +48,7 @@ class _GameMemoriseState extends State<GameMemorise> {
   Widget build(BuildContext context) {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
+    _imgs = widget.mapdata['imgs'] as List;
     bool haslisteners = false;
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
@@ -266,6 +275,24 @@ class _GameMemoriseState extends State<GameMemorise> {
       },
     );
 
+    if (imgCard.isEmpty) {
+      imgCard = List.generate(
+        _words1.length,
+        (index) => FlashCard(
+          key: Key(index.toString()),
+          frontWidget: Center(
+            child: ImageLoader(
+              imgName: _imgs[index] as String,
+            ),
+          ),
+          backWidget: Center(
+            child: Image.asset('placeholder.png'),
+          ),
+          height: 180,
+          width: 280,
+        ),
+      );
+    }
     //===================================
     return Scaffold(
       body: Center(
@@ -302,6 +329,13 @@ class _GameMemoriseState extends State<GameMemorise> {
                         ),
                         Expanded(
                           child: TabBarView(children: flashCard),
+                        ),
+                        SizedBox(
+                          height: 130,
+                          width: 180,
+                          child: TabBarView(
+                            children: imgCard,
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,

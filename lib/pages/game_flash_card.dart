@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
@@ -241,42 +240,4 @@ class _GameFlashCardState extends State<GameFlashCard> {
       }, 
     );
   }*/
-}
-
-class ImageLoader extends StatefulWidget {
-  const ImageLoader({Key? key, required this.imgName}) : super(key: key);
-  final String imgName;
-
-  @override
-  State<ImageLoader> createState() => _ImageLoaderState();
-}
-
-class _ImageLoaderState extends State<ImageLoader> {
-  @override
-  Widget build(BuildContext context) {
-    Uint8List bytes;
-    return FutureBuilder(
-      future: getImg(
-        getImgName: widget.imgName,
-      ),
-      builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CupertinoActivityIndicator(
-              radius: 20,
-            ),
-          );
-        }
-        if (snapshot.hasData) {
-          bytes = snapshot.data!;
-
-          return Image.memory(bytes);
-        }
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return const SizedBox();
-      },
-    );
-  }
 }
