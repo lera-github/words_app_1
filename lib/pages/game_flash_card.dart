@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';

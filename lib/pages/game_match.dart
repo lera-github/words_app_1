@@ -3,8 +3,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:widget_finder/widget_finder.dart';
 
-List _words1 = []; //массивы слов
+//слова
+List _words1 = [];
 List _words2 = [];
+//имена файлов
+List _imgs = [];
 final myCards = <Widget>[];
 const double cardSizeX = 120; //размер карточки
 const double cardSizeY = 60;
@@ -39,6 +42,7 @@ class _GameMatchState extends State<GameMatch> {
     super.initState();
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
+    _imgs = widget.mapdata['imgs'] as List;
     isDropped = List<bool>.generate(_words1.length * 2, (index) => false);
 
     getMyCards();
@@ -55,6 +59,7 @@ class _GameMatchState extends State<GameMatch> {
     myCards.clear();
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
+    _imgs = widget.mapdata['imgs'] as List;
 
     // начальные координаты первой карточки
     var pos = cardNewPos(cardSizeX, cardSizeY);
@@ -109,6 +114,7 @@ class _GameMatchState extends State<GameMatch> {
           sizeY: cardSizeY,
           color: i < _words1.length ? Colors.blue : Colors.green,
           text: tmptxt,
+          imgtag: i.toString(),
         ),
       );
       pos = cardNewPos(cardSizeX, cardSizeY);
@@ -248,45 +254,106 @@ class TheCard extends StatelessWidget {
     required this.sizeY,
     required this.color,
     required this.text,
+    required this.imgtag,
   }) : super(key: key);
   final double sizeX;
   final double sizeY;
   final Color color;
   final String text;
+  final String imgtag;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+    return MouseRegion(
+      onEnter: (_) => _showImg(
+        context,
+        imgtag,
+        'logo1.png',
       ),
-      shadowColor: Colors.blueAccent,
-      elevation: 8,
-      child: ClipPath(
-        clipper: ShapeBorderClipper(
+      child: Hero(
+        tag: imgtag,
+        child:
+            //
+            Card(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          shadowColor: Colors.blueAccent,
+          elevation: 8,
+          child: ClipPath(
+            clipper: ShapeBorderClipper(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Container(
+              height: sizeY, //size
+              width: sizeX,
+              decoration: BoxDecoration(
+                border: Border(left: BorderSide(color: color, width: 10)),
+                color: Colors.yellowAccent.shade100,
+              ),
+              padding: const EdgeInsets.all(2.0),
+              alignment: Alignment.centerLeft,
+              child: AutoSizeText(
+                text,
+                maxLines: 5,
+                wrapWords: false,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                ),
+                overflow: TextOverflow.ellipsis,
+                minFontSize: 8,
+              ),
+            ),
           ),
         ),
-        child: Container(
-          height: sizeY, //size
-          width: sizeX,
-          decoration: BoxDecoration(
-            border: Border(left: BorderSide(color: color, width: 10)),
-            color: Colors.yellowAccent.shade100,
-          ),
-          padding: const EdgeInsets.all(2.0),
-          alignment: Alignment.centerLeft,
-          child: AutoSizeText(
-            text,
-            maxLines: 5,
-            wrapWords: false,
-            style: const TextStyle(
-              fontSize: 14,
-              fontStyle: FontStyle.italic,
+      ),
+    );
+  }
+
+  void _showImg(BuildContext context, String _tag, String _imgname) {
+    //heroed = true;
+    final Orientation _orientation = MediaQuery.of(context).orientation;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Scaffold(
+          body: SafeArea(
+            child: Center(
+              child: Hero(
+                tag: _imgname,
+                child: Flex(
+                  direction: _orientation == Orientation.landscape
+                      ? Axis.horizontal
+                      : Axis.vertical,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          //heroed = false;
+                          Navigator.of(context).pop();
+                        },
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                            image: DecorationImage(
+                              fit: BoxFit.contain,
+                              image: AssetImage(
+                                _imgname,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-            overflow: TextOverflow.ellipsis,
-            minFontSize: 8,
           ),
         ),
       ),
