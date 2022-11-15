@@ -57,6 +57,8 @@ dependencies:
   firebase_auth: ^3.11.2
   http: ^0.13.5
   crypto: ^3.0.2
+  popup_window: ^1.1.2
+  bot_toast: ^4.0.3
  
   
 dev_dependencies:

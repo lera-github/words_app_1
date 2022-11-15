@@ -114,7 +114,7 @@ class _GameMatchState extends State<GameMatch> {
           sizeY: cardSizeY,
           color: i < _words1.length ? Colors.blue : Colors.green,
           text: tmptxt,
-          imgtag: i.toString(),
+          imgtag: i.toString() + tmptxt,
         ),
       );
       pos = cardNewPos(cardSizeX, cardSizeY);
@@ -247,7 +247,7 @@ class _GameMatchState extends State<GameMatch> {
 }
 
 // карточка
-class TheCard extends StatelessWidget {
+class TheCard extends StatefulWidget {
   const TheCard({
     Key? key,
     required this.sizeX,
@@ -263,16 +263,41 @@ class TheCard extends StatelessWidget {
   final String imgtag;
 
   @override
+  State<TheCard> createState() => _TheCardState();
+}
+
+class _TheCardState extends State<TheCard> {
+  @override
   Widget build(BuildContext context) {
+    double _animatedContainerHeight = 100;
+    double _animatedContainerWidth = 100;
     return MouseRegion(
-      onEnter: (_) => _showImg(
+      /* onEnter: (_) => _showImg(
         context,
         imgtag,
         'logo1.png',
-      ),
-      child: Hero(
-        tag: imgtag,
+      ), */
+      /* child: Hero(
+        tag: imgtag, */
+      onEnter: (value) {
+        setState(() {
+          _animatedContainerHeight = 100;
+          _animatedContainerWidth = 150;
+        });
+      },
+      onExit: (value) {
+        setState(() {
+          _animatedContainerHeight = 100;
+          _animatedContainerWidth = 100;
+        });
+      },
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        height: _animatedContainerHeight,
+        width: _animatedContainerWidth,
         child:
+
             //
             Card(
           shape: RoundedRectangleBorder(
@@ -287,16 +312,17 @@ class TheCard extends StatelessWidget {
               ),
             ),
             child: Container(
-              height: sizeY, //size
-              width: sizeX,
+              height: widget.sizeY, //size
+              width: widget.sizeX,
               decoration: BoxDecoration(
-                border: Border(left: BorderSide(color: color, width: 10)),
+                border:
+                    Border(left: BorderSide(color: widget.color, width: 10)),
                 color: Colors.yellowAccent.shade100,
               ),
               padding: const EdgeInsets.all(2.0),
               alignment: Alignment.centerLeft,
               child: AutoSizeText(
-                text,
+                widget.text,
                 maxLines: 5,
                 wrapWords: false,
                 style: const TextStyle(
@@ -308,55 +334,57 @@ class TheCard extends StatelessWidget {
               ),
             ),
           ),
+          //),
+          //),
         ),
       ),
     );
   }
+}
 
-  void _showImg(BuildContext context, String _tag, String _imgname) {
-    //heroed = true;
-    final Orientation _orientation = MediaQuery.of(context).orientation;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: Hero(
-                tag: _imgname,
-                child: Flex(
-                  direction: _orientation == Orientation.landscape
-                      ? Axis.horizontal
-                      : Axis.vertical,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          //heroed = false;
-                          Navigator.of(context).pop();
-                        },
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                            image: DecorationImage(
-                              fit: BoxFit.contain,
-                              image: AssetImage(
-                                _imgname,
-                              ),
-                            ),
+void _showImg(BuildContext context, String _tag, String _imgname) {
+  //heroed = true;
+  final Orientation _orientation = MediaQuery.of(context).orientation;
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (ctx) => Scaffold(
+        body: SafeArea(
+          child: Center(
+            /* child: Hero(
+                tag: _imgname, */
+            child: Flex(
+              direction: _orientation == Orientation.landscape
+                  ? Axis.horizontal
+                  : Axis.vertical,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      //heroed = false;
+                      Navigator.of(context).pop();
+                    },
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        image: DecorationImage(
+                          fit: BoxFit.contain,
+                          image: AssetImage(
+                            _imgname,
                           ),
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+                )
+              ],
             ),
+            //),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
