@@ -213,7 +213,7 @@ class _GameMatchState extends State<GameMatch> {
                       isVisImg[g] = true;
                     });
                     Future.delayed(
-                      const Duration(milliseconds: 3000),
+                      const Duration(milliseconds: 2500),
                       () {
                         setState(() {
                           isVisImg[g] = false;
