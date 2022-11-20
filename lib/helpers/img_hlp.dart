@@ -86,16 +86,21 @@ Future<List<Uint8List>> getImgs({required List getImgsName}) async {
   return ret;
 } */
 
-//загрузка изображения из FBS
+//загрузка изображения из FBS или пустышку
 Future<Uint8List> getImg({
   required String getImgName,
 }) async {
   Uint8List ret = Uint8List.fromList([]);
-  await fromFBS(getImgName).then((value) {
-    if (value != null) {
-      ret = value;
-    }
-  });
+  if (getImgName == 'placeholder.png') {
+    ret = await getPlaceholderImg();
+  } else {
+    await fromFBS(getImgName).then((value) {
+      if (value != null) {
+        ret = value;
+      }
+    });
+  }
+
   return ret;
 }
 

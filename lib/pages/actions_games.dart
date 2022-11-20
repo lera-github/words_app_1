@@ -155,14 +155,14 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          /* Icon(
                             widget.mapdata['favourite'] as bool
                                 ? Icons.star_rate_rounded
                                 : Icons.star_border_rounded,
                             color: widget.mapdata['favourite'] as bool
                                 ? Colors.yellow.shade600
                                 : Colors.grey.shade400,
-                          ),
+                          ), */
                           Expanded(
                             child: AutoSizeText(
                               widget.mapdata['module'] as String,

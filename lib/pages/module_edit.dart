@@ -516,7 +516,8 @@ class _ModuleEditState extends State<ModuleEdit> {
                             }
                           } else {
                             //получить "заглушку"
-                            await getPlaceholderImg().then((value1) {
+                            await getPlaceholderImg()
+                                .then((value1) {
                               currentImg = value1;
                             });
                             //запишем имя файла который надо будет удалить из FBS  в imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

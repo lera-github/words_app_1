@@ -1,7 +1,6 @@
-import 'dart:js_util';
 import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:widget_finder/widget_finder.dart';
@@ -15,7 +14,6 @@ final myCards = <Widget>[];
 const double cardSizeX = 120; //размер карточки
 const double cardSizeY = 60;
 final List<Offset> _points = []; // массив позиций карточек
-List<Uint8List> _imgsBytes = []; // картинки
 
 class GameMatch extends StatefulWidget {
   const GameMatch({Key? key, required this.mapdata}) : super(key: key);
@@ -67,7 +65,6 @@ class _GameMatchState extends State<GameMatch> {
     _words1 = widget.mapdata['words1'] as List;
     _words2 = widget.mapdata['words2'] as List;
     _imgs = widget.mapdata['imgs'] as List;
-    _imgsBytes.clear();
 
     // начальные координаты первой карточки
     var pos = cardNewPos(cardSizeX, cardSizeY);
@@ -134,7 +131,7 @@ class _GameMatchState extends State<GameMatch> {
         );
       } */
     }
-    _imgsBytes = await getImgs(getImgsName: _imgsBytes, isLoaded: false);
+
     return myCards;
   }
 
@@ -149,32 +146,6 @@ class _GameMatchState extends State<GameMatch> {
   // размещаем карточки
   List<Widget> dragItems() {
     final List<Positioned> items = [];
-    //
-    /* for (var g = 0; g < _words1.length; g++) {
-      final Positioned item = Positioned(
-        top: _points[g].dy,
-        left: _points[g].dx,
-        child: Visibility(
-          visible: !isDropped[g],
-          child: Draggable(
-            data: g + _words1.length,
-            feedback: Transform.scale(
-              scale: 1.2,
-              child: Opacity(
-                opacity: 0.75,
-                child: myCards[g],
-              ),
-            ),
-            childWhenDragging: Container(),
-            child: myCards[g],
-          ),
-        ),
-      );
-      items.add(item);
-    } */
-    //
-
-    //for (var g = _words1.length; g < _words1.length * 2; g++) {
     for (var g = 0; g < _words1.length * 2; g++) {
       final Positioned item = Positioned(
         top: _points[g].dy,
@@ -187,7 +158,6 @@ class _GameMatchState extends State<GameMatch> {
               List<dynamic> accepted,
               List<dynamic> rejected,
             ) {
-              //return myCards[g];
               return Draggable(
                 data: g,
                 feedback: Visibility(
@@ -201,26 +171,19 @@ class _GameMatchState extends State<GameMatch> {
                   ),
                 ),
                 childWhenDragging: Container(),
-                /* onDragUpdate: (details) {
-                  isVisImg[g] = true;
-                }, */
                 onDragStarted: () {
-                  if (!isVisImg[g]) {
-                    /*Future.delayed(
-                      const Duration(milliseconds: 2000),
-                      () { */
+                  if (!isVisImg[g] &&
+                      _imgs[g % _words1.length] != 'placeholder.png') {
                     setState(() {
                       isVisImg[g] = true;
                     });
-                    Future.delayed(
-                      const Duration(milliseconds: 2500),
+                    /* Future.delayed(
+                      const Duration(milliseconds: 5000),
                       () {
                         setState(() {
                           isVisImg[g] = false;
                         });
                       },
-                    );
-                    /*},
                     ); */
                   }
                 },

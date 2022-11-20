@@ -4,6 +4,7 @@ import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/pages/game_match.dart';
 
 //слова
 List _words1 = [];
@@ -39,8 +40,15 @@ class _GameMemoriseState extends State<GameMemorise> {
     //_generated = List.generate(_words1.length, (index) => false);
 
     //shuffledindex = [];
+    imgCard.clear();
 
     _visFlag = [false, false, false, false];
+  }
+
+  @override
+  void dispose() {
+    imgCard.clear();
+    super.dispose();
   }
 
 //=============================================================================
@@ -131,6 +139,8 @@ class _GameMemoriseState extends State<GameMemorise> {
     //final List<int> _list = List.generate(_words1.length, (index) => index++, growable: false);
     //_list.shuffle();
     //--------------------------------------------------------------
+
+    // карточка
     Card cardX({
       required int idx,
       required bool visFlag,
@@ -193,13 +203,14 @@ class _GameMemoriseState extends State<GameMemorise> {
     }
 
     //----------------------------------------------------------------------------
+    // все карточки модуля в игровом поле
     final List<Widget> flashCard = List.generate(
       _words1.length,
       (ind) {
         return Column(
           children: [
             SizedBox(
-              height: 80,
+              height: 40,
               child: Center(
                 child: AutoSizeText(
                   _words2[index] as String,
@@ -278,7 +289,8 @@ class _GameMemoriseState extends State<GameMemorise> {
     if (imgCard.isEmpty) {
       imgCard = List.generate(
         _words1.length,
-        (index) => FlashCard(
+        (index) => 
+        FlashCard(
           key: Key(index.toString()),
           frontWidget: Center(
             child: ImageLoader(
