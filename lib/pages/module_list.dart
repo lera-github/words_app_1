@@ -161,7 +161,6 @@ class ModuleListState extends State<ModuleList> {
     if (moduleCollection['favourite'] != null) {
       favourite = moduleCollection['favourite'] as bool;
     } */
-
     //bool favourite = moduleCollection['favourite'] as bool;
 
     //значения массива keys - id польз-ля и признак общего доступа

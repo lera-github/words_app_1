@@ -177,14 +177,17 @@ class _GameMatchState extends State<GameMatch> {
                     setState(() {
                       isVisImg[g] = true;
                     });
-                    /* Future.delayed(
-                      const Duration(milliseconds: 5000),
+
+                    Future.delayed(
+                      const Duration(seconds: 3),
                       () {
-                        setState(() {
-                          isVisImg[g] = false;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            isVisImg[g] = false;
+                          });
+                        }
                       },
-                    ); */
+                    );
                   }
                 },
                 onDragEnd: (_) {

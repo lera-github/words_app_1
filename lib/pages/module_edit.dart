@@ -166,7 +166,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                             if (widget.isAdd) {
                               await FirebaseFirestore.instance
                                   .collection(widget.collectionPath)
-                                  .add({'favourite': false}).then((value) {
+                                  .add({'id': ''}).then((value) {
                                 idx = value.id;
                               });
                               await FirebaseFirestore.instance
@@ -516,8 +516,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                             }
                           } else {
                             //получить "заглушку"
-                            await getPlaceholderImg()
-                                .then((value1) {
+                            await getPlaceholderImg().then((value1) {
                               currentImg = value1;
                             });
                             //запишем имя файла который надо будет удалить из FBS  в imgsToRemove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
