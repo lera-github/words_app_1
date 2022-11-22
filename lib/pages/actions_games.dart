@@ -90,58 +90,97 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 80,
+                      height: 60,
                     ),
-                    // Карточки
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          actionSelect = 'GameFlashCard';
-                        });
-                      },
-                      child: Text(
-                        'Карточки',
-                        style: titleStyle,
-                        textScaleFactor: 0.7,
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          // Карточки
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                actionSelect = 'GameFlashCard';
+                              });
+                            },
+                            child: Text(
+                              'Карточки',
+                              style: titleStyle,
+                              textScaleFactor: 0.7,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          // Заучивание
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                actionSelect = 'GameMemorise';
+                              });
+                            },
+                            child: Text(
+                              'Заучивание',
+                              style: titleStyle,
+                              textScaleFactor: 0.7,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          // Подбор
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                actionSelect = 'GameMatch';
+                              });
+                            },
+                            child: Text(
+                              'Подбор',
+                              style: titleStyle,
+                              textScaleFactor: 0.7,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 6,
                     ),
-                    // Заучивание
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          actionSelect = 'GameMemorise';
-                        });
-                      },
-                      child: Text(
-                        'Заучивание',
-                        style: titleStyle,
-                        textScaleFactor: 0.7,
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    // Подбор
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          actionSelect = 'GameMatch';
-                        });
-                      },
-                      child: Text(
-                        'Подбор',
-                        style: titleStyle,
-                        textScaleFactor: 0.7,
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 6,
+                          ),
+                          SingleChildScrollView(
+                            padding: const EdgeInsets.all(6),
+                            child: Text('logo1.png'),
+                          ),
+                          const SizedBox(
+                            height: 6,
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 16,
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(
+                width: 4,
               ),
               ConstrainedBox(
                 constraints: BoxConstraints.expand(width: scrwidth),
