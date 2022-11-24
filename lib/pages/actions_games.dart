@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -32,6 +34,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
     final scrwidth = MediaQuery.of(context).size.width < 800.0
         ? MediaQuery.of(context).size.width
         : 800.0;
+    final scrheight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +93,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 60,
+                      height: 59,
                     ),
                     DecoratedBox(
                       decoration: BoxDecoration(
@@ -98,9 +101,14 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const SizedBox(
-                            height: 16,
+                          Row(
+                            children: const [
+                              SizedBox(
+                                height: 16,
+                              ),
+                            ],
                           ),
                           // Карточки
                           TextButton(
@@ -162,13 +170,30 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Column(
+                        //crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const SizedBox(
-                            height: 6,
+                          Row(
+                            children: const [
+                              SizedBox(
+                                height: 6,
+                              ),
+                            ],
                           ),
-                          SingleChildScrollView(
-                            padding: const EdgeInsets.all(6),
-                            child: Text('logo1.png'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset('check.png'),
+                              const Text('  рейтинг:'),
+                            ],
+                          ),
+                          ////////                                       //  лист рейтинга
+                          SizedBox(
+                            height: scrheight - 323 > 40 ? scrheight - 323 : 40,
+                            child: /* Container(
+                              padding: const EdgeInsets.all(6),
+                              child:  */
+                                const Rating(),
+                            //),
                           ),
                           const SizedBox(
                             height: 6,
@@ -267,5 +292,85 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
       default:
         return GameFlashCard(mapdata: widget.mapdata);
     }
+  }
+}
+
+// =================================================================== рейтинг
+class Rating extends StatefulWidget {
+  const Rating({Key? key}) : super(key: key);
+
+  @override
+  State<Rating> createState() => _RatingState();
+}
+
+class _RatingState extends State<Rating> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: getCollectionFS(
+        collection: 'users',
+      ),
+      builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CupertinoActivityIndicator(
+              radius: 40,
+            ),
+          );
+          //CircularProgressIndicator();
+        }
+        if (snapshot.hasData) {
+          // List<Map<String, dynamic>> _tmp = [];
+          /////////////GENERATE вставить
+          return ListViewBuilder(maplist: snapshot.data!);
+        }
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+class ListViewBuilder extends StatelessWidget {
+  const ListViewBuilder({Key? key, required this.maplist}) : super(key: key);
+  final List<Object?> maplist;
+  @override
+  Widget build(BuildContext context) {
+    final numItems = maplist.length;
+    Map<String, dynamic> mapitem;
+    //final listUserCollection = maplist as List<Map<String, dynamic>?>;
+    Widget buildRow(int idx) {
+      mapitem = maplist[idx]! as Map<String, dynamic>;
+      return ListTile(
+        leading: CircleAvatar(
+          maxRadius: 10,
+          child: Text(
+            '${idx + 1}',
+            //textScaleFactor: 0.8,
+          ),
+        ),
+        title: Text(
+          mapitem['username'].toString(),
+          //textScaleFactor: 0.5,
+        ),
+        trailing: Text(
+          mapitem['score'].toString(),
+          //textScaleFactor: 0.5,
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: numItems * 2,
+      padding: const EdgeInsets.all(3.0),
+      itemBuilder: (BuildContext context, int i) {
+        if (i.isOdd) return Divider();
+        final index = i ~/ 2;
+        return buildRow(index);
+      },
+    );
   }
 }

@@ -28,6 +28,15 @@ Future<List<Object?>> getFS({
   return allData;
 }
 
+Future<List<Object?>> getCollectionFS({
+  required String collection,
+}) async {
+  final QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection(collection).get();
+  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  return allData;
+}
+
 /* Future<List<String?>> getNamesFS({
   required String collection,
   required String id,
