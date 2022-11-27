@@ -135,11 +135,12 @@ class _GameMatchState extends State<GameMatch> {
     return myCards;
   }
 
-  //получение случайных координат в области
+  //получение случайных координат в области (sx-6
+  //где 6 - отступ от нижнего, правого края)
   Offset cardNewPos(double sx, double sy) {
     return Offset(
-      (_random.nextDouble() * (_area.width - sx)).abs(),
-      (_random.nextDouble() * (_area.height - sy)).abs(),
+      (_random.nextDouble() * (_area.width - sx - 6)).abs(),
+      (_random.nextDouble() * (_area.height - sy - 6)).abs(),
     );
   }
 

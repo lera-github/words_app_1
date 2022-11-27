@@ -182,8 +182,11 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset('check.png'),
-                              const Text('  рейтинг:'),
+                              //Image.asset('check.png'),
+                              Text(
+                                ' Лучшие:\n',
+                                style: text14Style,
+                              ),
                             ],
                           ),
                           ////////                                       //  лист рейтинга
@@ -309,6 +312,8 @@ class _RatingState extends State<Rating> {
     return FutureBuilder(
       future: getCollectionFS(
         collection: 'users',
+        order: 'score',
+        desc: true,
       ),
       builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -321,7 +326,7 @@ class _RatingState extends State<Rating> {
         }
         if (snapshot.hasData) {
           // List<Map<String, dynamic>> _tmp = [];
-          /////////////GENERATE вставить
+
           return ListViewBuilder(maplist: snapshot.data!);
         }
         if (snapshot.hasError) {
@@ -344,28 +349,62 @@ class ListViewBuilder extends StatelessWidget {
     //final listUserCollection = maplist as List<Map<String, dynamic>?>;
     Widget buildRow(int idx) {
       mapitem = maplist[idx]! as Map<String, dynamic>;
-      return ListTile(
-        leading: CircleAvatar(
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 28,
+            child: CircleAvatar(
+              maxRadius: 10,
+              child: Text(
+                '${idx + 1}',
+                //textScaleFactor: 0.8,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Expanded(
+            child: Text(
+              mapitem['username'].toString(), overflow: TextOverflow.ellipsis,
+              //textScaleFactor: 0.5,
+            ),
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Text(
+            mapitem['score'].toString(),
+            //textScaleFactor: 0.5,
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+        ],
+      );
+      /* ListTile(
+        /* leading: CircleAvatar(
           maxRadius: 10,
           child: Text(
             '${idx + 1}',
             //textScaleFactor: 0.8,
           ),
-        ),
+        ), */
         title: Text(
           mapitem['username'].toString(),
           //textScaleFactor: 0.5,
         ),
-        trailing: Text(
+        subtitle: Text(
           mapitem['score'].toString(),
           //textScaleFactor: 0.5,
         ),
-      );
+      ); */
     }
 
     return ListView.builder(
       itemCount: numItems * 2,
-      padding: const EdgeInsets.all(3.0),
+      //padding: const EdgeInsets.all(3.0),
       itemBuilder: (BuildContext context, int i) {
         if (i.isOdd) return Divider();
         final index = i ~/ 2;
