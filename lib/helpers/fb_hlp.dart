@@ -29,11 +29,12 @@ Future<List<Object?>> getFS({
 }
 
 Future<List<Object?>> getCollectionFS({
-  required String collection, required String order, required bool desc,
+  required String collection, required String order, required bool desc, required int limit,
 }) async {
   final QuerySnapshot querySnapshot =
       await FirebaseFirestore.instance.collection(collection)
       .orderBy(order,descending: desc)
+      .limit(limit)
       .get();
   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
   return allData;

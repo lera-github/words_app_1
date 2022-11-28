@@ -27,6 +27,7 @@ class ModuleListState extends State<ModuleList> {
     final scrwidth = MediaQuery.of(context).size.width < 600.0
         ? MediaQuery.of(context).size.width
         : 600.0;
+    final scrheight = MediaQuery.of(context).size.height;
     return FutureBuilder(
       future: getFS(
         collection: widget.collectionPath,
@@ -53,31 +54,89 @@ class ModuleListState extends State<ModuleList> {
             body: SafeArea(
               child: Align(
                 alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(width: scrwidth),
-                  child:
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 120),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 68,
+                          ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Column(
+                              //crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(
+                                  children: const [
+                                    SizedBox(
+                                      height: 6,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      ' 10 лучших:\n',
+                                      style: text14Style,
+                                    ),
+                                  ],
+                                ),
+                                ////////                                       //  лист рейтинга
+                                SizedBox(
+                                  height: scrheight - 323 > 40
+                                      ? scrheight - 323
+                                      : 40,
+                                  child: /* Container(
+                              padding: const EdgeInsets.all(6),
+                              child:  */
+                                      const Rating(),
+                                  //),
+                                ),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints.expand(
+                          width: scrwidth, height: scrheight),
+                      child:
 
-                      //Column(children: [
-                      //ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600),
+                          //Column(children: [
+                          //ConstrainedBox(constraints: const BoxConstraints(maxWidth: 600),
 
-                      //s child:
+                          //s child:
 
-                      /* SizedBox(
+                          /* SizedBox(
                       width: 32,
                     ), */
 
-                      // ),
-                      /*                     ConstrainedBox(
+                          // ),
+                          /*                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child: Text(
                         'Библиотека модулей',
                         style: textStyle,
                       ),
                     ), */
-                      /* ConstrainedBox(
+                          /* ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child:  */
-                      /*                 Column(children: [
+                          /*                 Column(children: [
                     Text(
                       'Библиотека модулей',
                       style: textStyle,
@@ -87,57 +146,50 @@ class ModuleListState extends State<ModuleList> {
                     ),
                     Expanded(
                       child:  */
-                      CustomScrollView(
-                    primary: false,
-                    slivers: <Widget>[
-                      SliverAppBar(
-                        titleTextStyle: textStyle,
-                        backgroundColor:
-                            ThemeData().scaffoldBackgroundColor, //цвет фона
-                        //expandedHeight: 36,
-                        //collapsedHeight: 36,
-                        toolbarHeight: 36,
-                        centerTitle: true,
-                        pinned: true,
-                        title: Text(
-                          'Библиотека модулей',
-                          style: textStyle,
-                        ),
-                        /*           flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        //titlePadding: EdgeInsets.only(top: 0),
-                        title: Text(
-                          'Библиотека модулей',
-                          style: textStyle,
-                        ),
-                      ), */
+
+                          CustomScrollView(
+                        primary: false,
+                        slivers: <Widget>[
+                          SliverAppBar(
+                            titleTextStyle: textStyle,
+                            backgroundColor:
+                                ThemeData().scaffoldBackgroundColor, //цвет фона
+                            //expandedHeight: 36,
+                            //collapsedHeight: 36,
+                            toolbarHeight: 36,
+                            centerTitle: true,
+                            pinned: true,
+                            title: Text(
+                              'Библиотека модулей',
+                              style: textStyle,
+                            ),
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 16,
+                                    left: 14,
+                                    right: 14,
+                                  ),
+                                  child: SizedBox(
+                                    height: 52,
+                                    child: gridcont(
+                                      context,
+                                      index,
+                                      snapshot.data![index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              childCount: snapshot.data!.length,
+                            ),
+                          ),
+                        ],
                       ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                top: 16,
-                                left: 14,
-                                right: 14,
-                              ),
-                              child: SizedBox(
-                                height: 52,
-                                child: gridcont(
-                                  context,
-                                  index,
-                                  snapshot.data![index],
-                                ),
-                              ),
-                            );
-                          },
-                          childCount: snapshot.data!.length,
-                        ),
-                      ),
-                    ],
-                  ),
-                  //   ),
-                  //  ])
+                    ),
+                  ],
                 ),
               ),
             ),

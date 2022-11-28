@@ -54,6 +54,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                   style: titleStyle,
                 ),
                 onTap: () {
+                  Navigator.of(context).pop();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -184,7 +185,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                             children: [
                               //Image.asset('check.png'),
                               Text(
-                                ' Лучшие:\n',
+                                ' 10 лучших:\n',
                                 style: text14Style,
                               ),
                             ],
@@ -295,121 +296,5 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
       default:
         return GameFlashCard(mapdata: widget.mapdata);
     }
-  }
-}
-
-// =================================================================== рейтинг
-class Rating extends StatefulWidget {
-  const Rating({Key? key}) : super(key: key);
-
-  @override
-  State<Rating> createState() => _RatingState();
-}
-
-class _RatingState extends State<Rating> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getCollectionFS(
-        collection: 'users',
-        order: 'score',
-        desc: true,
-      ),
-      builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CupertinoActivityIndicator(
-              radius: 40,
-            ),
-          );
-          //CircularProgressIndicator();
-        }
-        if (snapshot.hasData) {
-          // List<Map<String, dynamic>> _tmp = [];
-
-          return ListViewBuilder(maplist: snapshot.data!);
-        }
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-
-        return const SizedBox();
-      },
-    );
-  }
-}
-
-class ListViewBuilder extends StatelessWidget {
-  const ListViewBuilder({Key? key, required this.maplist}) : super(key: key);
-  final List<Object?> maplist;
-  @override
-  Widget build(BuildContext context) {
-    final numItems = maplist.length;
-    Map<String, dynamic> mapitem;
-    //final listUserCollection = maplist as List<Map<String, dynamic>?>;
-    Widget buildRow(int idx) {
-      mapitem = maplist[idx]! as Map<String, dynamic>;
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: 28,
-            child: CircleAvatar(
-              maxRadius: 10,
-              child: Text(
-                '${idx + 1}',
-                //textScaleFactor: 0.8,
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 3,
-          ),
-          Expanded(
-            child: Text(
-              mapitem['username'].toString(), overflow: TextOverflow.ellipsis,
-              //textScaleFactor: 0.5,
-            ),
-          ),
-          const SizedBox(
-            width: 3,
-          ),
-          Text(
-            mapitem['score'].toString(),
-            //textScaleFactor: 0.5,
-          ),
-          const SizedBox(
-            width: 3,
-          ),
-        ],
-      );
-      /* ListTile(
-        /* leading: CircleAvatar(
-          maxRadius: 10,
-          child: Text(
-            '${idx + 1}',
-            //textScaleFactor: 0.8,
-          ),
-        ), */
-        title: Text(
-          mapitem['username'].toString(),
-          //textScaleFactor: 0.5,
-        ),
-        subtitle: Text(
-          mapitem['score'].toString(),
-          //textScaleFactor: 0.5,
-        ),
-      ); */
-    }
-
-    return ListView.builder(
-      itemCount: numItems * 2,
-      //padding: const EdgeInsets.all(3.0),
-      itemBuilder: (BuildContext context, int i) {
-        if (i.isOdd) return Divider();
-        final index = i ~/ 2;
-        return buildRow(index);
-      },
-    );
   }
 }

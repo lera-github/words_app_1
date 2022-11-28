@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 
 // показ предупреждений
 void showAlert({
@@ -164,7 +166,119 @@ class ShowImgDialog extends StatelessWidget {
   }
 }
 
+// =================================================================== рейтинг
+class Rating extends StatefulWidget {
+  const Rating({Key? key}) : super(key: key);
 
+  @override
+  State<Rating> createState() => _RatingState();
+}
+
+class _RatingState extends State<Rating> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: getCollectionFS(
+        collection: 'users',
+        order: 'score',
+        desc: true,
+        limit: 10,
+      ),
+      builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CupertinoActivityIndicator(
+              radius: 40,
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          return ListViewBuilder(maplist: snapshot.data!);
+        }
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+class ListViewBuilder extends StatelessWidget {
+  const ListViewBuilder({Key? key, required this.maplist}) : super(key: key);
+  final List<Object?> maplist;
+  @override
+  Widget build(BuildContext context) {
+    final numItems = maplist.length;
+    Map<String, dynamic> mapitem;
+    //final listUserCollection = maplist as List<Map<String, dynamic>?>;
+    Widget buildRow(int idx) {
+      mapitem = maplist[idx]! as Map<String, dynamic>;
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 28,
+            child: CircleAvatar(
+              maxRadius: 10,
+              child: Text(
+                '${idx + 1}',
+                //textScaleFactor: 0.8,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Expanded(
+            child: Text(
+              mapitem['username'].toString(), overflow: TextOverflow.ellipsis,
+              //textScaleFactor: 0.5,
+            ),
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Text(
+            mapitem['score'].toString(),
+            //textScaleFactor: 0.5,
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+        ],
+      );
+      /* ListTile(
+        /* leading: CircleAvatar(
+          maxRadius: 10,
+          child: Text(
+            '${idx + 1}',
+            //textScaleFactor: 0.8,
+          ),
+        ), */
+        title: Text(
+          mapitem['username'].toString(),
+          //textScaleFactor: 0.5,
+        ),
+        subtitle: Text(
+          mapitem['score'].toString(),
+          //textScaleFactor: 0.5,
+        ),
+      ); */
+    }
+
+    return ListView.builder(
+      itemCount: numItems * 2,
+      //padding: const EdgeInsets.all(3.0),
+      itemBuilder: (BuildContext context, int i) {
+        if (i.isOdd) return Divider();
+        final index = i ~/ 2;
+        return buildRow(index);
+      },
+    );
+  }
+}
 
 
 
