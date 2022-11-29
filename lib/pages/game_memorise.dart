@@ -16,11 +16,21 @@ List<FlashCard> imgCard = [];
 
 int index = 0;
 //final _random = Random();
-//List<bool> _generated = []; //карточки сформированы?
+//List<bool> _generated = [];
+
+////карточки сформированы?
 bool _cardsReady = false;
 //List<int> shuffledindex = []; //массив перемешанных индексов
+
+//массив массивов индексов
 List<List<int>> _indexCards = [];
+//показывать смайлики?
 List<bool> _visFlag = [];
+
+//массив очков по количеству терминов в модуле
+List<int> _scores = [];
+//массив признаков правильного ответа
+List<bool> _scoresFinal = [];
 
 class GameMemorise extends StatefulWidget {
   const GameMemorise({Key? key, required this.mapdata}) : super(key: key);
@@ -43,11 +53,14 @@ class _GameMemoriseState extends State<GameMemorise> {
     imgCard.clear();
 
     _visFlag = [false, false, false, false];
+    _scores.clear();
   }
 
   @override
   void dispose() {
     imgCard.clear();
+    _scores.clear();
+    _scoresFinal.clear();
     super.dispose();
   }
 
@@ -58,6 +71,13 @@ class _GameMemoriseState extends State<GameMemorise> {
     _words2 = widget.mapdata['words2'] as List;
     _imgs = widget.mapdata['imgs'] as List;
     bool haslisteners = false;
+    //положим, что 3 очка дается за верный ответ,
+    // а за каждое не попадание по ответу очко снимается
+    if (_scores.isEmpty) {
+      _scores = List.generate(_words1.length, (index) => 3);
+      _scoresFinal = List.generate(_words1.length, (index) => false);
+    }
+
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
     } */
@@ -233,7 +253,8 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _visFlag[0] = true;
+                      //за каждое не попадание по ответу очко снимается
+                      cardStates(0);
                     });
                   },
                   child: cardX(
@@ -244,7 +265,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _visFlag[1] = true;
+                      cardStates(1);
                     });
                   },
                   child: cardX(
@@ -260,7 +281,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _visFlag[2] = true;
+                      cardStates(2);
                     });
                   },
                   child: cardX(
@@ -271,7 +292,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _visFlag[3] = true;
+                      cardStates(3);
                     });
                   },
                   child: cardX(
@@ -289,8 +310,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     if (imgCard.isEmpty) {
       imgCard = List.generate(
         _words1.length,
-        (index) => 
-        FlashCard(
+        (index) => FlashCard(
           key: Key(index.toString()),
           frontWidget: Center(
             child: ImageLoader(
@@ -410,4 +430,16 @@ class _GameMemoriseState extends State<GameMemorise> {
       ),
     );
   }
+}
+
+//обработка состояний и счет очков
+void cardStates(int w) {
+  if (!_scoresFinal[index] &&
+      !_visFlag[w] &&
+      (_indexCards[index][w] != index)) {
+    _scores[index]--;
+  }
+  if (_indexCards[index][w] == index) _scoresFinal[index] = true;
+  _visFlag[w] = true;
+  print(_scores.toString());
 }
