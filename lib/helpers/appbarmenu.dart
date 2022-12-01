@@ -8,10 +8,12 @@ class LibButton extends StatefulWidget {
   const LibButton({
     Key? key,
     required this.collectionPath,
-    required this.userid,
+    //required this.userid,
+    required this.usermapdata,
   }) : super(key: key);
   final String collectionPath;
-  final String userid;
+  //final String userid;
+  final Map<String, dynamic> usermapdata;
 
   @override
   State<LibButton> createState() => _LibButtonState();
@@ -43,7 +45,7 @@ class _LibButtonState extends State<LibButton> {
               'words1': [''],
               'words2': [''],
               'imgs': ['placeholder.png'],
-              'keys': [widget.userid,''],
+              'keys': [widget.usermapdata['userid'], ''],
             };
 
             Navigator.push(
@@ -51,7 +53,8 @@ class _LibButtonState extends State<LibButton> {
               MaterialPageRoute(
                 builder: (context) => ModuleEdit(
                   collectionPath: widget.collectionPath,
-                  userid: widget.userid,
+                  //userid: widget.userid,
+                  usermapdata: widget.usermapdata,
                   mapdata: cleanModule,
                   isAdd: true,
                   //imgsData: List.empty(), //  Uint8List.fromList([0]),

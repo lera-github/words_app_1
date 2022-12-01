@@ -17,13 +17,15 @@ class ModuleEdit extends StatefulWidget {
   const ModuleEdit({
     Key? key,
     required this.collectionPath,
-    required this.userid,
+    //required this.userid,
+    required this.usermapdata,
     required this.mapdata,
     required this.isAdd,
     //required this._imgsData,
   }) : super(key: key);
   final String collectionPath;
-  final String userid;
+  //final String userid;
+  final Map<String, dynamic> usermapdata;
   final Map<String, dynamic> mapdata;
   final bool isAdd;
   //final List<Uint8List> _imgsData;
@@ -135,7 +137,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                           MaterialPageRoute(
                             builder: (context) => MyHomePage(
                               collectionPath: widget.collectionPath,
-                              userid: widget.userid,
+                              usermapdata: widget.usermapdata,
                             ),
                           ),
                         );
@@ -236,7 +238,7 @@ class _ModuleEditState extends State<ModuleEdit> {
                               MaterialPageRoute(
                                 builder: (context) => MyHomePage(
                                   collectionPath: widget.collectionPath,
-                                  userid: widget.userid,
+                                  usermapdata: widget.usermapdata,
                                 ),
                               ),
                             );

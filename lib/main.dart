@@ -24,12 +24,12 @@ class MyApp extends StatelessWidget {
       title: 'Memory Games',
 
       /////  =======================================  ВРЕМЕННО ОБХОД ВХОДА
-      //home: SignInScreen(),
+      home: SignInScreen(),
       /////  =======================================  ИЛИ
-      home: MyHomePage(
+      /* home: MyHomePage(
         collectionPath: 'modules',
         userid: 'lut4hDl8Jqv5uyaY6CDL',
-      ),
+      ), */
       /////  =======================================
 
       //MyHomePage(),
@@ -50,10 +50,12 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({
     Key? key,
     required this.collectionPath,
-    required this.userid,
+    //required this.userid,
+    required this.usermapdata,
   }) : super(key: key);
   final String collectionPath;
-  final String userid;
+  //final String userid;
+  final Map<String,dynamic> usermapdata;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -86,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 LibButton(
                   collectionPath: widget.collectionPath,
-                  userid: widget.userid,
+                  usermapdata: widget.usermapdata,
                 ),
                 const SizedBox(
                   width: 20,
@@ -114,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ), */
                 child: ModuleList(
                   collectionPath: widget.collectionPath,
-                  userid: widget.userid,
+                  usermapdata: widget.usermapdata,
                 ),
               ),
             ),

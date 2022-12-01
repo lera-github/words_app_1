@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           password: _passwordTextController.text.trim(),
                         )
                             .then((value) async {
-                          var idx='';
+                          var idx = '';
                           //запись в базу нового пользователя
                           await FirebaseFirestore.instance
                               .collection('users')
@@ -95,10 +95,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               .doc(idx)
                               .update({
                             'userid': idx,
-                            'useremail': _emailTextController.text.trim()
+                            'useremail': _emailTextController.text.trim(),
+                            'score': 0,
+                            'scores': {},
                           });
 
                           if (!mounted) return;
+
+                          final Map<String, dynamic> usermapdata = {
+                            'userid': idx,
+                            'username': _userNameTextController.text.trim(),
+                            'useremail': _emailTextController.text.trim(),
+                            'score': 0,
+                            'scores': {},
+                          };
 
                           Navigator.pushReplacement(
                             context,
@@ -106,14 +116,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               builder: (context) => MyHomePage(
                                 collectionPath: 'modules',
                                 //'users/${idx as String}/modules',
-                                userid: idx,
+                                //userid: idx,
+                                usermapdata: usermapdata,
                               ),
                             ),
                           );
                         }).onError((error, stackTrace) {
                           showAlert(
-                              context: context,
-                              mytext: 'Error ${error.toString()}',);
+                            context: context,
+                            mytext: 'Error ${error.toString()}',
+                          );
                           //print("Error ${error.toString()}");
                         });
                       },
@@ -136,8 +148,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Text(
                             " назад",
                             style: TextStyle(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.bold,),
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),

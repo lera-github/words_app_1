@@ -2,6 +2,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/game_match.dart';
@@ -33,8 +34,11 @@ List<int> _scores = [];
 List<bool> _scoresFinal = [];
 
 class GameMemorise extends StatefulWidget {
-  const GameMemorise({Key? key, required this.mapdata}) : super(key: key);
+  const GameMemorise(
+      {Key? key, required this.mapdata, required this.usermapdata})
+      : super(key: key);
   final Map<String, dynamic> mapdata;
+  final Map<String, dynamic> usermapdata;
 
   @override
   State<GameMemorise> createState() => _GameMemoriseState();
@@ -59,6 +63,24 @@ class _GameMemoriseState extends State<GameMemorise> {
   @override
   void dispose() {
     imgCard.clear();
+    var scoresSumm = 0;
+
+    for (var i = 0; i < _scores.length; i++) {
+      scoresSumm += _scores[i];
+    }
+    print('object');
+    ////НУЖНА ДАННЫЕ ЮЗЕРА
+    /* Map<String, int> scoresData = widget.usermapdata['scores'] as Map<String, int>;
+    print(scoresData.toString());
+    scoresData[widget.mapdata['id'].toString()] = scoresSumm;
+    print(scoresData.toString()); */
+    /* updateFS(
+      collection: 'users',
+      id: widget.mapdata['userid'].toString(),
+      val: 'scores',
+      valdata: scoresData,
+    ); */
+
     _scores.clear();
     _scoresFinal.clear();
     super.dispose();
@@ -441,5 +463,5 @@ void cardStates(int w) {
   }
   if (_indexCards[index][w] == index) _scoresFinal[index] = true;
   _visFlag[w] = true;
-  print(_scores.toString());
+  //print(_scores.toString());
 }

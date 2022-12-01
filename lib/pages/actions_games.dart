@@ -15,11 +15,13 @@ class ActionsAndGames extends StatefulWidget {
   const ActionsAndGames({
     Key? key,
     required this.collectionPath,
-    required this.userid,
+    //required this.userid,
+    required this.usermapdata,
     required this.mapdata,
   }) : super(key: key);
   final String collectionPath;
-  final String userid;
+  //final String userid;
+  final Map<String, dynamic> usermapdata;
   final Map<String, dynamic> mapdata;
 
   @override
@@ -60,7 +62,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                     MaterialPageRoute(
                       builder: (context) => MyHomePage(
                         collectionPath: widget.collectionPath,
-                        userid: widget.userid,
+                        usermapdata: widget.usermapdata,
                       ),
                     ),
                   );
@@ -290,7 +292,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
         return GameFlashCard(mapdata: widget.mapdata);
       //break;
       case 'GameMemorise':
-        return GameMemorise(mapdata: widget.mapdata);
+        return GameMemorise(mapdata: widget.mapdata, usermapdata: widget.usermapdata,);
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
       default:

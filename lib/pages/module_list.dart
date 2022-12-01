@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +14,12 @@ class ModuleList extends StatefulWidget {
   const ModuleList({
     Key? key,
     required this.collectionPath,
-    required this.userid,
+    //required this.userid,
+    required this.usermapdata,
   }) : super(key: key);
   final String collectionPath;
-  final String userid;
+  //final String userid;
+  final Map<String, dynamic> usermapdata;
 
   @override
   ModuleListState createState() => ModuleListState();
@@ -32,7 +36,7 @@ class ModuleListState extends State<ModuleList> {
       future: getFS(
         collection: widget.collectionPath,
         order: 'module',
-        userid: widget.userid,
+        userid: widget.usermapdata['userid'] as String,
       ),
       builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -226,7 +230,7 @@ class ModuleListState extends State<ModuleList> {
     Color sharedColor =
         (sharedfl == '#') ? Colors.blue.shade600 : Colors.grey.shade400;
     //если модуль не текущего польз-ля
-    if (shared[0] != widget.userid) {
+    if (shared[0] != widget.usermapdata['userid'] as String) {
       sharedColor = Colors.blue.shade600;
     }
 
@@ -285,7 +289,7 @@ class ModuleListState extends State<ModuleList> {
                       } else {
                         sharedfl = '#';
                       }
-                      if (shared[0] == widget.userid) {
+                      if (shared[0] == widget.usermapdata['userid'] as String) {
                         await updatesharedFS(
                           collection: widget.collectionPath,
                           id: '${moduleCollection['id']}',
@@ -335,7 +339,7 @@ class ModuleListState extends State<ModuleList> {
                         MaterialPageRoute(
                           builder: (context) => ActionsAndGames(
                             collectionPath: widget.collectionPath,
-                            userid: widget.userid,
+                            usermapdata: widget.usermapdata,
                             mapdata: moduleCollection,
                           ),
                         ),
@@ -374,7 +378,7 @@ class ModuleListState extends State<ModuleList> {
               ),
               //редактирование
               Visibility(
-                visible: shared[0] == widget.userid,
+                visible: shared[0] == widget.usermapdata['userid'] as String,
                 child: TTip(
                   message: 'Изменить',
                   child: IconButton(
@@ -388,7 +392,7 @@ class ModuleListState extends State<ModuleList> {
                     onPressed: () {
                       _gotoedit(
                         widget.collectionPath,
-                        widget.userid,
+                        widget.usermapdata,
                         context,
                         moduleCollection,
                       );
@@ -398,7 +402,7 @@ class ModuleListState extends State<ModuleList> {
               ),
               //удаление
               Visibility(
-                visible: shared[0] == widget.userid,
+                visible: shared[0] == widget.usermapdata['userid'] as String,
                 child: TTip(
                   message: 'Удалить',
                   child: IconButton(
@@ -456,7 +460,7 @@ class ModuleListState extends State<ModuleList> {
                                     MaterialPageRoute(
                                       builder: (context) => MyHomePage(
                                         collectionPath: widget.collectionPath,
-                                        userid: widget.userid,
+                                        usermapdata: widget.usermapdata,
                                       ),
                                     ),
                                   );
@@ -491,7 +495,7 @@ class ModuleListState extends State<ModuleList> {
 //переход на редактирование модуля
 void _gotoedit(
   String collectionPath,
-  String userid,
+  Map<String, dynamic>  usermapdata,
   BuildContext context,
   Map<String, dynamic> mapdata,
 ) {
@@ -500,7 +504,7 @@ void _gotoedit(
     MaterialPageRoute(
       builder: (context) => ModuleEdit(
         collectionPath: collectionPath,
-        userid: userid,
+        usermapdata: usermapdata,
         mapdata: mapdata,
         isAdd: false,
       ),
