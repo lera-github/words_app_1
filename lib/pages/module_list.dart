@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +115,7 @@ class ModuleListState extends State<ModuleList> {
                     ),
                     ConstrainedBox(
                       constraints: BoxConstraints.expand(
-                          width: scrwidth, height: scrheight),
+                          width: scrwidth, height: scrheight,),
                       child:
 
                           //Column(children: [

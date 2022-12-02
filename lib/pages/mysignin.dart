@@ -91,15 +91,15 @@ class _SignInScreenState extends State<SignInScreen> {
                         final userCollectionItem =
                             userCollection[0]! as Map<String, dynamic>;
                         final emailText = '${userCollectionItem['useremail']}';
-                        final userid = '${userCollectionItem['userid']}';
+                        //final userid = '${userCollectionItem['userid']}';
 
                         FirebaseAuth.instance
                             .signInWithEmailAndPassword(
-                          //-----------------------------------------------------  ВРЕМЕННО! -  ПОСТОЯННАЯ АВТОРИЗАЦИЯ
-                          /* email: "z@z.ru",
-                          password: "zzzzzz", */
-                          email: emailText,
-                          password: _passwordTextController.text.trim(),
+                          /////////////////////                   ВРЕМЕННО  пост авториз
+                          email: "z@z.ru",
+                          password: "zzzzzz",
+                          /* email: emailText,
+                          password: _passwordTextController.text.trim(), */
                         )
                             .then((value) {
                           Navigator.pushReplacement(

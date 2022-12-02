@@ -2,10 +2,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
-import 'package:myapp/pages/game_match.dart';
 
 //слова
 List _words1 = [];
@@ -34,9 +32,11 @@ List<int> _scores = [];
 List<bool> _scoresFinal = [];
 
 class GameMemorise extends StatefulWidget {
-  const GameMemorise(
-      {Key? key, required this.mapdata, required this.usermapdata})
-      : super(key: key);
+  const GameMemorise({
+    Key? key,
+    required this.mapdata,
+    required this.usermapdata,
+  }) : super(key: key);
   final Map<String, dynamic> mapdata;
   final Map<String, dynamic> usermapdata;
 
@@ -68,12 +68,13 @@ class _GameMemoriseState extends State<GameMemorise> {
     for (var i = 0; i < _scores.length; i++) {
       scoresSumm += _scores[i];
     }
-    print('object');
-    ////НУЖНА ДАННЫЕ ЮЗЕРА
-    /* Map<String, int> scoresData = widget.usermapdata['scores'] as Map<String, int>;
-    print(scoresData.toString());
+
+    ////    Expected a value of type 'Map<String, int>', but got one of type 'LinkedMap<String, dynamic>'
+    var scoresData = widget.usermapdata['scores'];
+    //print(scoresData.toString());
+
     scoresData[widget.mapdata['id'].toString()] = scoresSumm;
-    print(scoresData.toString()); */
+    print(scoresData.toString());
     /* updateFS(
       collection: 'users',
       id: widget.mapdata['userid'].toString(),
@@ -96,7 +97,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     //положим, что 3 очка дается за верный ответ,
     // а за каждое не попадание по ответу очко снимается
     if (_scores.isEmpty) {
-      _scores = List.generate(_words1.length, (index) => 3);
+      _scores = List.generate(_words1.length, (index) => 0);
       _scoresFinal = List.generate(_words1.length, (index) => false);
     }
 
@@ -402,7 +403,13 @@ class _GameMemoriseState extends State<GameMemorise> {
                                   if (index < 0) {
                                     index = flashCard.length - 1;
                                   }
-                                  _visFlag = [false, false, false, false];
+
+                                  // показать смайлы, если ответы даны
+                                  if (!_scoresFinal[index]) {
+                                    _visFlag = [false, false, false, false];
+                                  } else {
+                                    _visFlag = [true, true, true, true];
+                                  }
 
                                   if (!controller.indexIsChanging) {
                                     controller.animateTo(index);
@@ -426,7 +433,13 @@ class _GameMemoriseState extends State<GameMemorise> {
                                   if (index > flashCard.length - 1) {
                                     index = 0;
                                   }
-                                  _visFlag = [false, false, false, false];
+
+                                  // показать смайлы, если ответы даны
+                                  if (!_scoresFinal[index]) {
+                                    _visFlag = [false, false, false, false];
+                                  } else {
+                                    _visFlag = [true, true, true, true];
+                                  }
 
                                   if (!controller.indexIsChanging) {
                                     controller.animateTo(index);
@@ -456,12 +469,14 @@ class _GameMemoriseState extends State<GameMemorise> {
 
 //обработка состояний и счет очков
 void cardStates(int w) {
-  if (!_scoresFinal[index] &&
-      !_visFlag[w] &&
-      (_indexCards[index][w] != index)) {
-    _scores[index]--;
+  int cnt = 0; //счетчик промахов
+  if (_indexCards[index][w] == index && !_scoresFinal[index]) {
+    _scoresFinal[index] = true;
+    for (var i = 0; i < 4; i++) {
+      if (_visFlag[i]) cnt++;
+    }
+    _scores[index] = 3 - cnt;
   }
-  if (_indexCards[index][w] == index) _scoresFinal[index] = true;
   _visFlag[w] = true;
   //print(_scores.toString());
 }

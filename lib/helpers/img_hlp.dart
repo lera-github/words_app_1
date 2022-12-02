@@ -11,11 +11,12 @@ Future<Uint8List> loadImg(String imgurl) async {
                       );
                       print(ttt);
 */
-  //используем безплатный CORS Proxy, иначе имеем ошибку
+  //используем бесплатный CORS Proxy, иначе имеем ошибку
   // https://scrappy-php.herokuapp.com/?url=
   // или https://pika-secret-ocean-49799.herokuapp.com/
+  // https://api.codetabs.com/v1/proxy?quest=
   final http.Response response = await http.get(
-    Uri.parse('https://scrappy-php.herokuapp.com/?url=$imgurl'),
+    Uri.parse('https://api.codetabs.com/v1/proxy?quest=$imgurl'),
   );
   final Uint8List bytes = response.bodyBytes;
 /*   Uint8List bytes = Uint8List.fromList([0]);

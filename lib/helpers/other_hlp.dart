@@ -272,7 +272,7 @@ class ListViewBuilder extends StatelessWidget {
       itemCount: numItems * 2,
       //padding: const EdgeInsets.all(3.0),
       itemBuilder: (BuildContext context, int i) {
-        if (i.isOdd) return Divider();
+        if (i.isOdd) return const Divider();
         final index = i ~/ 2;
         return buildRow(index);
       },

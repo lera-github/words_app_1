@@ -28,8 +28,10 @@ class MyApp extends StatelessWidget {
       /////  =======================================  ИЛИ
       /* home: MyHomePage(
         collectionPath: 'modules',
-        userid: 'lut4hDl8Jqv5uyaY6CDL',
-      ), */
+        usermapdata: {'userid': 'lut4hDl8Jqv5uyaY6CDL',
+        'username': 'z',}, 
+        //userid: 'lut4hDl8Jqv5uyaY6CDL',
+      ),*/
       /////  =======================================
 
       //MyHomePage(),
@@ -55,7 +57,7 @@ class MyHomePage extends StatefulWidget {
   }) : super(key: key);
   final String collectionPath;
   //final String userid;
-  final Map<String,dynamic> usermapdata;
+  final Map<String, dynamic> usermapdata;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
