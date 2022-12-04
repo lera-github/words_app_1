@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/main.dart';
 
 // показ предупреждений
 void showAlert({
@@ -168,14 +173,9 @@ class ShowImgDialog extends StatelessWidget {
 }
 
 // =================================================================== рейтинг
-class Rating extends StatefulWidget {
+class Rating extends StatelessWidget {
   const Rating({Key? key}) : super(key: key);
 
-  @override
-  State<Rating> createState() => _RatingState();
-}
-
-class _RatingState extends State<Rating> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -264,33 +264,16 @@ class ListViewBuilder extends StatelessWidget {
   }
 }
 
-// вывод очков
-class ViewScores extends StatefulWidget {
+// ------------------------------------------ очки
+class ViewScores extends StatelessWidget {
   const ViewScores({
     Key? key,
-    required this.currentScores,
-    required this.allScores,
   }) : super(key: key);
-  final int currentScores;
-  final int allScores;
-
-  @override
-  State<ViewScores> createState() => _ViewScoresState();
-}
-
-class _ViewScoresState extends State<ViewScores> {
-  int _count = 0;
-  void _update(int count) {
-    setState(() {
-      _count++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ChildPage(update: _update),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -298,10 +281,15 @@ class _ViewScoresState extends State<ViewScores> {
               'модуль',
               style: text14Style,
             ),
-            Text(
-              (widget.currentScores + _count).toString(),
-              style: textGreenStyle, 
-            ), //       -------------------------------------------------------------------count убрать----------
+            Consumer(
+              builder: (context, ref, child) {
+                final n = ref.watch(scoresProvider);
+                return Text(
+                  (n.moduleScores).toString(),
+                  style: textGreenStyle,
+                );
+              },
+            ),
           ],
         ),
         Row(
@@ -311,9 +299,14 @@ class _ViewScoresState extends State<ViewScores> {
               'всего',
               style: text14Style,
             ),
-            Text(
-              widget.allScores.toString(),
-              style: textGreenStyle,
+            Consumer(
+              builder: (context, ref, child) {
+                final n = ref.watch(scoresProvider);
+                return Text(
+                  (n.userScores).toString(),
+                  style: textGreenStyle,
+                );
+              },
             ),
           ],
         ),
@@ -322,18 +315,58 @@ class _ViewScoresState extends State<ViewScores> {
   }
 }
 
-class ChildPage extends StatelessWidget {
-  final ValueChanged<int> update;
-  const ChildPage({required this.update});
+// класс данных для наблюдения
+class ScoresData {
+  ScoresData({
+    required this.moduleScores,
+    required this.userScores,
+  });
+  final int moduleScores;
+  final int userScores;
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => update(1), // Passing value to the parent widget.
-      child: const Text('Update (in child)'),
+  ScoresData copyWith({
+    int? moduleScores,
+    int? userScores,
+  }) {
+    return ScoresData(
+      moduleScores: moduleScores ?? this.moduleScores,
+      userScores: userScores ?? this.userScores,
     );
   }
+
+  @override
+  String toString() =>
+      'ScoresData(moduleScores: $moduleScores, userScores: $userScores)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScoresData &&
+        other.moduleScores == moduleScores &&
+        other.userScores == userScores;
+  }
+
+  @override
+  int get hashCode => moduleScores.hashCode ^ userScores.hashCode;
 }
+
+//  notifier
+class ScoresNotifier extends StateNotifier<ScoresData> {
+  ScoresNotifier(ScoresData state) : super(state);
+  void updateScores(int m, int n) {
+    state = state.copyWith(moduleScores: m, userScores: n);
+  }
+
+  void updateModuleScores(int n) {
+    state = state.copyWith(moduleScores: n);
+  }
+
+  void updateUserScores(int n) {
+    state = state.copyWith(userScores: n);
+  }
+}
+
 
 
 /*

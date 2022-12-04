@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/helpers/appbarmenu.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_list.dart';
 import 'package:myapp/pages/mysignin.dart';
+
+final scoresProvider = StateNotifierProvider<ScoresNotifier, ScoresData>((ref) => ScoresNotifier(ScoresData(moduleScores: 0, userScores: 0)));
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -2,8 +2,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/helpers/img_hlp.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
+import 'package:myapp/main.dart';
 
 //слова
 List _words1 = [];
@@ -31,22 +34,20 @@ List<int> _scores = [];
 //массив признаков правильного ответа
 List<bool> _scoresFinal = [];
 
-class GameMemorise extends StatefulWidget {
+class GameMemorise extends ConsumerStatefulWidget {
   const GameMemorise({
     Key? key,
     required this.mapdata,
     required this.usermapdata,
-    required this.update,
   }) : super(key: key);
   final Map<String, dynamic> mapdata;
   final Map<String, dynamic> usermapdata;
-  final ValueChanged<int> update;
 
   @override
-  State<GameMemorise> createState() => _GameMemoriseState();
+  ConsumerState<GameMemorise> createState() => _GameMemoriseState();
 }
 
-class _GameMemoriseState extends State<GameMemorise> {
+class _GameMemoriseState extends ConsumerState<GameMemorise> {
   @override
   void initState() {
     super.initState();
@@ -71,12 +72,12 @@ class _GameMemoriseState extends State<GameMemorise> {
       scoresSumm += _scores[i];
     }
     //                                        ПОДСЧЕТ СУММ НЕ ПРОВЕРЕН!!
-    ////    Expected a value of type 'Map<String, int>', but got one of type 'LinkedMap<String, dynamic>'
-    var scoresData = widget.usermapdata['scores'];
-    //print(scoresData.toString());
-
+    //
+    final scoresData = widget.usermapdata['scores'] as Map<String, int>;
     scoresData[widget.mapdata['id'].toString()] = scoresSumm;
-    print(scoresData.toString());
+    debugPrint(
+      scoresData.toString(),
+    ); //    --------------------------------------------------------------УБРАТЬ   debugPrint
     /* updateFS(
       collection: 'users',
       id: widget.mapdata['userid'].toString(),
@@ -279,7 +280,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                   onTap: () {
                     setState(() {
                       //за каждое не попадание по ответу очко снимается
-                      cardStates(0);
+                      cardStates(0, ref);
                     });
                   },
                   child: cardX(
@@ -290,7 +291,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      cardStates(1);
+                      cardStates(1, ref);
                     });
                   },
                   child: cardX(
@@ -306,7 +307,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      cardStates(2);
+                      cardStates(2, ref);
                     });
                   },
                   child: cardX(
@@ -317,7 +318,7 @@ class _GameMemoriseState extends State<GameMemorise> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      cardStates(3);
+                      cardStates(3, ref);
                     });
                   },
                   child: cardX(
@@ -401,8 +402,8 @@ class _GameMemoriseState extends State<GameMemorise> {
                               scale: 1.4,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  widget.update(
-                                      10); //---------------------------------------
+                                  //--------------------------------------------------------------------------
+                                  //updateScoresStates(ref);
 
                                   index--;
                                   if (index < 0) {
@@ -434,6 +435,8 @@ class _GameMemoriseState extends State<GameMemorise> {
                               scale: 1.4,
                               child: ElevatedButton(
                                 onPressed: () {
+                                  //--------------------------------------------------------------------------
+                                  //updateScoresStates(ref);
                                   index++;
                                   if (index > flashCard.length - 1) {
                                     index = 0;
@@ -473,7 +476,7 @@ class _GameMemoriseState extends State<GameMemorise> {
 }
 
 //обработка состояний и счет очков
-void cardStates(int w) {
+void cardStates(int w, WidgetRef ref) {
   int cnt = 0; //счетчик промахов
   if (_indexCards[index][w] == index && !_scoresFinal[index]) {
     _scoresFinal[index] = true;
@@ -484,4 +487,14 @@ void cardStates(int w) {
   }
   _visFlag[w] = true;
   //print(_scores.toString());
+  // обновление очков с каждым нажатием на карточку
+  updateScoresStates(ref);
+}
+
+void updateScoresStates(WidgetRef ref) {
+  int summ = 0;
+  for (var i = 0; i < _scores.length; i++) {
+    summ += _scores[i];
+  }
+  ref.watch(scoresProvider.notifier).updateModuleScores(summ);
 }

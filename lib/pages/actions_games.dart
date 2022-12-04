@@ -193,20 +193,20 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                                 ),
                               ],
                             ),
-                            //  очки
-                            SizedBox(
-                              height:
-                                  scrheight - 323 > 40 ? scrheight - 323 : 40,
-                              child: ViewScores(
-                                currentScores:
-                                    55555, //widget.usermapdata['score'][widget.mapdata['id']] as int,
-                                allScores: widget.usermapdata['score'] as int,
-                              ),
-                              //),
-                            ),
                             const SizedBox(
                               height: 6,
                             ),
+                            //  очки
+                            const SizedBox(
+                              height: 60,
+                              //scrheight - 323 > 40 ? scrheight - 323 : 40,
+                              // виджет очков
+                              child: ViewScores(),
+                              //),
+                            ),
+                            /* const SizedBox(
+                              height: 6,
+                            ), */
                           ],
                         ),
                       ),
@@ -299,7 +299,6 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
         return GameMemorise(
           mapdata: widget.mapdata,
           usermapdata: widget.usermapdata,
-          update: (value) => _update(1),
         );
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
