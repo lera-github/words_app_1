@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
+import 'package:myapp/helpers/styles.dart';
 
 // показ предупреждений
 void showAlert({
@@ -249,23 +250,6 @@ class ListViewBuilder extends StatelessWidget {
           ),
         ],
       );
-      /* ListTile(
-        /* leading: CircleAvatar(
-          maxRadius: 10,
-          child: Text(
-            '${idx + 1}',
-            //textScaleFactor: 0.8,
-          ),
-        ), */
-        title: Text(
-          mapitem['username'].toString(),
-          //textScaleFactor: 0.5,
-        ),
-        subtitle: Text(
-          mapitem['score'].toString(),
-          //textScaleFactor: 0.5,
-        ),
-      ); */
     }
 
     return ListView.builder(
@@ -280,9 +264,76 @@ class ListViewBuilder extends StatelessWidget {
   }
 }
 
+// вывод очков
+class ViewScores extends StatefulWidget {
+  const ViewScores({
+    Key? key,
+    required this.currentScores,
+    required this.allScores,
+  }) : super(key: key);
+  final int currentScores;
+  final int allScores;
 
+  @override
+  State<ViewScores> createState() => _ViewScoresState();
+}
 
+class _ViewScoresState extends State<ViewScores> {
+  int _count = 0;
+  void _update(int count) {
+    setState(() {
+      _count++;
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ChildPage(update: _update),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'модуль',
+              style: text14Style,
+            ),
+            Text(
+              (widget.currentScores + _count).toString(),
+              style: textGreenStyle, 
+            ), //       -------------------------------------------------------------------count убрать----------
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'всего',
+              style: text14Style,
+            ),
+            Text(
+              widget.allScores.toString(),
+              style: textGreenStyle,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class ChildPage extends StatelessWidget {
+  final ValueChanged<int> update;
+  const ChildPage({required this.update});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => update(1), // Passing value to the parent widget.
+      child: const Text('Update (in child)'),
+    );
+  }
+}
 
 
 /*

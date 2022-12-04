@@ -27,7 +27,9 @@ class ActionsAndGames extends StatefulWidget {
 }
 
 class _ActionsAndGamesState extends State<ActionsAndGames> {
-  // the GlobalKey is needed to animate the list
+  void _update(int count) {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,39 +172,43 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Column(
-                        //crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: const [
-                              SizedBox(
-                                height: 6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Column(
+                          //crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: const [
+                                SizedBox(
+                                  height: 6,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  ' Очки:',
+                                  style: textStyle,
+                                ),
+                              ],
+                            ),
+                            //  очки
+                            SizedBox(
+                              height:
+                                  scrheight - 323 > 40 ? scrheight - 323 : 40,
+                              child: ViewScores(
+                                currentScores:
+                                    55555, //widget.usermapdata['score'][widget.mapdata['id']] as int,
+                                allScores: widget.usermapdata['score'] as int,
                               ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              //Image.asset('check.png'),
-                              Text(
-                                ' 10 лучших:\n',
-                                style: text14Style,
-                              ),
-                            ],
-                          ),
-                          ////////                                       //  лист рейтинга
-                          SizedBox(
-                            height: scrheight - 323 > 40 ? scrheight - 323 : 40,
-                            child: /* Container(
-                              padding: const EdgeInsets.all(6),
-                              child:  */
-                                const Rating(),
-                            //),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                        ],
+                              //),
+                            ),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -290,7 +296,11 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
         return GameFlashCard(mapdata: widget.mapdata);
       //break;
       case 'GameMemorise':
-        return GameMemorise(mapdata: widget.mapdata, usermapdata: widget.usermapdata,);
+        return GameMemorise(
+          mapdata: widget.mapdata,
+          usermapdata: widget.usermapdata,
+          update: (value) => _update(1),
+        );
       case 'GameMatch':
         return GameMatch(mapdata: widget.mapdata);
       default:

@@ -96,10 +96,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         FirebaseAuth.instance
                             .signInWithEmailAndPassword(
                           /////////////////////                   ВРЕМЕННО  пост авториз
-                          email: "z@z.ru",
-                          password: "zzzzzz",
-                          /* email: emailText,
-                          password: _passwordTextController.text.trim(), */
+                          /* email: "z@z.ru",
+                          password: "zzzzzz", */
+                          email: emailText,
+                          password: _passwordTextController.text.trim(),
                         )
                             .then((value) {
                           Navigator.pushReplacement(

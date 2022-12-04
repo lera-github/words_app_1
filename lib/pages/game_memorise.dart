@@ -36,9 +36,11 @@ class GameMemorise extends StatefulWidget {
     Key? key,
     required this.mapdata,
     required this.usermapdata,
+    required this.update,
   }) : super(key: key);
   final Map<String, dynamic> mapdata;
   final Map<String, dynamic> usermapdata;
+  final ValueChanged<int> update;
 
   @override
   State<GameMemorise> createState() => _GameMemoriseState();
@@ -68,7 +70,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     for (var i = 0; i < _scores.length; i++) {
       scoresSumm += _scores[i];
     }
-
+    //                                        ПОДСЧЕТ СУММ НЕ ПРОВЕРЕН!!
     ////    Expected a value of type 'Map<String, int>', but got one of type 'LinkedMap<String, dynamic>'
     var scoresData = widget.usermapdata['scores'];
     //print(scoresData.toString());
@@ -87,7 +89,7 @@ class _GameMemoriseState extends State<GameMemorise> {
     super.dispose();
   }
 
-//=============================================================================
+  //=============================================================================
   @override
   Widget build(BuildContext context) {
     _words1 = widget.mapdata['words1'] as List;
@@ -105,7 +107,7 @@ class _GameMemoriseState extends State<GameMemorise> {
       _generated = List.generate(_words1.length, (index) => false);
     } */
 
-/* //проверка - должно быть >= 5 пар карточек, иначе диалог и выход
+    /* //проверка - должно быть >= 5 пар карточек, иначе диалог и выход
     if (_words1.length < 5) {
       showDialog(
         context: context,
@@ -399,6 +401,9 @@ class _GameMemoriseState extends State<GameMemorise> {
                               scale: 1.4,
                               child: ElevatedButton(
                                 onPressed: () {
+                                  widget.update(
+                                      10); //---------------------------------------
+
                                   index--;
                                   if (index < 0) {
                                     index = flashCard.length - 1;
