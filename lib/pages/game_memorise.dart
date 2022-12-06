@@ -3,8 +3,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
-import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 
@@ -55,35 +55,34 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     _cardsReady = false;
     _indexCards = [];
     //_generated = List.generate(_words1.length, (index) => false);
-
     //shuffledindex = [];
     imgCard.clear();
-
     _visFlag = [false, false, false, false];
     _scores.clear();
+    ///////////////  =====================   НАДО ИНИЦИАЛИЗИРОВАТЬ ДАННЫЕ ПРОВАЙДЕРА
+/*     final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+
+    ref
+        .read(scoresProvider.notifier)
+        .updateModuleScores(scoresData[widget.mapdata['id'].toString()] as int); */
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
     imgCard.clear();
+    // подсчет и запись суммы в FS
     var scoresSumm = 0;
-
     for (var i = 0; i < _scores.length; i++) {
       scoresSumm += _scores[i];
     }
-    //                                        ПОДСЧЕТ СУММ НЕ ПРОВЕРЕН!!
-    //
-    final scoresData = widget.usermapdata['scores'] as Map<String, int>;
+    final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
     scoresData[widget.mapdata['id'].toString()] = scoresSumm;
-    debugPrint(
-      scoresData.toString(),
-    ); //    --------------------------------------------------------------УБРАТЬ   debugPrint
-    /* updateFS(
+    await updateFS(
       collection: 'users',
-      id: widget.mapdata['userid'].toString(),
+      id: widget.usermapdata['userid'].toString(),
       val: 'scores',
       valdata: scoresData,
-    ); */
+    );
 
     _scores.clear();
     _scoresFinal.clear();
@@ -351,6 +350,7 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
         ),
       );
     }
+
     //===================================
     return Scaffold(
       body: Center(
@@ -491,6 +491,7 @@ void cardStates(int w, WidgetRef ref) {
   updateScoresStates(ref);
 }
 
+//обновление очков
 void updateScoresStates(WidgetRef ref) {
   int summ = 0;
   for (var i = 0; i < _scores.length; i++) {
