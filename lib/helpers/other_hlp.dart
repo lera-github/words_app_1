@@ -315,7 +315,7 @@ class ViewScores extends StatelessWidget {
   }
 }
 
-// класс данных для наблюдения
+// класс данных для наблюдения (модель)
 class ScoresData {
   ScoresData({
     required this.moduleScores,
@@ -366,6 +366,7 @@ class ScoresNotifier extends StateNotifier<ScoresData> {
     state = state.copyWith(userScores: n);
   }
 }
+
 
 
 

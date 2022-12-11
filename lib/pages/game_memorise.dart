@@ -59,12 +59,6 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     imgCard.clear();
     _visFlag = [false, false, false, false];
     _scores.clear();
-    ///////////////  =====================   НАДО ИНИЦИАЛИЗИРОВАТЬ ДАННЫЕ ПРОВАЙДЕРА
-/*     final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
-
-    ref
-        .read(scoresProvider.notifier)
-        .updateModuleScores(scoresData[widget.mapdata['id'].toString()] as int); */
   }
 
   @override
@@ -75,15 +69,30 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     for (var i = 0; i < _scores.length; i++) {
       scoresSumm += _scores[i];
     }
-    final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
-    scoresData[widget.mapdata['id'].toString()] = scoresSumm;
-    await updateFS(
-      collection: 'users',
-      id: widget.usermapdata['userid'].toString(),
-      val: 'scores',
-      valdata: scoresData,
-    );
+    // если модуль не использовали или не набрали очков, то не записываем ничего
+    if (scoresSumm > 0) {
+      final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      scoresData[widget.mapdata['id'].toString()] = scoresSumm;
+      await updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'scores',
+        valdata: scoresData,
+      );
+      //final ggg = widget.mapdata['score'].toList ;
+      int scoreData = 0;
+// ===================================  посчет вынести еще на ссылки перехр\ода на модули и выход
+// для отображения общего счета
 
+      //просуммируем все очки и запишем в 'score' в FS
+      widget.usermapdata['scores'].forEach((k, v) => scoreData += v as int);
+      await updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'score',
+        valdata: scoreData,
+      );
+    }
     _scores.clear();
     _scoresFinal.clear();
     super.dispose();

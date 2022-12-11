@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -9,7 +10,7 @@ import 'package:myapp/pages/game_memorise.dart';
 
 String actionSelect = '';
 
-class ActionsAndGames extends StatefulWidget {
+class ActionsAndGames extends ConsumerStatefulWidget {
   const ActionsAndGames({
     Key? key,
     required this.collectionPath,
@@ -26,17 +27,25 @@ class ActionsAndGames extends StatefulWidget {
   _ActionsAndGamesState createState() => _ActionsAndGamesState();
 }
 
-class _ActionsAndGamesState extends State<ActionsAndGames> {
-  void _update(int count) {
-    setState(() {});
-  }
-
+class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
   @override
   Widget build(BuildContext context) {
     final scrwidth = MediaQuery.of(context).size.width < 800.0
         ? MediaQuery.of(context).size.width
         : 800.0;
     final scrheight = MediaQuery.of(context).size.height;
+    ///////////////  ===================== инициализируем провайдер данными из FS
+    void scoresInit() {
+      final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      scoresData.isEmpty
+          ? ref.read(scoresProvider.notifier).updateModuleScores(0)
+          : ref.read(scoresProvider.notifier).updateModuleScores(
+                scoresData[widget.mapdata['id'].toString()] as int,
+              );
+      ref.read(scoresProvider.notifier).updateUserScores(
+            widget.usermapdata['score'] as int,
+          );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -116,6 +125,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                           // Карточки
                           TextButton(
                             onPressed: () {
+                              scoresInit();
                               setState(() {
                                 actionSelect = 'GameFlashCard';
                               });
@@ -132,6 +142,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                           // Заучивание
                           TextButton(
                             onPressed: () {
+                              scoresInit();
                               setState(() {
                                 actionSelect = 'GameMemorise';
                               });
@@ -148,6 +159,7 @@ class _ActionsAndGamesState extends State<ActionsAndGames> {
                           // Подбор
                           TextButton(
                             onPressed: () {
+                              scoresInit();
                               setState(() {
                                 actionSelect = 'GameMatch';
                               });

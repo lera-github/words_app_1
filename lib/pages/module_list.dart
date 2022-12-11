@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
@@ -8,7 +9,7 @@ import 'package:myapp/main.dart';
 import 'package:myapp/pages/actions_games.dart';
 import 'package:myapp/pages/module_edit.dart';
 
-class ModuleList extends StatefulWidget {
+class ModuleList extends ConsumerStatefulWidget {
   const ModuleList({
     Key? key,
     required this.collectionPath,
@@ -23,7 +24,7 @@ class ModuleList extends StatefulWidget {
   ModuleListState createState() => ModuleListState();
 }
 
-class ModuleListState extends State<ModuleList> {
+class ModuleListState extends ConsumerState<ModuleList> {
   @override
   Widget build(BuildContext context) {
     final scrwidth = MediaQuery.of(context).size.width < 600.0
@@ -115,7 +116,9 @@ class ModuleListState extends State<ModuleList> {
                     ),
                     ConstrainedBox(
                       constraints: BoxConstraints.expand(
-                          width: scrwidth, height: scrheight,),
+                        width: scrwidth,
+                        height: scrheight,
+                      ),
                       child:
 
                           //Column(children: [
@@ -332,6 +335,23 @@ class ModuleListState extends State<ModuleList> {
                   message: 'Переход к модулю',
                   child: InkWell(
                     onTap: () {
+                      ///////////////  ===================== инициализируем провайдер данными из FS
+                      /// перед переходом к играм
+                      final scoresData =
+                          widget.usermapdata['scores'] as Map<String, dynamic>;
+                      scoresData.isEmpty
+                          ? ref
+                              .read(scoresProvider.notifier)
+                              .updateModuleScores(0)
+                          : ref
+                              .read(scoresProvider.notifier)
+                              .updateModuleScores(
+                                scoresData[moduleCollection['id'].toString()]
+                                    as int,
+                              );
+                      ref.read(scoresProvider.notifier).updateUserScores(
+                            widget.usermapdata['score'] as int,
+                          );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -493,7 +513,7 @@ class ModuleListState extends State<ModuleList> {
 //переход на редактирование модуля
 void _gotoedit(
   String collectionPath,
-  Map<String, dynamic>  usermapdata,
+  Map<String, dynamic> usermapdata,
   BuildContext context,
   Map<String, dynamic> mapdata,
 ) {
