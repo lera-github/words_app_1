@@ -341,17 +341,20 @@ class ModuleListState extends ConsumerState<ModuleList> {
                           widget.usermapdata['scores'] as Map<String, dynamic>;
                       scoresData.isEmpty
                           ? ref
-                              .read(scoresProvider.notifier)
+                              .watch(scoresProvider.notifier)
                               .updateModuleScores(0)
                           : ref
-                              .read(scoresProvider.notifier)
+                              .watch(scoresProvider.notifier)
                               .updateModuleScores(
                                 scoresData[moduleCollection['id'].toString()]
                                     as int,
                               );
-                      ref.read(scoresProvider.notifier).updateUserScores(
+                      ref.watch(scoresProvider.notifier).updateUserScores(
                             widget.usermapdata['score'] as int,
                           );
+//  СДЕЛАТЬ ГЛОБАЛЬНЫМИ usermapdata и mapdata или нужен коллбэк сюда
+// ибо widget.usermapdata['score']  при возврате сюда уже изменён!!!!
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -529,7 +532,6 @@ void _gotoedit(
     ),
   );
 }
-   
 
 /*Future<void> _gotoedit(
   String collectionPath,

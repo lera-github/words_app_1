@@ -63,6 +63,8 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
 
   @override
   Future<void> dispose() async {
+    super.dispose();
+
     imgCard.clear();
     // подсчет и запись суммы в FS
     var scoresSumm = 0;
@@ -72,6 +74,17 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     // если модуль не использовали или не набрали очков, то не записываем ничего
     if (scoresSumm > 0) {
       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      //просуммируем все очки юзера и запишем в 'score' FS
+      int scoreData = 0;
+      scoresData.forEach((k, v) => scoreData += v as int);
+      await updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'score',
+        valdata: scoreData,
+      );
+      //запишем очки модуля в FS
+      //final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
       scoresData[widget.mapdata['id'].toString()] = scoresSumm;
       await updateFS(
         collection: 'users',
@@ -79,23 +92,9 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
         val: 'scores',
         valdata: scoresData,
       );
-      //final ggg = widget.mapdata['score'].toList ;
-      int scoreData = 0;
-// ===================================  посчет вынести еще на ссылки перехр\ода на модули и выход
-// для отображения общего счета
-
-      //просуммируем все очки и запишем в 'score' в FS
-      widget.usermapdata['scores'].forEach((k, v) => scoreData += v as int);
-      await updateFS(
-        collection: 'users',
-        id: widget.usermapdata['userid'].toString(),
-        val: 'score',
-        valdata: scoreData,
-      );
     }
     _scores.clear();
     _scoresFinal.clear();
-    super.dispose();
   }
 
   //=============================================================================
@@ -111,7 +110,7 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
       _scores = List.generate(_words1.length, (index) => 0);
       _scoresFinal = List.generate(_words1.length, (index) => false);
     }
-
+    
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
     } */
