@@ -349,9 +349,14 @@ class ModuleListState extends ConsumerState<ModuleList> {
                                 scoresData[moduleCollection['id'].toString()]
                                     as int,
                               );
+                              scoresData.isEmpty
+                              ? scoresMain =0
+                               : scoresMain = scoresData[moduleCollection['id'].toString()]
+                                    as int;
                       ref.watch(scoresProvider.notifier).updateUserScores(
                             widget.usermapdata['score'] as int,
                           );
+                      scoreMain = widget.usermapdata['score'] as int;
 //  СДЕЛАТЬ ГЛОБАЛЬНЫМИ usermapdata и mapdata или нужен коллбэк сюда
 // ибо widget.usermapdata['score']  при возврате сюда уже изменён!!!!
 

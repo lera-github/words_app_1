@@ -110,7 +110,7 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
       _scores = List.generate(_words1.length, (index) => 0);
       _scoresFinal = List.generate(_words1.length, (index) => false);
     }
-    
+
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
     } */
@@ -506,4 +506,5 @@ void updateScoresStates(WidgetRef ref) {
     summ += _scores[i];
   }
   ref.watch(scoresProvider.notifier).updateModuleScores(summ);
+  scoresMain = summ;
 }
