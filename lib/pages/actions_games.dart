@@ -36,7 +36,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
     final scrheight = MediaQuery.of(context).size.height;
     ///////////////  ===================== инициализируем провайдер данными из FS
     void scoresInit() {
-/*       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
       scoresData.isEmpty
           ? ref.read(scoresProvider.notifier).updateModuleScores(0)
           : ref.read(scoresProvider.notifier).updateModuleScores(
@@ -44,10 +44,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
               );
       ref.read(scoresProvider.notifier).updateUserScores(
             widget.usermapdata['score'] as int,
-          ); */
-
-      ref.read(scoresProvider.notifier).updateModuleScores(scoresMain);
-      ref.read(scoresProvider.notifier).updateUserScores(scoreMain);
+          );
     }
 
     return Scaffold(
@@ -68,7 +65,6 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                   style: titleStyle,
                 ),
                 onTap: () {
-                  //scoresInit();
                   Navigator.of(context).pop();
                   Navigator.pushReplacement(
                     context,
