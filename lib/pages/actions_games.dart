@@ -28,6 +28,12 @@ class ActionsAndGames extends ConsumerStatefulWidget {
 }
 
 class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
+  /*  @override
+  void initState() {
+    retScore = widget.usermapdata['score'] as int;
+    super.initState();
+  } */
+
   @override
   Widget build(BuildContext context) {
     final scrwidth = MediaQuery.of(context).size.width < 800.0
@@ -42,8 +48,15 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
           : ref.read(scoresProvider.notifier).updateModuleScores(
                 scoresData[widget.mapdata['id'].toString()] as int,
               );
-      ref.read(scoresProvider.notifier).updateUserScores(
+      /* ref.read(scoresProvider.notifier).updateUserScores(
             widget.usermapdata['score'] as int,
+          ); */
+      /* if (retScore != widget.usermapdata['score'] as int) {
+      } else {
+        retScore = widget.usermapdata['score'] as int;
+      } */
+      ref.read(scoresProvider.notifier).updateUserScores(
+            retScore,
           );
     }
 

@@ -341,19 +341,25 @@ class ModuleListState extends ConsumerState<ModuleList> {
                           widget.usermapdata['scores'] as Map<String, dynamic>;
                       scoresData.isEmpty
                           ? ref
-                              .watch(scoresProvider.notifier)
+                              .read(scoresProvider.notifier)
                               .updateModuleScores(0)
                           : ref
-                              .watch(scoresProvider.notifier)
+                              .read(scoresProvider.notifier)
                               .updateModuleScores(
                                 scoresData[moduleCollection['id'].toString()]
                                     as int,
                               );
-                      ref.watch(scoresProvider.notifier).updateUserScores(
+
+                      /* ref.read(scoresProvider.notifier).updateUserScores(
                             widget.usermapdata['score'] as int,
+                          ); */
+                      /* if (retScore != widget.usermapdata['score'] as int) {
+                      } else {
+                        retScore = widget.usermapdata['score'] as int;
+                      } */
+                      ref.read(scoresProvider.notifier).updateUserScores(
+                            retScore,
                           );
-//  СДЕЛАТЬ ГЛОБАЛЬНЫМИ usermapdata и mapdata или нужен коллбэк сюда
-// ибо widget.usermapdata['score']  при возврате сюда уже изменён!!!!
 
                       Navigator.push(
                         context,

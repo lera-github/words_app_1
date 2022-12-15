@@ -102,6 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           password: _passwordTextController.text.trim(),
                         )
                             .then((value) {
+                          retScore = userCollectionItem['score'] as int;
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

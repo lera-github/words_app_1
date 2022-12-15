@@ -109,7 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             'score': 0,
                             'scores': {},
                           };
-
+                          retScore = 0;
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

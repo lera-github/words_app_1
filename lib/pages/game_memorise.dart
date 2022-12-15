@@ -71,9 +71,10 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     for (var i = 0; i < _scores.length; i++) {
       scoresSumm += _scores[i];
     }
-    // если модуль не использовали или не набрали очков, то не записываем ничего
+    // если игру не использовали или не набрали очков, то не записываем ничего
     if (scoresSumm > 0) {
       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      scoresData[widget.mapdata['id'].toString()] = scoresSumm;
       //просуммируем все очки юзера и запишем в 'score' FS
       int scoreData = 0;
       scoresData.forEach((k, v) => scoreData += v as int);
@@ -83,9 +84,10 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
         val: 'score',
         valdata: scoreData,
       );
+      retScore = scoreData;
       //запишем очки модуля в FS
       //final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
-      scoresData[widget.mapdata['id'].toString()] = scoresSumm;
+      //scoresData[widget.mapdata['id'].toString()] = scoresSumm;
       await updateFS(
         collection: 'users',
         id: widget.usermapdata['userid'].toString(),
@@ -105,12 +107,13 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     _imgs = widget.mapdata['imgs'] as List;
     bool haslisteners = false;
     //положим, что 3 очка дается за верный ответ,
-    // а за каждое не попадание по ответу очко снимается
+    // а за каждое не попадание по ответу число начисляемых уменьшается
     if (_scores.isEmpty) {
       _scores = List.generate(_words1.length, (index) => 0);
       _scoresFinal = List.generate(_words1.length, (index) => false);
     }
-    
+
+
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
     } */
