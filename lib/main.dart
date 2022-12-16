@@ -8,7 +8,14 @@ import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/pages/module_list.dart';
 import 'package:myapp/pages/mysignin.dart';
 
-final scoresProvider = StateNotifierProvider<ScoresNotifier, ScoresData>((ref) => ScoresNotifier(ScoresData(moduleScores: 0, userScores: 0)));
+final scoresProvider = StateNotifierProvider<ScoresNotifier, ScoresData>(
+  (ref) => ScoresNotifier(
+    ScoresData(
+      moduleScores: 0,
+      userScores: 0,
+    ),
+  ),
+);
 int retScore = 0;
 
 Future<void> main() async {

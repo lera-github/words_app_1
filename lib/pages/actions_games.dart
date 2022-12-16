@@ -9,6 +9,7 @@ import 'package:myapp/pages/game_match.dart';
 import 'package:myapp/pages/game_memorise.dart';
 
 String actionSelect = '';
+bool vis = false;
 
 class ActionsAndGames extends ConsumerStatefulWidget {
   const ActionsAndGames({
@@ -41,13 +42,23 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
         : 800.0;
     final scrheight = MediaQuery.of(context).size.height;
     ///////////////  ===================== инициализируем провайдер данными из FS
-    void scoresInit() {
+    void scoresInit(int index) {
+      
       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
-      scoresData.isEmpty
+      /* scoresData.isEmpty
           ? ref.read(scoresProvider.notifier).updateModuleScores(0)
           : ref.read(scoresProvider.notifier).updateModuleScores(
                 scoresData[widget.mapdata['id'].toString()] as int,
-              );
+              ); */
+      if (scoresData.isEmpty) {
+        ref.read(scoresProvider.notifier).updateModuleScores(0);
+      } else {
+        final t = scoresData[widget.mapdata['id'].toString()] as List;
+        ref.read(scoresProvider.notifier).updateModuleScores(
+              t[index] as int,
+            );
+      }
+
       /* ref.read(scoresProvider.notifier).updateUserScores(
             widget.usermapdata['score'] as int,
           ); */
@@ -138,7 +149,8 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                           // Карточки
                           TextButton(
                             onPressed: () {
-                              scoresInit();
+                              vis = false;
+                              scoresInit(0);
                               setState(() {
                                 actionSelect = 'GameFlashCard';
                               });
@@ -155,7 +167,8 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                           // Заучивание
                           TextButton(
                             onPressed: () {
-                              scoresInit();
+                              vis = true;
+                              scoresInit(0);
                               setState(() {
                                 actionSelect = 'GameMemorise';
                               });
@@ -172,7 +185,8 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                           // Подбор
                           TextButton(
                             onPressed: () {
-                              scoresInit();
+                              vis = true;
+                              scoresInit(1);
                               setState(() {
                                 actionSelect = 'GameMatch';
                               });
@@ -192,47 +206,50 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                     const SizedBox(
                       height: 6,
                     ),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Column(
-                          //crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              children: const [
-                                SizedBox(
-                                  height: 6,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  ' Очки:',
-                                  style: textStyle,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 6,
-                            ),
-                            //  очки
-                            const SizedBox(
-                              height: 60,
-                              //scrheight - 323 > 40 ? scrheight - 323 : 40,
-                              // виджет очков
-                              child: ViewScores(),
-                              //),
-                            ),
-                            /* const SizedBox(
+                    Visibility(
+                      visible: vis,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Column(
+                            //crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                children: const [
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    ' Очки:',
+                                    style: textStyle,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 6,
+                              ),
+                              //  очки
+                              const SizedBox(
+                                height: 60,
+                                //scrheight - 323 > 40 ? scrheight - 323 : 40,
+                                // виджет очков
+                                child: ViewScores(),
+                                //),
+                              ),
+                              /* const SizedBox(
                               height: 6,
                             ), */
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -1,4 +1,6 @@
 //import 'dart:math';
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
@@ -74,10 +76,19 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     // если игру не использовали или не набрали очков, то не записываем ничего
     if (scoresSumm > 0) {
       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
-      scoresData[widget.mapdata['id'].toString()] = scoresSumm;
+      final t = scoresData[widget.mapdata['id'].toString()] as List;
+      t[0] = scoresSumm;
+      scoresData[widget.mapdata['id'].toString()] = t;
       //просуммируем все очки юзера и запишем в 'score' FS
       int scoreData = 0;
-      scoresData.forEach((k, v) => scoreData += v as int);
+      //var sum = lists.reduce((value, current) => value + current);
+      //scoresData[widget.mapdata['id'].toString()].forEach((k, v) => scoreData += v[0] + v[1]);
+      scoresData.forEach(
+        (k, v) {
+          scoreData += v[0] as int;
+          scoreData += v[1] as int;
+        },
+      );
       await updateFS(
         collection: 'users',
         id: widget.usermapdata['userid'].toString(),
@@ -112,7 +123,6 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
       _scores = List.generate(_words1.length, (index) => 0);
       _scoresFinal = List.generate(_words1.length, (index) => false);
     }
-
 
     /* if (_generated.isEmpty) {
       _generated = List.generate(_words1.length, (index) => false);
