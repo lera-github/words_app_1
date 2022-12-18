@@ -265,15 +265,38 @@ class ListViewBuilder extends StatelessWidget {
 }
 
 // ------------------------------------------ очки
-class ViewScores extends StatelessWidget {
+class ViewScores extends ConsumerWidget {
   const ViewScores({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final n = ref.watch(scoresProvider);
     return Column(
       children: [
+        Visibility(
+          visible: n.timerActive,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'время',
+                style: text14Style,
+              ),
+              /* Consumer(
+              builder: (context, ref, child) {
+                final n = ref.watch(scoresProvider);
+                return */
+              Text(
+                (n.timer).toString(),
+                style: textGreenStyle,
+                /* );
+              }, */
+              ),
+            ],
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -281,14 +304,15 @@ class ViewScores extends StatelessWidget {
               'модуль',
               style: text14Style,
             ),
-            Consumer(
+            /* Consumer(
               builder: (context, ref, child) {
                 final n = ref.watch(scoresProvider);
-                return Text(
-                  (n.moduleScores).toString(),
-                  style: textGreenStyle,
-                );
-              },
+                return */
+            Text(
+              (n.moduleScores).toString(),
+              style: textGreenStyle,
+              /* );
+              }, */
             ),
           ],
         ),
@@ -320,21 +344,29 @@ class ScoresData {
   ScoresData({
     required this.moduleScores,
     required this.userScores,
+    required this.timer,
+    required this.timerActive,
   });
   final int moduleScores;
   final int userScores;
+  final int timer;
+  final bool timerActive;
 
   ScoresData copyWith({
     int? moduleScores,
     int? userScores,
+    int? timer,
+    bool? timerActive,
   }) {
     return ScoresData(
       moduleScores: moduleScores ?? this.moduleScores,
       userScores: userScores ?? this.userScores,
+      timer: timer ?? this.timer,
+      timerActive: timerActive ?? this.timerActive,
     );
   }
 
-  @override
+  /* @override
   String toString() =>
       'ScoresData(moduleScores: $moduleScores, userScores: $userScores)';
 
@@ -348,7 +380,7 @@ class ScoresData {
   }
 
   @override
-  int get hashCode => moduleScores.hashCode ^ userScores.hashCode;
+  int get hashCode => moduleScores.hashCode ^ userScores.hashCode; */
 }
 
 //  notifier
@@ -364,6 +396,10 @@ class ScoresNotifier extends StateNotifier<ScoresData> {
 
   void updateUserScores(int n) {
     state = state.copyWith(userScores: n);
+  }
+
+  void updateTimer({required int n, required bool m}) {
+    state = state.copyWith(timer: n, timerActive: m);
   }
 }
 

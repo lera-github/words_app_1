@@ -1,6 +1,4 @@
 //import 'dart:math';
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
@@ -542,17 +540,18 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
           scoreData += v[1] as int;
         },
       );
-      updateFS(
+      /* updateFS(
         collection: 'users',
         id: widget.usermapdata['userid'].toString(),
         val: 'score',
         valdata: scoreData,
-      );
+      ); */
       retScore = scoreData;
 
       ref.watch(scoresProvider.notifier).updateUserScores(
             retScore,
           );
+      ref.watch(scoresProvider.notifier).updateTimer(n: 0, m: false);
     }
   }
 }

@@ -69,6 +69,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
       ref.read(scoresProvider.notifier).updateUserScores(
             retScore,
           );
+      ref.read(scoresProvider.notifier).updateTimer(n: 0, m: false);
     }
 
     return Scaffold(
@@ -239,7 +240,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                               ),
                               //  очки
                               const SizedBox(
-                                height: 60,
+                                height: 74,
                                 //scrheight - 323 > 40 ? scrheight - 323 : 40,
                                 // виджет очков
                                 child: ViewScores(),
@@ -343,7 +344,10 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
           usermapdata: widget.usermapdata,
         );
       case 'GameMatch':
-        return GameMatch(mapdata: widget.mapdata);
+        return GameMatch(
+          mapdata: widget.mapdata,
+          usermapdata: widget.usermapdata,
+        );
       default:
         return GameFlashCard(mapdata: widget.mapdata);
     }

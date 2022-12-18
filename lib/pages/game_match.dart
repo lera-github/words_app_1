@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
+import 'package:myapp/main.dart';
 import 'package:widget_finder/widget_finder.dart';
 
 //слова
@@ -15,15 +19,29 @@ const double cardSizeX = 120; //размер карточки
 const double cardSizeY = 60;
 final List<Offset> _points = []; // массив позиций карточек
 
-class GameMatch extends StatefulWidget {
-  const GameMatch({Key? key, required this.mapdata}) : super(key: key);
+//массив очков по количеству терминов в модуле
+List<int> _scores = [];
+//массив признаков правильного ответа
+//List<bool> _scoresFinal = [];
+bool _timerActive = false;
+// начальное значение начисляемых очков (увеличенное на 1)
+int _timerScores = 4;
+//делим время на 4 части и даем по 3-2-1-0 очков в зависимости от того какая часть времени идет сейчас
+
+class GameMatch extends ConsumerStatefulWidget {
+  const GameMatch({
+    Key? key,
+    required this.mapdata,
+    required this.usermapdata,
+  }) : super(key: key);
   final Map<String, dynamic> mapdata;
+  final Map<String, dynamic> usermapdata;
 
   @override
-  State<GameMatch> createState() => _GameMatchState();
+  ConsumerState<GameMatch> createState() => _GameMatchState();
 }
 
-class _GameMatchState extends State<GameMatch> {
+class _GameMatchState extends ConsumerState<GameMatch> {
 // Key and Size of the widget
 
   final _random = Random();
@@ -36,10 +54,36 @@ class _GameMatchState extends State<GameMatch> {
   //признак показа картинки
   List<bool> isVisImg = [];
 
-  // обновление родительского виджета
-  /*   _refresh() {
-     setState(() {});
-  } */
+  Timer? timer;
+  int countdown = 0; //счетчик обратного отсчета
+  int start = 0; // храним начальное значение этого счетчика
+
+  void startTimer() {
+    timer?.cancel();
+    _timerActive = true;
+    timer = null;
+    final start = countdown;
+    _timerScores = 4;
+    timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer t) {
+        if (countdown == 0) {
+          timer?.cancel();
+          _timerActive = false;
+        } else {
+          countdown--;
+          //debugPrint('$countdown ${countdown % (count ~/ 4)}');
+          //уменьшаем число зарабатываемых очков в течением времени
+          if (countdown % (start ~/ 4) == 0) {
+            _timerScores--;
+          }
+        }
+        ref
+            .watch(scoresProvider.notifier)
+            .updateTimer(n: countdown, m: _timerActive);
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -51,12 +95,80 @@ class _GameMatchState extends State<GameMatch> {
     isVisImg = List<bool>.generate(_words1.length * 2, (index) => false);
 
     getMyCards();
+    start = 0;
+    countdown = _words1.length * 5; // по пять сукунд на термин
+
+    //startTimer();
   }
 
   @override
   void dispose() {
+    timer?.cancel();
+    _timerActive = false;
+    // подсчет и запись суммы в FS
+    var scoresSumm = 0;
+    for (var i = 0; i < _scores.length; i++) {
+      scoresSumm += _scores[i];
+    }
+    // если игру не использовали или не набрали очков, то не записываем ничего
+    if (scoresSumm > 0) {
+      final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      List t = [0, 0];
+      if (scoresData[widget.mapdata['id'].toString()] != null) {
+        t = scoresData[widget.mapdata['id'].toString()] as List;
+      }
+      t[1] = scoresSumm;
+      scoresData[widget.mapdata['id'].toString()] = t;
+      //просуммируем все очки юзера и запишем в 'score' FS
+      int scoreData = 0;
+      scoresData.forEach(
+        (k, v) {
+          scoreData += (v as List)[0] as int;
+          scoreData += v[1] as int;
+        },
+      );
+      updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'score',
+        valdata: scoreData,
+      );
+      retScore = scoreData;
+
+      updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'scores',
+        valdata: scoresData,
+      );
+    }
+    _scores.clear();
+
     myCards.clear();
     super.dispose();
+  }
+
+///////////////  ===================== инициализируем провайдер данными из FS
+  void scoresInit(int index) {
+    final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+    /* scoresData.isEmpty
+          ? ref.read(scoresProvider.notifier).updateModuleScores(0)
+          : ref.read(scoresProvider.notifier).updateModuleScores(
+                scoresData[widget.mapdata['id'].toString()] as int,
+              ); */
+    if (scoresData.isEmpty ||
+        scoresData[widget.mapdata['id'].toString()] == null) {
+      ref.read(scoresProvider.notifier).updateModuleScores(0);
+    } else {
+      final t = scoresData[widget.mapdata['id'].toString()] as List;
+      ref.read(scoresProvider.notifier).updateModuleScores(
+            t[index] as int,
+          );
+    }
+    ref.read(scoresProvider.notifier).updateUserScores(
+          retScore,
+        );
+    updateScoresStates(ref);
   }
 
   Future<List<Widget>> getMyCards() async {
@@ -173,6 +285,9 @@ class _GameMatchState extends State<GameMatch> {
                 ),
                 childWhenDragging: Container(),
                 onDragStarted: () {
+                  //if (!timer!.isActive) {
+                  startTimer();
+                  //}
                   if (!isVisImg[g] &&
                       _imgs[g % _words1.length] != 'placeholder.png') {
                     setState(() {
@@ -215,9 +330,13 @@ class _GameMatchState extends State<GameMatch> {
                 if (g < _words1.length) {
                   isDropped[g] = true;
                   isDropped[g + _words1.length] = true;
+                  _scores[g] = _timerScores;
+                  scoresInit(1);
                 } else {
                   isDropped[g] = true;
                   isDropped[g - _words1.length] = true;
+                  _scores[g - _words1.length] = _timerScores;
+                  scoresInit(1);
                 }
               });
             },
@@ -285,6 +404,10 @@ class _GameMatchState extends State<GameMatch> {
 
   @override
   Widget build(BuildContext context) {
+    if (_scores.isEmpty) {
+      _scores = List.generate(_words1.length, (index) => 0);
+      //_scoresFinal = List.generate(_words1.length, (index) => false);
+    }
     return Scaffold(
       body: DecoratedBox(
         decoration: BoxDecoration(
@@ -308,6 +431,53 @@ class _GameMatchState extends State<GameMatch> {
         ),
       ),
     );
+  }
+
+//обновление очков
+  void updateScoresStates(WidgetRef ref) {
+    int summ = 0;
+    for (var i = 0; i < _scores.length; i++) {
+      summ += _scores[i];
+    }
+    ref.watch(scoresProvider.notifier).updateModuleScores(summ);
+
+    var scoresSumm = 0;
+    for (var i = 0; i < _scores.length; i++) {
+      scoresSumm += _scores[i];
+    }
+    // если игру не использовали или не набрали очков, то не записываем ничего
+    if (scoresSumm > 0) {
+      final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      List t = [0, 0];
+      if (scoresData[widget.mapdata['id'].toString()] != null) {
+        t = scoresData[widget.mapdata['id'].toString()] as List;
+      }
+      t[1] = scoresSumm;
+      scoresData[widget.mapdata['id'].toString()] = t;
+      //просуммируем все очки юзера и запишем в 'score' FS
+      int scoreData = 0;
+      scoresData.forEach(
+        (k, v) {
+          //scoreData += (v as List<int>)[0];
+          scoreData += (v as List)[0] as int;
+          scoreData += v[1] as int;
+        },
+      );
+      /* updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'score',
+        valdata: scoreData,
+      ); */
+      retScore = scoreData;
+
+      ref.watch(scoresProvider.notifier).updateUserScores(
+            retScore,
+          );
+      ref
+          .watch(scoresProvider.notifier)
+          .updateTimer(n: countdown, m: _timerActive);
+    }
   }
 }
 

@@ -13,6 +13,8 @@ final scoresProvider = StateNotifierProvider<ScoresNotifier, ScoresData>(
     ScoresData(
       moduleScores: 0,
       userScores: 0,
+      timer: 0,
+      timerActive: false,
     ),
   ),
 );
