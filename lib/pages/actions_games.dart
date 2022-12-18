@@ -43,14 +43,14 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
     final scrheight = MediaQuery.of(context).size.height;
     ///////////////  ===================== инициализируем провайдер данными из FS
     void scoresInit(int index) {
-      
       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
       /* scoresData.isEmpty
           ? ref.read(scoresProvider.notifier).updateModuleScores(0)
           : ref.read(scoresProvider.notifier).updateModuleScores(
                 scoresData[widget.mapdata['id'].toString()] as int,
               ); */
-      if (scoresData.isEmpty) {
+      if (scoresData.isEmpty ||
+          scoresData[widget.mapdata['id'].toString()] == null) {
         ref.read(scoresProvider.notifier).updateModuleScores(0);
       } else {
         final t = scoresData[widget.mapdata['id'].toString()] as List;

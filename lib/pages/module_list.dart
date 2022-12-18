@@ -337,10 +337,11 @@ class ModuleListState extends ConsumerState<ModuleList> {
                     onTap: () {
                       ///////////////  ===================== инициализируем провайдер данными из FS
                       /// перед переходом к играм
-                      /////////////// var sum = lists.reduce((value, current) => value + current);
                       final scoresData =
                           widget.usermapdata['scores'] as Map<String, dynamic>;
-                      if (scoresData.isEmpty) {
+                      if (scoresData.isEmpty ||
+                          scoresData[moduleCollection['id'].toString()] ==
+                              null) {
                         ref.read(scoresProvider.notifier).updateModuleScores(0);
                       } else {
                         final t = scoresData[moduleCollection['id'].toString()]

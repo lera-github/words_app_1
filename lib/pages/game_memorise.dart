@@ -64,9 +64,7 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
   }
 
   @override
-  Future<void> dispose() async {
-    super.dispose();
-
+  void dispose() {
     imgCard.clear();
     // подсчет и запись суммы в FS
     var scoresSumm = 0;
@@ -76,20 +74,22 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     // если игру не использовали или не набрали очков, то не записываем ничего
     if (scoresSumm > 0) {
       final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
-      final t = scoresData[widget.mapdata['id'].toString()] as List;
+      List t = [0, 0];
+      if (scoresData[widget.mapdata['id'].toString()] != null) {
+        t = scoresData[widget.mapdata['id'].toString()] as List;
+      }
       t[0] = scoresSumm;
       scoresData[widget.mapdata['id'].toString()] = t;
       //просуммируем все очки юзера и запишем в 'score' FS
       int scoreData = 0;
-      //var sum = lists.reduce((value, current) => value + current);
-      //scoresData[widget.mapdata['id'].toString()].forEach((k, v) => scoreData += v[0] + v[1]);
       scoresData.forEach(
         (k, v) {
-          scoreData += v[0] as int;
+          //scoreData += (v as List<int>)[0];
+          scoreData += (v as List)[0] as int;
           scoreData += v[1] as int;
         },
       );
-      await updateFS(
+      updateFS(
         collection: 'users',
         id: widget.usermapdata['userid'].toString(),
         val: 'score',
@@ -99,7 +99,7 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
       //запишем очки модуля в FS
       //final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
       //scoresData[widget.mapdata['id'].toString()] = scoresSumm;
-      await updateFS(
+      updateFS(
         collection: 'users',
         id: widget.usermapdata['userid'].toString(),
         val: 'scores',
@@ -108,6 +108,7 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     }
     _scores.clear();
     _scoresFinal.clear();
+    super.dispose();
   }
 
   //=============================================================================
@@ -494,29 +495,64 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
       ),
     );
   }
-}
 
 //обработка состояний и счет очков
-void cardStates(int w, WidgetRef ref) {
-  int cnt = 0; //счетчик промахов
-  if (_indexCards[index][w] == index && !_scoresFinal[index]) {
-    _scoresFinal[index] = true;
-    for (var i = 0; i < 4; i++) {
-      if (_visFlag[i]) cnt++;
+  void cardStates(int w, WidgetRef ref) {
+    int cnt = 0; //счетчик промахов
+    if (_indexCards[index][w] == index && !_scoresFinal[index]) {
+      _scoresFinal[index] = true;
+      for (var i = 0; i < 4; i++) {
+        if (_visFlag[i]) cnt++;
+      }
+      _scores[index] = 3 - cnt;
     }
-    _scores[index] = 3 - cnt;
+    _visFlag[w] = true;
+    //print(_scores.toString());
+    // обновление очков с каждым нажатием на карточку
+    updateScoresStates(ref);
   }
-  _visFlag[w] = true;
-  //print(_scores.toString());
-  // обновление очков с каждым нажатием на карточку
-  updateScoresStates(ref);
-}
 
 //обновление очков
-void updateScoresStates(WidgetRef ref) {
-  int summ = 0;
-  for (var i = 0; i < _scores.length; i++) {
-    summ += _scores[i];
+  void updateScoresStates(WidgetRef ref) {
+    int summ = 0;
+    for (var i = 0; i < _scores.length; i++) {
+      summ += _scores[i];
+    }
+    ref.watch(scoresProvider.notifier).updateModuleScores(summ);
+
+    var scoresSumm = 0;
+    for (var i = 0; i < _scores.length; i++) {
+      scoresSumm += _scores[i];
+    }
+    // если игру не использовали или не набрали очков, то не записываем ничего
+    if (scoresSumm > 0) {
+      final scoresData = widget.usermapdata['scores'] as Map<String, dynamic>;
+      List t = [0, 0];
+      if (scoresData[widget.mapdata['id'].toString()] != null) {
+        t = scoresData[widget.mapdata['id'].toString()] as List;
+      }
+      t[0] = scoresSumm;
+      scoresData[widget.mapdata['id'].toString()] = t;
+      //просуммируем все очки юзера и запишем в 'score' FS
+      int scoreData = 0;
+      scoresData.forEach(
+        (k, v) {
+          //scoreData += (v as List<int>)[0];
+          scoreData += (v as List)[0] as int;
+          scoreData += v[1] as int;
+        },
+      );
+      updateFS(
+        collection: 'users',
+        id: widget.usermapdata['userid'].toString(),
+        val: 'score',
+        valdata: scoreData,
+      );
+      retScore = scoreData;
+
+      ref.watch(scoresProvider.notifier).updateUserScores(
+            retScore,
+          );
+    }
   }
-  ref.watch(scoresProvider.notifier).updateModuleScores(summ);
 }
