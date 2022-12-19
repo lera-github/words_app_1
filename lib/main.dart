@@ -18,7 +18,10 @@ final scoresProvider = StateNotifierProvider<ScoresNotifier, ScoresData>(
     ),
   ),
 );
+//очки пользователя
 int retScore = 0;
+//gпризнак показа первого сообщения при входе в модуль
+List<bool> messageFl = [true,true,true];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/main.dart';
 import 'package:widget_finder/widget_finder.dart';
 
@@ -69,7 +70,7 @@ class _GameMatchState extends ConsumerState<GameMatch> {
       (Timer t) {
         if (countdown == 0) {
           timer?.cancel();
-          _timerActive = false;
+          //_timerActive = false;
         } else {
           countdown--;
           //debugPrint('$countdown ${countdown % (count ~/ 4)}');
@@ -97,8 +98,6 @@ class _GameMatchState extends ConsumerState<GameMatch> {
     getMyCards();
     start = 0;
     countdown = _words1.length * 5; // по пять сукунд на термин
-
-    //startTimer();
   }
 
   @override
@@ -285,9 +284,10 @@ class _GameMatchState extends ConsumerState<GameMatch> {
                 ),
                 childWhenDragging: Container(),
                 onDragStarted: () {
-                  //if (!timer!.isActive) {
-                  startTimer();
-                  //}
+                  //  старт таймера   ================================
+                  if (!_timerActive) {
+                    startTimer();
+                  }
                   if (!isVisImg[g] &&
                       _imgs[g % _words1.length] != 'placeholder.png') {
                     setState(() {
@@ -408,24 +408,37 @@ class _GameMatchState extends ConsumerState<GameMatch> {
       _scores = List.generate(_words1.length, (index) => 0);
       //_scoresFinal = List.generate(_words1.length, (index) => false);
     }
-    return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Offstage(
-          offstage: _offstage,
-          child: WidgetFinder.sizeNotifer(
-            onSizeChanged: (size) {
-              setState(() {
-                _offstage = false;
-                _area = size as Size;
-                getMyCards();
-              });
-            },
-            child: Stack(
-              children: dragItems(),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) {
+        if (messageFl[2]) {
+          showMessages(
+            context: context,
+            mytext:
+                'Перетаскивай одну карточку на другую.\nОчки начисляются за скорость и точность!',
+          );
+          messageFl[2] = false;
+        }
+      },
+      child: Scaffold(
+        body: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Offstage(
+            offstage: _offstage,
+            child: WidgetFinder.sizeNotifer(
+              onSizeChanged: (size) {
+                setState(() {
+                  _offstage = false;
+                  _area = size as Size;
+                  getMyCards();
+                });
+              },
+              child: Stack(
+                children: dragItems(),
+              ),
             ),
           ),
         ),

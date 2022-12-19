@@ -44,6 +44,43 @@ void showAlert({
   );
 }
 
+// показ предупреждений
+void showMessages({
+  required BuildContext context,
+  required String mytext,
+}) {
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      elevation: 1.2,
+      backgroundColor: const Color.fromARGB(255, 164, 252, 232),
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: InkWell(
+        child: Container(
+          margin: const EdgeInsets.all(16),
+          child: Text(
+            mytext,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color.fromARGB(255, 58, 40, 255),
+              fontSize: 16,
+            ),
+          ),
+        ),
+        onTap: () {
+          Navigator.pop(
+            context,
+          );
+        },
+      ),
+    ),
+  );
+}
+
+
 class TTip extends StatelessWidget {
   const TTip({
     Key? key,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/img_hlp.dart';
+import 'package:myapp/helpers/other_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
 
@@ -372,120 +373,132 @@ class _GameMemoriseState extends ConsumerState<GameMemorise> {
     }
 
     //===================================
-    return Scaffold(
-      body: Center(
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
-            child: DefaultTabController(
-              length: flashCard.length,
-              child: Builder(
-                builder: (BuildContext context) {
-                  final TabController controller =
-                      DefaultTabController.of(context)!;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) {
+        if (messageFl[1]) {
+          showMessages(
+            context: context,
+            mytext: 'Жми на нужную карточку\nТочность ответа оценивается!',
+          );
+          messageFl[1] = false;
+        }
+      },
+      child: Scaffold(
+        body: Center(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: DefaultTabController(
+                length: flashCard.length,
+                child: Builder(
+                  builder: (BuildContext context) {
+                    final TabController controller =
+                        DefaultTabController.of(context)!;
 
-                  if (!haslisteners) {
-                    controller.addListener(() {
-                      haslisteners = true;
-                      setState(() {});
-                    });
-                  }
+                    if (!haslisteners) {
+                      controller.addListener(() {
+                        haslisteners = true;
+                        setState(() {});
+                      });
+                    }
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const TabPageSelector(),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Expanded(
-                          child: TabBarView(children: flashCard),
-                        ),
-                        SizedBox(
-                          height: 130,
-                          width: 180,
-                          child: TabBarView(
-                            children: imgCard,
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: <Widget>[
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Transform.scale(
-                              scale: 1.4,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  //--------------------------------------------------------------------------
-                                  //updateScoresStates(ref);
+                          const TabPageSelector(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                            child: TabBarView(children: flashCard),
+                          ),
+                          SizedBox(
+                            height: 130,
+                            width: 180,
+                            child: TabBarView(
+                              children: imgCard,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Transform.scale(
+                                scale: 1.4,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    //--------------------------------------------------------------------------
+                                    //updateScoresStates(ref);
 
-                                  index--;
-                                  if (index < 0) {
-                                    index = flashCard.length - 1;
-                                  }
+                                    index--;
+                                    if (index < 0) {
+                                      index = flashCard.length - 1;
+                                    }
 
-                                  // показать смайлы, если ответы даны
-                                  if (!_scoresFinal[index]) {
-                                    _visFlag = [false, false, false, false];
-                                  } else {
-                                    _visFlag = [true, true, true, true];
-                                  }
+                                    // показать смайлы, если ответы даны
+                                    if (!_scoresFinal[index]) {
+                                      _visFlag = [false, false, false, false];
+                                    } else {
+                                      _visFlag = [true, true, true, true];
+                                    }
 
-                                  if (!controller.indexIsChanging) {
-                                    controller.animateTo(index);
-                                  }
-                                },
-                                child: const Icon(
-                                  Icons.arrow_back_outlined,
-                                  color: Colors.yellow,
+                                    if (!controller.indexIsChanging) {
+                                      controller.animateTo(index);
+                                    }
+                                  },
+                                  child: const Icon(
+                                    Icons.arrow_back_outlined,
+                                    color: Colors.yellow,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              '${index + 1} / ${flashCard.length}',
-                              style: textStyle,
-                            ),
-                            Transform.scale(
-                              scale: 1.4,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  //--------------------------------------------------------------------------
-                                  //updateScoresStates(ref);
-                                  index++;
-                                  if (index > flashCard.length - 1) {
-                                    index = 0;
-                                  }
+                              Text(
+                                '${index + 1} / ${flashCard.length}',
+                                style: textStyle,
+                              ),
+                              Transform.scale(
+                                scale: 1.4,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    //--------------------------------------------------------------------------
+                                    //updateScoresStates(ref);
+                                    index++;
+                                    if (index > flashCard.length - 1) {
+                                      index = 0;
+                                    }
 
-                                  // показать смайлы, если ответы даны
-                                  if (!_scoresFinal[index]) {
-                                    _visFlag = [false, false, false, false];
-                                  } else {
-                                    _visFlag = [true, true, true, true];
-                                  }
+                                    // показать смайлы, если ответы даны
+                                    if (!_scoresFinal[index]) {
+                                      _visFlag = [false, false, false, false];
+                                    } else {
+                                      _visFlag = [true, true, true, true];
+                                    }
 
-                                  if (!controller.indexIsChanging) {
-                                    controller.animateTo(index);
-                                  }
-                                },
-                                child: const Icon(
-                                  Icons.arrow_forward_outlined,
-                                  color: Colors.yellow,
+                                    if (!controller.indexIsChanging) {
+                                      controller.animateTo(index);
+                                    }
+                                  },
+                                  child: const Icon(
+                                    Icons.arrow_forward_outlined,
+                                    color: Colors.yellow,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  );
-                },
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
