@@ -29,12 +29,31 @@ Future<List<Object?>> getFS({
 }
 
 Future<List<Object?>> getCollectionFS({
-  required String collection, required String order, required bool desc, required int limit,
+  required String collection,
+  required String order,
+  required bool desc,
+  required int limit,
 }) async {
-  final QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection(collection)
-      .orderBy(order,descending: desc)
+  final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection(collection)
       .limit(limit)
+      .orderBy(order, descending: desc)
+      .get();
+  final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  return allData;
+}
+
+Future<List<Object?>> getModuleScoresFS({
+  required String collection,
+  required String field,
+  required bool desc,
+  required int limit,
+  required String find,
+}) async {
+  final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection(collection)
+      .limit(limit)
+      .where(field, isNotEqualTo: find)
       .get();
   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
   return allData;

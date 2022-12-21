@@ -72,12 +72,12 @@ class _GameMatchState extends ConsumerState<GameMatch> {
           timer?.cancel();
           //_timerActive = false;
         } else {
-          countdown--;
-          //debugPrint('$countdown ${countdown % (count ~/ 4)}');
           //уменьшаем число зарабатываемых очков в течением времени
           if (countdown % (start ~/ 4) == 0) {
             _timerScores--;
           }
+          //debugPrint('$countdown ${countdown % (start ~/ 4)} $_timerScores');
+          countdown--;
         }
         ref
             .watch(scoresProvider.notifier)

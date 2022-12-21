@@ -10,6 +10,7 @@ import 'package:myapp/pages/game_memorise.dart';
 
 String actionSelect = '';
 bool vis = false;
+int modid = 0; //номер модуля для массивов очков
 
 class ActionsAndGames extends ConsumerStatefulWidget {
   const ActionsAndGames({
@@ -152,6 +153,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                             onPressed: () {
                               vis = false;
                               scoresInit(0);
+                              modid = 0;
                               setState(() {
                                 actionSelect = 'GameFlashCard';
                               });
@@ -170,6 +172,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                             onPressed: () {
                               vis = true;
                               scoresInit(0);
+                              modid = 1;
                               setState(() {
                                 actionSelect = 'GameMemorise';
                               });
@@ -188,6 +191,7 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                             onPressed: () {
                               vis = true;
                               scoresInit(1);
+                              modid = 2;
                               setState(() {
                                 actionSelect = 'GameMatch';
                               });
@@ -254,6 +258,70 @@ class _ActionsAndGamesState extends ConsumerState<ActionsAndGames> {
                         ),
                       ),
                     ),
+
+                    ///////////////////////////////////////////////////////////////
+
+                    Visibility(
+                      visible: vis,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 120),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Column(
+                                //crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: const [
+                                      SizedBox(
+                                        height: 6,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '10 лучших\nв этом модуле:',
+                                        style: text14Style,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  ////////   //  лист рейтинга модуля
+                                  SizedBox(
+                                    height: scrheight - 452 > 40
+                                        ? scrheight - 452
+                                        : 40,
+                                    child: ModuleRating(
+                                      userid: widget.usermapdata['userid']
+                                          as String,
+                                      id: widget.mapdata['id'] as String,
+                                      modid: modid,
+                                    ),
+                                    //),
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    ///////////////////////////////////////////////////
                   ],
                 ),
               ),

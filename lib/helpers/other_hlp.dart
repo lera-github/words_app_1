@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,6 @@ void showMessages({
     ),
   );
 }
-
 
 class TTip extends StatelessWidget {
   const TTip({
@@ -301,7 +301,118 @@ class ListViewBuilder extends StatelessWidget {
   }
 }
 
-// ------------------------------------------ очки
+// =================================================================== рейтинг модуля
+class ModuleRating extends StatelessWidget {
+  const ModuleRating(
+      {Key? key, required this.userid, required this.id, required this.modid})
+      : super(key: key);
+  final String userid; //id юзера
+  final String id; //id модуля
+  final int modid; // номер модуля в массивах очков
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: getModuleScoresFS(
+        collection: 'users',
+        field: 'userid',
+        find: userid,
+        limit: 10,
+        desc: true,
+      ),
+      builder: (BuildContext context, AsyncSnapshot<List<Object?>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CupertinoActivityIndicator(
+              radius: 40,
+            ),
+          );
+        }
+        if (snapshot.hasData) {
+          final List<Object?> obj = snapshot.data!;
+
+          final List<Map<String, dynamic>> list = [];
+
+          for (var i = 0; i < obj.length; i++) {
+            final t = obj[i]! as Map<String, dynamic>;
+            //log(t.toString());
+
+            if ((t['scores'] as Map<String, dynamic>)[id] != null) {
+              list.add(t);
+            }
+          }
+          //log(list.toString());
+          return ModuleListViewBuilder(maplist: list);
+        }
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+class ModuleListViewBuilder extends StatelessWidget {
+  const ModuleListViewBuilder({Key? key, required this.maplist})
+      : super(key: key);
+  final List<Object?> maplist;
+  @override
+  Widget build(BuildContext context) {
+    final numItems = maplist.length;
+    Map<String, dynamic> mapitem;
+    //final listUserCollection = maplist as List<Map<String, dynamic>?>;
+    Widget buildRow(int idx) {
+      mapitem = maplist[idx]! as Map<String, dynamic>;
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 28,
+            child: CircleAvatar(
+              maxRadius: 10,
+              child: Text(
+                '${idx + 1}',
+                //textScaleFactor: 0.8,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Expanded(
+            child: Text(
+              mapitem['username'].toString(), overflow: TextOverflow.ellipsis,
+              //textScaleFactor: 0.5,
+            ),
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+          Text(
+            mapitem['score'].toString(),
+            //textScaleFactor: 0.5,
+          ),
+          const SizedBox(
+            width: 3,
+          ),
+        ],
+      );
+    }
+
+    return ListView.builder(
+      itemCount: numItems * 2,
+      //padding: const EdgeInsets.all(3.0),
+      itemBuilder: (BuildContext context, int i) {
+        if (i.isOdd) return const Divider();
+        final index = i ~/ 2;
+        return buildRow(index);
+      },
+    );
+  }
+}
+
+// ===================================================================== очки
 class ViewScores extends ConsumerWidget {
   const ViewScores({
     Key? key,
@@ -439,9 +550,6 @@ class ScoresNotifier extends StateNotifier<ScoresData> {
     state = state.copyWith(timer: n, timerActive: m);
   }
 }
-
-
-
 
 /*
 Uint8List showImgDialogOLD({
