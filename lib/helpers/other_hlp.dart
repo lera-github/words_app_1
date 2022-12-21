@@ -331,16 +331,18 @@ class ModuleRating extends StatelessWidget {
           final List<Object?> obj = snapshot.data!;
 
           final List<Map<String, dynamic>> list = [];
+          if (modid > 0) {
+            for (var i = 0; i < obj.length; i++) {
+              final t = obj[i]! as Map<String, dynamic>;
+              //log(t.toString());
 
-          for (var i = 0; i < obj.length; i++) {
-            final t = obj[i]! as Map<String, dynamic>;
-            //log(t.toString());
-
-            if ((t['scores'] as Map<String, dynamic>)[id] != null) {
-              list.add(t);
+              if ((t['scores'] as Map<String, dynamic>)[id] != null) {
+                final sc1 = ((t['scores'] as Map<String, dynamic>)[id]
+                    as List<dynamic>)[modid - 1] as int;
+                list.add({'username': t['username'] as String, 'score': sc1});
+              }
             }
-          }
-          //log(list.toString());
+          } //log(list.toString());
           return ModuleListViewBuilder(maplist: list);
         }
         if (snapshot.hasError) {
