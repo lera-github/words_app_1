@@ -102,12 +102,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           if (!mounted) return;
 
+                          final Map<String, dynamic> tsc = {};
                           final Map<String, dynamic> usermapdata = {
                             'userid': idx,
                             'username': _userNameTextController.text.trim(),
                             'useremail': _emailTextController.text.trim(),
                             'score': 0,
-                            'scores': {},
+                            'scores': tsc,
                           };
                           retScore = 0;
                           Navigator.pushReplacement(

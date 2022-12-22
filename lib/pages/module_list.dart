@@ -337,7 +337,7 @@ class ModuleListState extends ConsumerState<ModuleList> {
                     onTap: () {
                       ///////////////  ===================== инициализируем провайдер данными из FS
                       /// перед переходом к играм
-                      final scoresData =
+                      final Map<String, dynamic> scoresData =
                           widget.usermapdata['scores'] as Map<String, dynamic>;
                       if (scoresData.isEmpty ||
                           scoresData[moduleCollection['id'].toString()] ==

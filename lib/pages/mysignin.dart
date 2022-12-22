@@ -114,6 +114,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                           );
                         }).onError((error, stackTrace) {
+                          showAlert(
+                            context: context,
+                            mytext: 'Ошибка авторизации',
+                          );
                           debugPrint("Error ${error.toString()}");
                         });
                       },

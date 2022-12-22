@@ -1,10 +1,8 @@
-import 'dart:convert';
-import 'dart:developer';
+import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:myapp/helpers/fb_hlp.dart';
 import 'package:myapp/helpers/styles.dart';
 import 'package:myapp/main.dart';
@@ -331,6 +329,7 @@ class ModuleRating extends StatelessWidget {
           final List<Object?> obj = snapshot.data!;
 
           final List<Map<String, dynamic>> list = [];
+
           if (modid > 0) {
             for (var i = 0; i < obj.length; i++) {
               final t = obj[i]! as Map<String, dynamic>;
@@ -342,7 +341,11 @@ class ModuleRating extends StatelessWidget {
                 list.add({'username': t['username'] as String, 'score': sc1});
               }
             }
-          } //log(list.toString());
+            //сортировка
+            list.sort(
+              (a, b) => (b["score"] as int).compareTo(a["score"] as int),
+            );
+          }
           return ModuleListViewBuilder(maplist: list);
         }
         if (snapshot.hasError) {
